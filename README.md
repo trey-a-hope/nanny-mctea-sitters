@@ -1,9 +1,8 @@
 # NannyMcTeaSitters
-
 Client mobile app for baby sitting business.
 
 #Key for creating APK is located here.
-#storeFile=/Users/treyhope/key.jks
+storeFile=/Users/treyhope/key.jks
 
 ## Create keystore file.
 - Command [keytool -genkey -v -keystore ~/key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias key]
@@ -17,7 +16,7 @@ Client mobile app for baby sitting business.
 - Command [flutter clean]
 - Command [flutter build ios --release]
 - Then go to PRODUCT -> ARCHIVE in XCODE
-- Select VERSION OR PLATFORM to current version, (2.2.2.)
+- Select VERSION OR PLATFORM to current version, (2.2.2)
 
 ## Beautify Flutter Code
 - Command [shift + option + f]
@@ -58,9 +57,13 @@ Apple Watch Series 4 - 44mm (1.78 Inch)
     448 x 368 -->
 
 #How to Add Local Project to Bit Bucket
+Git clone an existing repository.
+git init
+git remote add origin [my-repo]
+git fetch
+git checkout origin/master -ft
 
-#Git clone an existing repository.
-#git init
-#git remote add origin [my-repo]
-#git fetch
-#git checkout origin/master -ft
+#ERROR FIX
+pod update
+"NameError - uninitialized constant Concurrent::Promises, Did you mean?  Concurrent::Promise"
+sudo gem update concurrent-ruby

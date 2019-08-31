@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1022578348033-akrucnvpf57585t2c2816f9rpp23270n.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1022578348033-akrucnvpf57585t2c2816f9rpp23270n</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAA9j6VGzwE2w7k9wQqXG-93lE3ogO3ObM</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1022578348033</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.nannyMcteaSittersFlutter</string>
+	<key>PROJECT_ID</key>
+	<string>nanny-mctea-sitters</string>
+	<key>STORAGE_BUCKET</key>
+	<string>nanny-mctea-sitters.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1022578348033:ios:43865fe5d7f29ecb</string>
+	<key>DATABASE_URL</key>
+	<string>https://nanny-mctea-sitters.firebaseio.com</string>
+</dict>
+</plist>
