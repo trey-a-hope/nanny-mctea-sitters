@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1022578348033",
+    "firebase_url": "https://nanny-mctea-sitters.firebaseio.com",
+    "project_id": "nanny-mctea-sitters",
+    "storage_bucket": "nanny-mctea-sitters.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022578348033:android:34b8d698a94563d4",
+        "android_client_info": {
+          "package_name": "com.io.nanny_mctea_sitters_flutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022578348033-ovjrcuqqq57otbs3jne8nbq41me5bi5e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeFHfsQje8hDwUt9-Yny9hCD3YWu4Nv50"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022578348033-ovjrcuqqq57otbs3jne8nbq41me5bi5e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
