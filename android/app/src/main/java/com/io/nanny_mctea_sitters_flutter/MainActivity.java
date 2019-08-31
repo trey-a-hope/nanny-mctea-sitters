@@ -1,4 +1,4 @@
-package com.example.nanny_mctea_sitters_flutter;
+package com.io.nanny_mctea_sitters_flutter;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
