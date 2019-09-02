@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
+import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -97,13 +100,36 @@ class HomePageState extends State<HomePage>
                         borderRadius: BorderRadius.all(Radius.circular(5)),
                         child: Padding(
                           padding: EdgeInsets.all(16),
-                          child: Text(about, style: TextStyle(color: Colors.white, fontSize: 20)),
+                          child: Text(about,
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20)),
                         ),
                       ),
                     ),
                     ContentHeadingWidget(
-                      heading: 'Sitters',
+                      heading: 'Meet the Team',
                     ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: <Widget>[
+                          for (var i = 0; i < sitters.length; i++)
+                            InkWell(
+                              child: SitterWidget(
+                                sitter: sitters[i],
+                              ),
+                              onTap: () {
+                                Modal.showInSnackBar(
+                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                              },
+                            )
+                        ],
+                      ),
+                    ),
+                    ContentHeadingWidget(
+                      heading: 'Come Work With Us',
+                    ),
+                    Text('(Tab Controller Here)')
                   ],
                 ),
               ),
