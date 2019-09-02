@@ -2,16 +2,17 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // import 'package:nanny_mctea_sitters_flutter/pages/settings.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-// import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
-// import 'package:nanny_mctea_sitters_flutter/pages/editProfile.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/signUp.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
+
 import 'package:nanny_mctea_sitters_flutter/services/pdInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 class DrawerWidget extends StatefulWidget {
-
-  const DrawerWidget({Key key}):super(key:key);
+  const DrawerWidget({Key key}) : super(key: key);
 
   @override
   State createState() => DrawerWidgetState();
@@ -54,19 +55,19 @@ class DrawerWidgetState extends State<DrawerWidget>
   Widget _buildUserAccountsDrawerHeader() {
     return UserAccountsDrawerHeader(
       accountName: Text(
-        'Hidden Gems',
+        'Nanny McTea Sitters',
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
-      accountEmail: Text('Dayton has more to offer...'),
+      accountEmail: Text('Sitting made simple.'),
       currentAccountPicture: GestureDetector(
         child: CircleAvatar(
-            backgroundImage:
-                CachedNetworkImageProvider(''),
+            backgroundImage: CachedNetworkImageProvider(
+                'https://scontent-ort2-2.xx.fbcdn.net/v/t1.0-9/66689284_475953953204392_7694893442219900928_n.jpg?_nc_cat=108&_nc_oc=AQk71V5zlZVYi2JyEL9EYYveAKqn8zr22jz3cNHtohzaXPj9NEPSc3u_Io7347klBqAXPy-kPganFCUv8qVAql4I&_nc_ht=scontent-ort2-2.xx&oh=5fe010348e079c12854d062af3d2a871&oe=5E1040B2'),
             backgroundColor: Colors.transparent,
             radius: 10.0),
       ),
       decoration: BoxDecoration(
-        color: Colors.black,
+        color: Theme.of(context).primaryColor,
       ),
     );
   }
@@ -78,30 +79,88 @@ class DrawerWidgetState extends State<DrawerWidget>
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           _buildUserAccountsDrawerHeader(),
-          // user == null
-          //     ? Container()
-          //     : ListTile(
-          //         leading: Icon(MdiIcons.settings, color: _drawerIconColor),
-          //         title: Text(
-          //           'Settings',
-          //           style: TextStyle(fontWeight: FontWeight.bold),
-          //         ),
-          //         onTap: () {
-          //           Navigator.push(
-          //             context,
-          //             MaterialPageRoute(
-          //               builder: (context) => SettingsPage(),
-          //             ),
-          //           );
-          //         },
-          //       ),
+          user == null
+              ? Container() : ListTile(
+                  leading: Icon(MdiIcons.login, color: _drawerIconColor),
+                  title: Text(
+                    'Logout',
+                  ),
+                  subtitle: Text(
+                    'Leave the app.',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () async {
+                    bool confirm = await Modal.showConfirmation(
+                        context, 'Sign Out', 'Are you sure?');
+                    if (confirm) {
+                      _auth.signOut().then(
+                            (r) {},
+                          );
+                    }
+                  },
+                ),
+          user == null
+              ? ListTile(
+                  leading: Icon(MdiIcons.login, color: _drawerIconColor),
+                  title: Text(
+                    'Login',
+                  ),
+                  subtitle: Text(
+                    'Order a sitter today.',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ),
+                    );
+                  },
+                ) : Container(),
+          user == null ? ListTile(
+            leading: Icon(MdiIcons.signText, color: _drawerIconColor),
+            title: Text(
+              'Sign Up',
+            ),
+            subtitle: Text(
+              'Become a member today.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SignUpPage(),
+                ),
+              );
+            },
+          ) : Container(),
+          ListTile(
+            leading: Icon(MdiIcons.email, color: _drawerIconColor),
+            title: Text(
+              'Contact Us',
+            ),
+            subtitle: Text(
+              'Hit us up.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ContactPage(),
+                ),
+              );
+            },
+          ),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
-                  'Version $_projectVersion / Build $_projectCode.\nCreated by Tr3umphant.Designs, LLC.\nSearch powered by Algolia.',
+                  'Version $_projectVersion / Build $_projectCode.\nCreated by Tr3umphant.Designs, LLC.',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ),

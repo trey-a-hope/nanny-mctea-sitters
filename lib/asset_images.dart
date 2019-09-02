@@ -1,3 +1,4 @@
 import 'package:flutter/material.dart';
 
-// const dayton_background_one = AssetImage('assets/images/dayton1.jpg');
+const group_nannies = AssetImage('assets/images/group_nannies.jpg');
+const background = AssetImage('assets/images/background.jpg');
