@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/services/urlLauncher.dart';
+import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 
 import '../style/text.dart';
 
 class JoinTeamWidget extends StatelessWidget {
   final AssetImage image;
   final String title;
-  // final String posted;
-  // final String text;
+  final String posted;
+  final String description;
   // final String url;
 
-  const JoinTeamWidget({Key key, @required this.image, @required this.title})
+  const JoinTeamWidget({Key key, @required this.image, @required this.title, @required this.posted, @required this.description})
       : super(key: key);
 
   @override
@@ -29,14 +29,14 @@ class JoinTeamWidget extends StatelessWidget {
             padding: EdgeInsets.all(16),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[Text(title), Text('Aug 3rd, 2019')],
+              children: <Widget>[Text(title), Text(posted)],
             ),
           ),
           Divider(),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-                'Norwood / Montgomery families seeking Full Time long term nanny to join the team.  Families are seeking fun, reliable nanny.  Care will take place in host families home in Montgomery with 2 sometimes 3 infants. Hours are 7:30 am - 5:30 pm. Pay starts at \$15/hr'),
+                description),
           ),
           SizedBox(height: 20),
           MaterialButton(

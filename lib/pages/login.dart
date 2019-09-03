@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/signUp.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
