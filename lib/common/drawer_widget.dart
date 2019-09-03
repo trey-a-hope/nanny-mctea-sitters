@@ -5,7 +5,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/signUp.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
-
+import 'package:nanny_mctea_sitters_flutter/pages/joinTeam.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/bookSitter.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pdInfo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -79,46 +80,124 @@ class DrawerWidgetState extends State<DrawerWidget>
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           _buildUserAccountsDrawerHeader(),
-          user == null
-              ? Container() : ListTile(
-                  leading: Icon(MdiIcons.login, color: _drawerIconColor),
-                  title: Text(
-                    'Logout',
-                  ),
-                  subtitle: Text(
-                    'Leave the app.',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onTap: () async {
-                    bool confirm = await Modal.showConfirmation(
-                        context, 'Sign Out', 'Are you sure?');
-                    if (confirm) {
-                      _auth.signOut().then(
-                            (r) {},
-                          );
-                    }
-                  },
+          _buildBookSitter(),
+          _buildJoinTeam(),
+          _buildLogout(),
+          _buildLogin(),
+          _buildSignUp(),
+          _buildContact(),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  'Version $_projectVersion / Build $_projectCode.\n©2019 by Nanny McTea Sitters\nCreated by Tr3umphant.Designs, LLC.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
                 ),
-          user == null
-              ? ListTile(
-                  leading: Icon(MdiIcons.login, color: _drawerIconColor),
-                  title: Text(
-                    'Login',
-                  ),
-                  subtitle: Text(
-                    'Order a sitter today.',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => LoginPage(),
-                      ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookSitter() {
+    return user == null
+        ? Container()
+        : ListTile(
+            leading: Icon(MdiIcons.book, color: _drawerIconColor),
+            title: Text(
+              'Book A Sitter',
+            ),
+            subtitle: Text(
+              'Order a sitter today.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookSitterPage(),
+                ),
+              );
+            },
+          );
+  }
+
+  Widget _buildJoinTeam() {
+    return ListTile(
+      leading: Icon(MdiIcons.group, color: _drawerIconColor),
+      title: Text(
+        'Join The Team',
+      ),
+      subtitle: Text(
+        'Become a nanny today.',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => JoinTeamPage(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLogout() {
+    return user == null
+        ? Container()
+        : ListTile(
+            leading: Icon(MdiIcons.login, color: _drawerIconColor),
+            title: Text(
+              'Logout',
+            ),
+            subtitle: Text(
+              'Leave the app.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () async {
+              bool confirm = await Modal.showConfirmation(
+                  context, 'Sign Out', 'Are you sure?');
+              if (confirm) {
+                _auth.signOut().then(
+                      (r) {},
                     );
-                  },
-                ) : Container(),
-          user == null ? ListTile(
+              }
+            },
+          );
+  }
+
+  Widget _buildLogin() {
+    return user == null
+        ? ListTile(
+            leading: Icon(MdiIcons.login, color: _drawerIconColor),
+            title: Text(
+              'Login',
+            ),
+            subtitle: Text(
+              'Order a sitter today.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LoginPage(),
+                ),
+              );
+            },
+          )
+        : Container();
+  }
+
+  Widget _buildSignUp() {
+    return user == null
+        ? ListTile(
             leading: Icon(MdiIcons.signText, color: _drawerIconColor),
             title: Text(
               'Sign Up',
@@ -135,40 +214,28 @@ class DrawerWidgetState extends State<DrawerWidget>
                 ),
               );
             },
-          ) : Container(),
-          ListTile(
-            leading: Icon(MdiIcons.email, color: _drawerIconColor),
-            title: Text(
-              'Contact Us',
-            ),
-            subtitle: Text(
-              'Hit us up.',
-              style: TextStyle(color: Colors.black),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ContactPage(),
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  'Version $_projectVersion / Build $_projectCode.\nCreated by Tr3umphant.Designs, LLC.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
-            ),
-          ),
-        ],
+          )
+        : Container();
+  }
+
+  Widget _buildContact() {
+    return ListTile(
+      leading: Icon(MdiIcons.email, color: _drawerIconColor),
+      title: Text(
+        'Contact Us',
       ),
+      subtitle: Text(
+        'Hit us up.',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ContactPage(),
+          ),
+        );
+      },
     );
   }
 }

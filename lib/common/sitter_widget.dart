@@ -17,7 +17,7 @@ class SitterWidget extends StatelessWidget {
           Container(
             
             height: 250,
-            width: 200,
+            width: 150,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(8),),
                 image: DecorationImage(image: sitter.image, fit: BoxFit.cover)),
@@ -28,7 +28,7 @@ class SitterWidget extends StatelessWidget {
             child: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(text: sitter.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                  TextSpan(text: sitter.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                   TextSpan(text: '\n'),
                   TextSpan(text: sitter.info)
                 ]

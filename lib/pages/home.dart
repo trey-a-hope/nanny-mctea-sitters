@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/common/review_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -81,7 +83,7 @@ class HomePageState extends State<HomePage>
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16.0,
+                                    fontSize: 20.0,
                                   ),
                                 ),
                               )
@@ -127,9 +129,45 @@ class HomePageState extends State<HomePage>
                       ),
                     ),
                     ContentHeadingWidget(
-                      heading: 'Come Work With Us',
+                      heading: 'Photos',
                     ),
-                    Text('(Tab Controller Here)')
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: <Widget>[
+                          for (var i = 0; i < images.length; i++)
+                            InkWell(
+                              child: PhotoWidget(
+                                title: 'Test', image: images[i],
+                              ),
+                              onTap: () {
+                                Modal.showInSnackBar(
+                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                              },
+                            )
+                        ],
+                      ),
+                    ),
+                    ContentHeadingWidget(
+                      heading: 'Reviews',
+                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: <Widget>[
+                          for (var i = 0; i < reviews.length; i++)
+                            InkWell(
+                              child: ReviewWidget(
+                                review: reviews[i].review, author: reviews[i].author,
+                              ),
+                              onTap: () {
+                                Modal.showInSnackBar(
+                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                              },
+                            )
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
