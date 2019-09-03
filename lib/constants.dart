@@ -2,6 +2,8 @@ import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 
+import 'common/book_sitter_tile_widget.dart';
+
 const String about =
     'It shouldn’t be difficult to find capable, reliable and trustworthy childcare. That\'s what I said when I started Nanny McTea Sitters. Drawing on my own personal nanny experiences as well the other experiences of professional nannies within our team, we established a full child care agency that ensures rigorous screening and customized matching. With years of collective experience in childcare, We\'ve learned what families want and are proud to share this with you.';
 
