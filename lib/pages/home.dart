@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
@@ -13,7 +14,10 @@ import 'package:nanny_mctea_sitters_flutter/common/review_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 import 'package:nanny_mctea_sitters_flutter/style/text.dart';
+
+import 'contact.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -55,71 +59,73 @@ class HomePageState extends State<HomePage>
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Container(
-                          width: double.infinity,
-                          height: 250,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                              image: group_nannies,
-                              fit: BoxFit.cover,
-                            ),
+            : ListView(
+                children: <Widget>[
+                  Stack(
+                    children: <Widget>[
+                      Container(
+                        width: double.infinity,
+                        height: 250,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: group_nannies,
+                            fit: BoxFit.cover,
                           ),
                         ),
-                        Positioned(
-                          right: 10,
-                          bottom: 10,
-                          child: Stack(
-                            children: <Widget>[
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      Positioned(
+                        right: 10,
+                        bottom: 10,
+                        child: Stack(
+                          children: <Widget>[
+                            Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              padding: EdgeInsets.all(10),
+                              child: Text(
+                                'Nanny McTea Sitters',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20.0,
                                 ),
-                                padding: EdgeInsets.all(10),
-                                child: Text(
-                                  'Nanny McTea Sitters',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    ContentHeadingWidget(
-                      heading: 'About',
-                    ),
-                    _buildAboutWidget(),
-                    Divider(),
-                    ContentHeadingWidget(
-                      heading: 'Services',
-                    ),
-                    _buildServicesWidget(),
-                    SizedBox(height: 20),
-                    Divider(),
-                    ContentHeadingWidget(
-                      heading: 'Meet the Team',
-                    ),
-                    _buildTeamWidget(),
-                    ContentHeadingWidget(
-                      heading: 'Photos',
-                    ),
-                    _buildPhotosWidget(),
-                    ContentHeadingWidget(
-                      heading: 'Reviews',
-                    ),
-                    _buildReviewsWidget()
-                  ],
-                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  ContentHeadingWidget(
+                    heading: 'About',
+                  ),
+                  _buildAboutWidget(),
+                  Divider(),
+                  ContentHeadingWidget(
+                    heading: 'Services',
+                  ),
+                  _buildServicesWidget(),
+                  SizedBox(height: 20),
+                  Divider(),
+                  ContentHeadingWidget(
+                    heading: 'Meet the Team',
+                  ),
+                  _buildTeamWidget(),
+                  ContentHeadingWidget(
+                    heading: 'Photos',
+                  ),
+                  _buildPhotosWidget(),
+                  ContentHeadingWidget(
+                    heading: 'Reviews',
+                  ),
+                  _buildReviewsWidget(),
+                  ContentHeadingWidget(
+                    heading: 'Social Media',
+                  ),
+                  _buildSocialMedias()
+                ],
               ),
       ),
     );
@@ -132,7 +138,19 @@ class HomePageState extends State<HomePage>
         'Home',
         style: TextStyle(letterSpacing: 2.0),
       ),
-      actions: [],
+      actions: [
+        IconButton(
+          icon: Icon(MdiIcons.email),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ContactPage(),
+              ),
+            );
+          },
+        )
+      ],
     );
   }
 
@@ -291,7 +309,7 @@ class HomePageState extends State<HomePage>
 
   _buildAboutWidget() {
     return Padding(
-      padding: EdgeInsets.all(16),
+      padding: EdgeInsets.symmetric(horizontal: 30),
       child: Text(
         about,
         style: TextStyle(color: Colors.black, fontSize: 20),
@@ -317,6 +335,22 @@ class HomePageState extends State<HomePage>
             )
         ],
       ),
+    );
+  }
+
+  _buildSocialMedias() {
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(30),
+          child: InkWell(
+            child: Icon(MdiIcons.facebook),
+            onTap: () {
+              URLLauncher.launchUrl('https://www.facebook.com/nannymctea/');
+            },
+          ),
+        )
+      ],
     );
   }
 }

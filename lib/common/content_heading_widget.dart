@@ -11,7 +11,7 @@ class ContentHeadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.all(30),
       child: Text(
         heading,
         style: headingOneTextStyle,

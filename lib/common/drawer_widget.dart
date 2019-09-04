@@ -90,11 +90,9 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildPlansPricing(),
           _buildJoinTeam(),
           _buildBlog(),
-          _buildContact(),
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
-          _buildFacebook(),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -246,43 +244,6 @@ class DrawerWidgetState extends State<DrawerWidget>
             },
           )
         : Container();
-  }
-
-  Widget _buildContact() {
-    return ListTile(
-      leading: Icon(MdiIcons.email, color: _drawerIconColor),
-      title: Text(
-        'Contact Us',
-      ),
-      subtitle: Text(
-        'Hit us up.',
-        style: TextStyle(color: Colors.black),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ContactPage(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildFacebook(){
-    return ListTile(
-      leading: Icon(MdiIcons.facebook, color: _drawerIconColor),
-      title: Text(
-        'Facebook',
-      ),
-      subtitle: Text(
-        'Follow Us.',
-        style: TextStyle(color: Colors.black),
-      ),
-      onTap: () {
-        URLLauncher.launchUrl('https://www.facebook.com/nannymctea/');
-      },
-    );
   }
 
   Widget _buildBlog() {
