@@ -23,11 +23,6 @@ class Review {
     this.author = author;
   }
 }
-final List<Review> reviews = [
-  Review('I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.', 'Morales Family'),
-  Review('We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!', 'Cady  Family'),
-  Review('Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!', 'Eavenson Family'),
-];
 
 final List<Sitter> sitters = [
   Sitter(

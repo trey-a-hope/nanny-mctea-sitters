@@ -14,31 +14,57 @@ class SitterWidget extends StatelessWidget {
       padding: EdgeInsets.all(10),
       child: Stack(
         children: <Widget>[
-          Container(
-            
-            height: 250,
-            width: 150,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(8),),
-                image: DecorationImage(image: sitter.image, fit: BoxFit.cover)),
+          Stack(
+            children: <Widget>[
+              Container(
+                height: 250,
+                width: 150,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                  image:
+                      DecorationImage(image: sitter.image, fit: BoxFit.cover),
+                ),
+              ),
+              Container(
+                height: 250,
+                width: 150,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0, 1],
+                    colors: [
+                      Colors.white.withOpacity(0),
+                      Colors.black.withOpacity(0.4)
+                    ]
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+            ],
           ),
           Positioned(
-            left: 10,
-            bottom: 10,
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(text: sitter.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+              left: 10,
+              bottom: 10,
+              child: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: sitter.name,
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                   TextSpan(text: '\n'),
                   TextSpan(text: sitter.info)
-                ]
-              ),
-            )
-            // child: Text(
-            //   sitter.name + '\n' + sitter.info,
-            //   style: TextStyle(color: Colors.white),
-            // ),
-          )
+                ]),
+              )
+              // child: Text(
+              //   sitter.name + '\n' + sitter.info,
+              //   style: TextStyle(color: Colors.white),
+              // ),
+              )
         ],
       ),
     );

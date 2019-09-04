@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 // import 'package:nanny_mctea_sitters_flutter/pages/settings.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
@@ -84,8 +85,6 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildUserAccountsDrawerHeader(),
           _buildBookSitter(),
           _buildJoinTeam(),
-          _buildProfessionalNannies(),
-          _buildSitterServices(),
           _buildContact(),
           _buildLogout(),
           _buildLogin(),
@@ -220,48 +219,6 @@ class DrawerWidgetState extends State<DrawerWidget>
             },
           )
         : Container();
-  }
-
-  Widget _buildProfessionalNannies() {
-    return ListTile(
-      leading: Icon(MdiIcons.professionalHexagon, color: _drawerIconColor),
-      title: Text(
-        'Professional Nannies',
-      ),
-      subtitle: Text(
-        'See our professional services.',
-        style: TextStyle(color: Colors.black),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfessionalNanniesPage(),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildSitterServices() {
-    return ListTile(
-      leading: Icon(MdiIcons.professionalHexagon, color: _drawerIconColor),
-      title: Text(
-        'Sitter Services',
-      ),
-      subtitle: Text(
-        'We got you covered.',
-        style: TextStyle(color: Colors.black),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SitterServicesPage(),
-          ),
-        );
-      },
-    );
   }
 
   Widget _buildContact() {

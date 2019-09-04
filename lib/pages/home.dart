@@ -3,14 +3,17 @@ import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-
+import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/review_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nanny_mctea_sitters_flutter/style/text.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -95,79 +98,26 @@ class HomePageState extends State<HomePage>
                     ContentHeadingWidget(
                       heading: 'About',
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Material(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.all(Radius.circular(5)),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Text(about,
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20)),
-                        ),
-                      ),
+                    _buildAboutWidget(),
+                    Divider(),
+                    ContentHeadingWidget(
+                      heading: 'Services',
                     ),
+                    _buildServicesWidget(),
+                    SizedBox(height: 20),
+                    Divider(),
                     ContentHeadingWidget(
                       heading: 'Meet the Team',
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          for (var i = 0; i < sitters.length; i++)
-                            InkWell(
-                              child: SitterWidget(
-                                sitter: sitters[i],
-                              ),
-                              onTap: () {
-                                Modal.showInSnackBar(
-                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
-                              },
-                            )
-                        ],
-                      ),
-                    ),
+                    _buildTeamWidget(),
                     ContentHeadingWidget(
                       heading: 'Photos',
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          for (var i = 0; i < images.length; i++)
-                            InkWell(
-                              child: PhotoWidget(
-                                title: 'Test', image: images[i],
-                              ),
-                              onTap: () {
-                                Modal.showInSnackBar(
-                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
-                              },
-                            )
-                        ],
-                      ),
-                    ),
+                    _buildPhotosWidget(),
                     ContentHeadingWidget(
                       heading: 'Reviews',
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: <Widget>[
-                          for (var i = 0; i < reviews.length; i++)
-                            InkWell(
-                              child: ReviewWidget(
-                                review: reviews[i].review, author: reviews[i].author,
-                              ),
-                              onTap: () {
-                                Modal.showInSnackBar(
-                                    _scaffoldKey, 'Clicked ' + sitters[i].name);
-                              },
-                            )
-                        ],
-                      ),
-                    ),
+                    _buildReviewsWidget()
                   ],
                 ),
               ),
@@ -182,8 +132,191 @@ class HomePageState extends State<HomePage>
         'Home',
         style: TextStyle(letterSpacing: 2.0),
       ),
-      actions: [
-      ],
+      actions: [],
+    );
+  }
+
+  _buildServicesWidget() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: InkWell(
+              child: Container(
+                child: Center(
+                  child: Text(
+                    'Event Services',
+                    style: serviceButtonStyle,
+                  ),
+                ),
+                height: 50,
+                width: 150,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.green[800], Colors.green[400]],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0, 1],
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventServicesPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: InkWell(
+              child: Container(
+                child: Center(
+                  child: Text(
+                    'Sitter Services',
+                    style: serviceButtonStyle,
+                  ),
+                ),
+                height: 50,
+                width: 150,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.blue[800], Colors.blue[400]],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0, 1],
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SitterServicesPage(),
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: InkWell(
+              child: Container(
+                child: Center(
+                  child: Text(
+                    'Professinal Nannies',
+                    style: serviceButtonStyle,
+                  ),
+                ),
+                height: 50,
+                width: 200,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.purple[800], Colors.purple[400]],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0, 1],
+                  ),
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfessionalNanniesPage(),
+                  ),
+                );
+              },
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _buildReviewsWidget() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: <Widget>[
+          for (var i = 0; i < reviews.length; i++)
+            InkWell(
+              child: ReviewWidget(
+                review: reviews[i].review,
+                author: reviews[i].author,
+              ),
+              onTap: () {
+                Modal.showInSnackBar(
+                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+              },
+            )
+        ],
+      ),
+    );
+  }
+
+  _buildTeamWidget() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: <Widget>[
+          for (var i = 0; i < sitters.length; i++)
+            InkWell(
+              child: SitterWidget(
+                sitter: sitters[i],
+              ),
+              onTap: () {
+                Modal.showInSnackBar(
+                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+              },
+            )
+        ],
+      ),
+    );
+  }
+
+  _buildAboutWidget() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Text(
+        about,
+        style: TextStyle(color: Colors.black, fontSize: 20),
+      ),
+    );
+  }
+
+  _buildPhotosWidget() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: <Widget>[
+          for (var i = 0; i < images.length; i++)
+            InkWell(
+              child: PhotoWidget(
+                title: 'Test',
+                image: images[i],
+              ),
+              onTap: () {
+                Modal.showInSnackBar(
+                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+              },
+            )
+        ],
+      ),
     );
   }
 }
