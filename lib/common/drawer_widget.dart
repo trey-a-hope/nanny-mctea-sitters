@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 // import 'package:nanny_mctea_sitters_flutter/pages/settings.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -82,10 +84,12 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildUserAccountsDrawerHeader(),
           _buildBookSitter(),
           _buildJoinTeam(),
+          _buildProfessionalNannies(),
+          _buildSitterServices(),
+          _buildContact(),
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
-          _buildContact(),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -216,6 +220,48 @@ class DrawerWidgetState extends State<DrawerWidget>
             },
           )
         : Container();
+  }
+
+  Widget _buildProfessionalNannies() {
+    return ListTile(
+      leading: Icon(MdiIcons.professionalHexagon, color: _drawerIconColor),
+      title: Text(
+        'Professional Nannies',
+      ),
+      subtitle: Text(
+        'See our professional services.',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfessionalNanniesPage(),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildSitterServices() {
+    return ListTile(
+      leading: Icon(MdiIcons.professionalHexagon, color: _drawerIconColor),
+      title: Text(
+        'Sitter Services',
+      ),
+      subtitle: Text(
+        'We got you covered.',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SitterServicesPage(),
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildContact() {

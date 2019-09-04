@@ -183,17 +183,6 @@ class HomePageState extends State<HomePage>
         style: TextStyle(letterSpacing: 2.0),
       ),
       actions: [
-        // IconButton(
-        //   icon: Icon(Icons.search),
-        //   onPressed: () {
-        //     Navigator.push(
-        //       context,
-        //       MaterialPageRoute(
-        //         builder: (context) => SearchPage(),
-        //       ),
-        //     );
-        //   },
-        // )
       ],
     );
   }

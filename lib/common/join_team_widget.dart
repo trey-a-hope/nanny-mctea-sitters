@@ -11,7 +11,12 @@ class JoinTeamWidget extends StatelessWidget {
   final String description;
   // final String url;
 
-  const JoinTeamWidget({Key key, @required this.image, @required this.title, @required this.posted, @required this.description})
+  const JoinTeamWidget(
+      {Key key,
+      @required this.image,
+      @required this.title,
+      @required this.posted,
+      @required this.description})
       : super(key: key);
 
   @override
@@ -36,14 +41,20 @@ class JoinTeamWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-                description),
+              description,
+              style: TextStyle(fontSize: 24),
+            ),
           ),
           SizedBox(height: 20),
           MaterialButton(
             color: Colors.blue,
-            child: Text('Apply Now', style: TextStyle(color: Colors.white),),
+            child: Text(
+              'APPLY NOW',
+              style: TextStyle(color: Colors.white),
+            ),
             onPressed: () {
-              URLLauncher.launchUrl('https://docs.google.com/forms/d/e/1FAIpQLScLt5e0c-tGlMdFw9ALAMuDpYKKgKs0W_1DGVnxhZ351gDbwA/viewform?usp=sf_link');
+              URLLauncher.launchUrl(
+                  'https://docs.google.com/forms/d/e/1FAIpQLScLt5e0c-tGlMdFw9ALAMuDpYKKgKs0W_1DGVnxhZ351gDbwA/viewform?usp=sf_link');
             },
           )
         ],
