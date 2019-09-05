@@ -1,22 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-// import 'package:nanny_mctea_sitters_flutter/pages/settings.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/blog.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/constants.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({Key key}) : super(key: key);
@@ -89,7 +81,6 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildBookSitter(),
           _buildPlansPricing(),
           _buildJoinTeam(),
-          _buildBlog(),
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
@@ -244,26 +235,5 @@ class DrawerWidgetState extends State<DrawerWidget>
             },
           )
         : Container();
-  }
-
-  Widget _buildBlog() {
-    return ListTile(
-      leading: Icon(MdiIcons.book, color: _drawerIconColor),
-      title: Text(
-        'Blog',
-      ),
-      subtitle: Text(
-        'Read all about us.',
-        style: TextStyle(color: Colors.black),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlogPage(),
-          ),
-        );
-      },
-    );
   }
 }

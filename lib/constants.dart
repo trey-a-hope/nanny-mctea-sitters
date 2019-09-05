@@ -15,15 +15,6 @@ final List<AssetImage> images = [
   group_nannies
 ];
 
-class Review {
-  String review;
-  String author;
-  Review(review, author){
-    this.review = review;
-    this.author = author;
-  }
-}
-
 final List<Sitter> sitters = [
   Sitter(
     'Talea Chenault',
