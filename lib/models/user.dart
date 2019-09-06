@@ -4,4 +4,6 @@ class User{
   String uid;
   String id;
   DateTime time;
+  String phone;
+  String fullName;
 }

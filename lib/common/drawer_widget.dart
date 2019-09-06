@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter.dart';
@@ -81,6 +82,7 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildBookSitter(),
           _buildPlansPricing(),
           _buildJoinTeam(),
+          _buildProfile(),
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
@@ -100,6 +102,29 @@ class DrawerWidgetState extends State<DrawerWidget>
         ],
       ),
     );
+  }
+
+  Widget _buildProfile() {
+    return user == null
+        ? Container()
+        : ListTile(
+            leading: Icon(MdiIcons.faceProfile, color: _drawerIconColor),
+            title: Text(
+              'My Profile',
+            ),
+            subtitle: Text(
+              'View your appointments.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilePage(user.uid),
+                ),
+              );
+            },
+          );
   }
 
   Widget _buildBookSitter() {

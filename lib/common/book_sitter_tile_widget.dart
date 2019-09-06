@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_calendar.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter.dart';
-
-import '../style/text.dart';
 
 class BookSitterTileWidget extends StatelessWidget {
   final String title;
@@ -20,26 +17,45 @@ class BookSitterTileWidget extends StatelessWidget {
       ),
       children: <Widget>[
         ListTile(
-            title: Text(
-          description,
-        )),
+          title: Text(
+            description,
+          ),
+        ),
         Padding(
-            padding: EdgeInsets.all(10),
-            child: MaterialButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookCalendarPage(title),
-                  ),
-                );
-              },
-              color: Colors.blue,
-              child: Text(
-                'BOOK IT',
-                style: TextStyle(color: Colors.white),
-              ),
-            ))
+          padding: EdgeInsets.all(10),
+          child: RichText(
+            text: TextSpan(children: [
+              TextSpan(text: '\n'),
+              TextSpan(
+                  text: 'Cancellation Policy:',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold)),
+              TextSpan(text: '\n\n'),
+              TextSpan(
+                  text:
+                      'Please cancel at least 48 hours in advance if you wish to cancel your sitter service. If you cancel with less than 24 hours before service no refund will be given.',
+                  style: TextStyle(color: Colors.grey))
+            ]),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(10),
+          child: MaterialButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BookCalendarPage(title),
+                ),
+              );
+            },
+            color: Colors.blue,
+            child: Text(
+              'BOOK IT',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        )
       ],
     );
   }
