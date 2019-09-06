@@ -10,6 +10,9 @@ const String about =
 const String DUMMY_PROFILE_PHOTO_URL =
     'https://firebasestorage.googleapis.com/v0/b/nanny-mctea-sitters.appspot.com/o/Images%2FUsers%2FDummy%2Fprofile.jpg?alt=media&token=2dff3e32-0140-4adc-9c33-81366ec8a322';
 
+const String COMPANY_EMAIL = 'nannymctea@gmail.com';
+const String COMPANY_PHONE = '(859)905-0174';
+
 final List<AssetImage> images = [
   group_nannies,
   group_nannies

@@ -22,11 +22,11 @@ class PlansPricingState extends State<PlansPricingPage>
     final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('PLANS & PRICING'),
-        ),
-        body: Stack(alignment: Alignment.center, children: <Widget>[
+      key: _scaffoldKey,
+      appBar: _buildAppBar(),
+      body: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
           Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
@@ -69,7 +69,7 @@ class PlansPricingState extends State<PlansPricingPage>
                       'Choose Your Pricing Plan',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 30,
+                          fontSize: 25,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -104,7 +104,7 @@ class PlansPricingState extends State<PlansPricingPage>
                     padding: EdgeInsets.all(10),
                     child: Text(
                       'Get your life back, enjoy your secured sitter.',
-                      style: TextStyle(color: Colors.white, fontSize: 17),
+                      style: TextStyle(color: Colors.white, fontSize: 15),
                     ),
                   ),
                   MaterialButton(
@@ -119,40 +119,40 @@ class PlansPricingState extends State<PlansPricingPage>
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      'Unlimited week night sits after 5 pm',
+                      '*Unlimited week night sits after 5 pm',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      'Unlimited weekend sits',
+                      '*Unlimited weekend sits',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      'Sitter must be given 32 hours before sit begins',
+                      '*Sitter must be given 32 hours before sit begins',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(5),
                     child: Text(
-                      'You are required to pay your sitter the \$13 hourly rate',
+                      '*You are required to pay your sitter the \$13 hourly rate',
                       style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold),
                     ),
                   )
@@ -160,6 +160,15 @@ class PlansPricingState extends State<PlansPricingPage>
               ),
             ),
           ),
-        ]));
+        ],
+      ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text('PLANS & PRICING'),
+      centerTitle: true,
+    );
   }
 }

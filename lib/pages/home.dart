@@ -233,7 +233,7 @@ class HomePageState extends State<HomePage>
               child: Container(
                 child: Center(
                   child: Text(
-                    'Professinal Nannies',
+                    'Professional Nannies',
                     style: serviceButtonStyle,
                   ),
                 ),
