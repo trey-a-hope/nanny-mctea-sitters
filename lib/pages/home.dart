@@ -113,10 +113,10 @@ class HomePageState extends State<HomePage>
                     heading: 'Meet the Team',
                   ),
                   _buildTeamWidget(),
-                  ContentHeadingWidget(
-                    heading: 'Photos',
-                  ),
-                  _buildPhotosWidget(),
+                  // ContentHeadingWidget(
+                  //   heading: 'Photos',
+                  // ),
+                  // _buildPhotosWidget(),
                   ContentHeadingWidget(
                     heading: 'Reviews',
                   ),
@@ -138,19 +138,6 @@ class HomePageState extends State<HomePage>
         'Home',
         style: TextStyle(letterSpacing: 2.0),
       ),
-      actions: [
-        IconButton(
-          icon: Icon(MdiIcons.email),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ContactPage(),
-              ),
-            );
-          },
-        )
-      ],
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile.dart';
@@ -78,7 +79,8 @@ class DrawerWidgetState extends State<DrawerWidget>
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          _buildUserAccountsDrawerHeader(),
+          // _buildUserAccountsDrawerHeader(),
+          SizedBox(height: 40),
           _buildBookSitter(),
           _buildPlansPricing(),
           _buildJoinTeam(),
@@ -86,6 +88,7 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
+          _buildContact(),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -260,5 +263,26 @@ class DrawerWidgetState extends State<DrawerWidget>
             },
           )
         : Container();
+  }
+
+  Widget _buildContact() {
+    return ListTile(
+      leading: Icon(MdiIcons.phone, color: _drawerIconColor),
+      title: Text(
+        'Contact',
+      ),
+      subtitle: Text(
+        'Get in touch with us.',
+        style: TextStyle(color: Colors.black),
+      ),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ContactPage(),
+          ),
+        );
+      },
+    );
   }
 }
