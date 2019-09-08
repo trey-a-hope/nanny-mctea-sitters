@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 
@@ -24,7 +25,7 @@ class SitterWidget extends StatelessWidget {
                     Radius.circular(8),
                   ),
                   image:
-                      DecorationImage(image: sitter.image, fit: BoxFit.cover),
+                      DecorationImage(image: CachedNetworkImageProvider(sitter.imgUrl), fit: BoxFit.cover),
                 ),
               ),
               Container(
@@ -57,7 +58,7 @@ class SitterWidget extends StatelessWidget {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                   TextSpan(text: '\n'),
-                  TextSpan(text: sitter.info)
+                  TextSpan(text: sitter.details)
                 ]),
               )
               // child: Text(

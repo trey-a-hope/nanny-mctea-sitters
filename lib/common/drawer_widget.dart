@@ -7,7 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_service.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -146,7 +146,7 @@ class DrawerWidgetState extends State<DrawerWidget>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookSitterPage(),
+                  builder: (context) => BookSitterServicePage(),
                 ),
               );
             },

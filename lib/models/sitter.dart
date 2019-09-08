@@ -1,13 +1,9 @@
 import 'package:flutter/rendering.dart';
+import 'package:nanny_mctea_sitters_flutter/models/appointment.dart';
+import 'package:nanny_mctea_sitters_flutter/models/user.dart';
 
-class Sitter {
-  String name;
-  String info;
-  AssetImage image;
-
-  Sitter(name, info, image){
-    this.name = name;
-    this.info = info;
-    this.image = image;
-  }
+class Sitter extends User {
+  String imgUrl;
+  String details;
+  List<Appointment> slots = List<Appointment>();
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_info.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BookSitterSitterPage extends StatefulWidget {
   BookSitterSitterPage();
@@ -38,12 +39,13 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : ListView.builder(
-              itemCount: sitters.length,
-              itemBuilder: (BuildContext ctx, int index) {
-                return _buildSitterWidget(sitters[index]);
-              },
-            ),
+          : Container()
+          // ListView.builder(
+          //     itemCount: _sitters.length,
+          //     itemBuilder: (BuildContext ctx, int index) {
+          //       return _buildSitterWidget(_sitters[index]);
+          //     },
+          //   ),
     );
   }
 
@@ -66,10 +68,10 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
       },
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: sitter.image,
+          backgroundImage: CachedNetworkImageProvider(sitter.imgUrl),
         ),
         title: Text(sitter.name),
-        subtitle: Text(sitter.info),
+        subtitle: Text(sitter.details),
         trailing: Icon(Icons.chevron_right),
       ),
     );

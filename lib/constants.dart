@@ -18,35 +18,35 @@ final List<AssetImage> images = [
   group_nannies
 ];
 
-final List<Sitter> sitters = [
-  Sitter(
-    'Talea Chenault',
-    'CEO & Owner',
-    AssetImage('assets/images/talea_chenault.jpg'),
-  ),
-  Sitter(
-    'Mariah Johnson',
-    'COO & Consultant',
-    AssetImage('assets/images/mariah_johnson.jpg'),
-  ),
-  Sitter(
-    'Tkeyah James',
-    'COO & Consultant',
-    AssetImage('assets/images/tkeyah_james.jpg'),
-  ),
-  Sitter(
-    'Deaira Mitchell',
-    'Sitter',
-    AssetImage('assets/images/deaira_mitchell.jpg'),
-  ),
-  Sitter(
-    'Jibril McCaster',
-    'Sitter',
-    AssetImage('assets/images/jibril_mccaster.jpg'),
-  ),
-    Sitter(
-    'Tamara Samedy',
-    'Sitter',
-    AssetImage('assets/images/tamara_samedy.jpg'),
-  )
-];
+// final List<Sitter> sitters = [
+//   Sitter(
+//     'Talea Chenault',
+//     'CEO & Owner',
+//     AssetImage('assets/images/talea_chenault.jpg'),
+//   ),
+//   Sitter(
+//     'Mariah Johnson',
+//     'COO & Consultant',
+//     AssetImage('assets/images/mariah_johnson.jpg'),
+//   ),
+//   Sitter(
+//     'Tkeyah James',
+//     'COO & Consultant',
+//     AssetImage('assets/images/tkeyah_james.jpg'),
+//   ),
+//   Sitter(
+//     'Deaira Mitchell',
+//     'Sitter',
+//     AssetImage('assets/images/deaira_mitchell.jpg'),
+//   ),
+//   Sitter(
+//     'Jibril McCaster',
+//     'Sitter',
+//     AssetImage('assets/images/jibril_mccaster.jpg'),
+//   ),
+//     Sitter(
+//     'Tamara Samedy',
+//     'Sitter',
+//     AssetImage('assets/images/tamara_samedy.jpg'),
+//   )
+// ];

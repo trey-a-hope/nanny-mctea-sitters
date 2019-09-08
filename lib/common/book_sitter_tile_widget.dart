@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_calendar.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_calendar.dart';
 
 class BookSitterTileWidget extends StatelessWidget {
   final String title;
@@ -45,7 +45,7 @@ class BookSitterTileWidget extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookCalendarPage(title),
+                  builder: (context) => BookSitterCalendarPage(title),
                 ),
               );
             },

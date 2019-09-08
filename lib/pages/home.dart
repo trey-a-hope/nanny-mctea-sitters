@@ -4,6 +4,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -27,9 +29,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
   final _db = Firestore.instance;
+  List<Sitter> _sitters = List<Sitter>();
 
   bool _isLoading = true;
 
@@ -41,6 +42,23 @@ class HomePageState extends State<HomePage>
   }
 
   void loadPage() async {
+    //Get sitters.
+    QuerySnapshot querySnapshot = await _db
+        .collection('Users')
+        .where('isSitter', isEqualTo: true)
+        .getDocuments();
+    querySnapshot.documents.forEach(
+      (document) {
+        Sitter sitter = Sitter();
+        sitter.id = document['id'];
+        sitter.imgUrl = document['imgUrl'];
+        sitter.name = document['name'];
+        sitter.details = document['details'];
+
+        _sitters.add(sitter);
+      },
+    );
+
     setState(
       () {
         _isLoading = false;
@@ -266,7 +284,7 @@ class HomePageState extends State<HomePage>
               ),
               onTap: () {
                 Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
               },
             )
         ],
@@ -279,14 +297,14 @@ class HomePageState extends State<HomePage>
       scrollDirection: Axis.horizontal,
       child: Row(
         children: <Widget>[
-          for (var i = 0; i < sitters.length; i++)
+          for (var i = 0; i < _sitters.length; i++)
             InkWell(
               child: SitterWidget(
-                sitter: sitters[i],
+                sitter: _sitters[i],
               ),
               onTap: () {
                 Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
               },
             )
         ],
@@ -317,7 +335,7 @@ class HomePageState extends State<HomePage>
               ),
               onTap: () {
                 Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + sitters[i].name);
+                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
               },
             )
         ],
