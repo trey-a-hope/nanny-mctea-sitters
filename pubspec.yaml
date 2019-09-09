@@ -2,7 +2,7 @@ name: nanny_mctea_sitters_flutter
 
 description: Client mobile app for baby sitting business.
 
-version: 1.0.0+1
+version: 1.0.2+2
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
