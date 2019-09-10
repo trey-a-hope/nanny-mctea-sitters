@@ -16,8 +16,8 @@ class MyApp extends StatelessWidget {
       title: 'Nanny McTea Sitters',
       theme: ThemeData(
         brightness: Brightness.light,
-        accentColor: Colors.green,
-        primaryColor: Colors.greenAccent,
+        accentColor: Colors.blue,
+        primaryColor: Colors.blueAccent,
         fontFamily: 'SourceSansPro',
         textTheme: TextTheme(
           // headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),

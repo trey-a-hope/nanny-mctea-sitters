@@ -79,8 +79,7 @@ class DrawerWidgetState extends State<DrawerWidget>
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          // _buildUserAccountsDrawerHeader(),
-          SizedBox(height: 40),
+          _buildUserAccountsDrawerHeader(),
           _buildBookSitter(),
           _buildPlansPricing(),
           _buildJoinTeam(),

@@ -60,7 +60,7 @@ class EventServicesPageState extends State<EventServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Everyone doesn\'t need a nanny, sometimes you just need a break to breath, relax, go to the store, go on a date, even take a nap. Whatever the reason we are prepared. Nanny McTea Sitters offers a variety of sitter services, all available for your family.',
+                'Nanny McTea Sitters  provides a fun-filled atmosphere for  kids and teens so that you can party in peace! From small event sitting to groups, our  sitters provide an amazing experience.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -69,7 +69,7 @@ class EventServicesPageState extends State<EventServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '1. Planned Sitter Service -- This service you can book directly on our website under the book us tab! This service is for planned events like your cousins wedding or your anniversary, anything that you know the date prior to. A  non refundable \$25 booking fee is required to secure your date in advance. The day of your sit you are required to pay your sitter \$13 per hour. We have a 4 hour minimum.',
+                'Having an adult-only event but don\'t want to tell your guests that they can\'t bring the kids or do you need some help planning your childs birthday party?  Our "Kids Party" is THE solution to your dilemma. Our professional and fun loving sitters know how to get the party started and keep the kids engaged all night long.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -78,7 +78,7 @@ class EventServicesPageState extends State<EventServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '2. Last Minute Sitter Service -- A last minute is a sit scheduled within 36 hours of its start time. For this service you must fill out the Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                'We travel to any venue in the tri state area to provide your guest with professional on - site childcare. We understand that every event is unique,  so our  Kids Party Packages can be customized and quotes are based on the number of children in attendance and hours of service needed.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -87,7 +87,7 @@ class EventServicesPageState extends State<EventServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '3. Sick Care Service  --  For this service you must fill out the  Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                'Packages can include any of the following: YARN ACTIVITIES, AGE APPROPRIATE MOVIES/TV, BRACELET MAKING, CUPCAKE DECORATIN, COOKIE DECORATING, VIDEO GAMES, BUBBLE STATION, CANVAS PAINTINGS, PLAY DOH STATION, KID\'S PHOTO BOTH/TAKE HOME POLAROIDS, SLIME STATION, CRAFT STATION',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -96,7 +96,7 @@ class EventServicesPageState extends State<EventServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '4. Monthly Sitter Membership --  This awesome service helps eliminate the booking fee for the above mentioned planned sitter service. If you know you are consistently going to be receiving care you\'ll want to book the membership. This membership guarantee you unlimited week nights after 5 and unlimited weekend sits. You\'ll pay a monthly fee of \$100 and pay your sitter their hourly rate of \$13 whenever you use them. ',
+                'Please fill out the request form below and someone will be in touch. We request a non refundable \$150 deposit to secure your date.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -137,7 +137,7 @@ class EventServicesPageState extends State<EventServicesPage>
                 width: 4.0,
               ),
               Text(
-                'LAST MINUTE/SICK CARE SITTER REQUEST',
+                'KIDS PARTY REQUEST FORM',
                 style: TextStyle(color: Colors.white),
               ),
             ],

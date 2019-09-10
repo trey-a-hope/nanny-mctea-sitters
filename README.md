@@ -1,6 +1,8 @@
 # NannyMcTeaSitters
 Client mobile app for baby sitting business.
 
+# https://www.nannymcteasitters.com/plans-pricing
+
 #Key for creating APK is located here.
 storeFile=/Users/treyhope/key.jks
 

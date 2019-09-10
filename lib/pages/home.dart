@@ -98,14 +98,14 @@ class HomePageState extends State<HomePage>
                           children: <Widget>[
                             Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(5.0),
+                                color: Colors.yellowAccent,
+                                borderRadius: BorderRadius.circular(3.0),
                               ),
                               padding: EdgeInsets.all(10),
                               child: Text(
                                 'Nanny McTea Sitters',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20.0,
                                 ),
@@ -138,7 +138,37 @@ class HomePageState extends State<HomePage>
                   ContentHeadingWidget(
                     heading: 'Reviews',
                   ),
-                  _buildReviewsWidget(),
+                  //Review 1
+                  InkWell(
+                    child: ReviewWidget(
+                      review: reviews[0].review,
+                      author: reviews[0].author,
+                      height: 260,
+                    ),
+                    onTap: () {
+                    },
+                  ),
+                  //Review 2
+                  InkWell(
+                    child: ReviewWidget(
+                      review: reviews[1].review,
+                      author: reviews[1].author,
+                      height: 360,
+                    ),
+                    onTap: () {
+                    },
+                  ),
+                  //Review 3
+                  InkWell(
+                    child: ReviewWidget(
+                      review: reviews[2].review,
+                      author: reviews[2].author,
+                      height: 200,
+                    ),
+                    onTap: () {
+                    },
+                  ),
+                  // _buildReviewsWidget(),
                   ContentHeadingWidget(
                     heading: 'Social Media',
                   ),
@@ -271,26 +301,26 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  _buildReviewsWidget() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          for (var i = 0; i < reviews.length; i++)
-            InkWell(
-              child: ReviewWidget(
-                review: reviews[i].review,
-                author: reviews[i].author,
-              ),
-              onTap: () {
-                Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
-              },
-            )
-        ],
-      ),
-    );
-  }
+  // _buildReviewsWidget() {
+  //   return SingleChildScrollView(
+  //     scrollDirection: Axis.horizontal,
+  //     child: Row(
+  //       children: <Widget>[
+  //         for (var i = 0; i < reviews.length; i++)
+  //           InkWell(
+  //             child: ReviewWidget(
+  //               review: reviews[i].review,
+  //               author: reviews[i].author,
+  //             ),
+  //             onTap: () {
+  //               Modal.showInSnackBar(
+  //                   _scaffoldKey, 'Clicked ' + _sitters[i].name);
+  //             },
+  //           )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   _buildTeamWidget() {
     return SingleChildScrollView(
@@ -349,9 +379,18 @@ class HomePageState extends State<HomePage>
         Padding(
           padding: EdgeInsets.all(30),
           child: InkWell(
-            child: Icon(MdiIcons.facebook),
+            child: Icon(MdiIcons.facebook, color: Colors.blue),
             onTap: () {
-              URLLauncher.launchUrl('https://www.facebook.com/nannymctea/');
+              URLLauncher.launchUrl('https://www.facebook.com/nannymctea');
+            },
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(30),
+          child: InkWell(
+            child: Icon(MdiIcons.instagram, color: Colors.blue),
+            onTap: () {
+              URLLauncher.launchUrl('https://www.instagram.com/nannymcteasitters');
             },
           ),
         )
