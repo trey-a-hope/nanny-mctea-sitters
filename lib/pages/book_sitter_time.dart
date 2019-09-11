@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/common/book_sitter_tile_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/common/job_posting_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_calendar.dart';
-
-import '../constants.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;
@@ -19,10 +15,9 @@ class BookSitterTimePage extends StatefulWidget {
 
 class BookSitterTimePageState extends State<BookSitterTimePage>
     with SingleTickerProviderStateMixin {
-  final List<dynamic> _slots;
-
   BookSitterTimePageState(this._slots);
-
+  final List<dynamic> _slots;
+  final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
   dynamic _selected;
@@ -64,65 +59,68 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
   }
 
   Container _buildBottomNavigationBar() {
-    return _selected == null ? Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50.0,
-      child: RaisedButton(
-        onPressed: () {
-        },
-        color: Colors.grey.shade200,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                MdiIcons.faceAgent,
-                color: Colors.black,
+    return _selected == null
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {
+                Modal.showInSnackBar(_scaffoldKey, 'Please pick a time.');
+              },
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.close,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'NO TIME SELECTED',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
               ),
-              SizedBox(
-                width: 4.0,
+            ),
+          )
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookSitterSitterPage(),
+                  ),
+                );
+              },
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.faceAgent,
+                      color: Colors.black,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'PICK A SITTER',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
               ),
-              Text(
-                'PICK A TIME',
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ): Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50.0,
-      child: RaisedButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BookSitterSitterPage(),
             ),
           );
-        },
-        color: Colors.grey.shade200,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                MdiIcons.faceAgent,
-                color: Colors.black,
-              ),
-              SizedBox(
-                width: 4.0,
-              ),
-              Text(
-                'PICK A SITTER',
-                style: TextStyle(color: Colors.black),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   _buildAppBar() {
@@ -136,10 +134,11 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
     return InkWell(
       child: ListTile(
         title: Text(
-          slot.toString(),
+          DateFormat(timeFormat).format(slot),
         ),
         leading: CircleAvatar(
-          child: _selected == slot ? Icon(Icons.check) : Icon(Icons.close),
+          backgroundColor: _selected == slot ? Colors.green : Colors. red,
+          child: _selected == slot ? Icon(Icons.check, color: Colors.white,) : Icon(Icons.close, color: Colors.white),
         ),
       ),
       onTap: () {
