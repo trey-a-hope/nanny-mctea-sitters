@@ -4,9 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/constants.dart';
-import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
@@ -122,9 +120,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   }
 
   void _setTextFields() {
-    _nameController.text = _currentUser.name;
     _emailController.text = _currentUser.email;
-    _phoneController.text = _currentUser.phone;
   }
 
   @override

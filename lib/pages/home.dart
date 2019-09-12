@@ -44,17 +44,11 @@ class HomePageState extends State<HomePage>
   void loadPage() async {
     //Get sitters.
     QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
+        .collection('Sitters')
         .getDocuments();
     querySnapshot.documents.forEach(
       (document) {
-        Sitter sitter = Sitter();
-        sitter.id = document['id'];
-        sitter.imgUrl = document['imgUrl'];
-        sitter.name = document['name'];
-        sitter.details = document['details'];
-
+        Sitter sitter = Sitter.extractDocument(document);
         _sitters.add(sitter);
       },
     );
@@ -145,8 +139,7 @@ class HomePageState extends State<HomePage>
                       author: reviews[0].author,
                       height: 260,
                     ),
-                    onTap: () {
-                    },
+                    onTap: () {},
                   ),
                   //Review 2
                   InkWell(
@@ -155,8 +148,7 @@ class HomePageState extends State<HomePage>
                       author: reviews[1].author,
                       height: 360,
                     ),
-                    onTap: () {
-                    },
+                    onTap: () {},
                   ),
                   //Review 3
                   InkWell(
@@ -165,8 +157,7 @@ class HomePageState extends State<HomePage>
                       author: reviews[2].author,
                       height: 200,
                     ),
-                    onTap: () {
-                    },
+                    onTap: () {},
                   ),
                   // _buildReviewsWidget(),
                   ContentHeadingWidget(
@@ -390,7 +381,8 @@ class HomePageState extends State<HomePage>
           child: InkWell(
             child: Icon(MdiIcons.instagram, color: Colors.blue),
             onTap: () {
-              URLLauncher.launchUrl('https://www.instagram.com/nannymcteasitters');
+              URLLauncher.launchUrl(
+                  'https://www.instagram.com/nannymcteasitters');
             },
           ),
         )

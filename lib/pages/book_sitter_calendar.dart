@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
+import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -53,17 +53,11 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
 
     //Get sitters.
     QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
+        .collection('Sitters')
         .getDocuments();
     querySnapshot.documents.forEach(
       (document) {
-        Sitter sitter = Sitter();
-        sitter.id = document['id'];
-        sitter.imgUrl = document['imgUrl'];
-        sitter.name = document['name'];
-        sitter.details = document['details'];
-
+        Sitter sitter = Sitter.extractDocument(document);
         sitters.add(sitter);
       },
     );
@@ -78,7 +72,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
         QuerySnapshot slotQuerySnapshot = await _db
-            .collection('Users')
+            .collection('Sitters')
             .document(_sitters[i].id)
             .collection('slots')
             .getDocuments();
@@ -101,7 +95,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
 
       // for (var i = 0; i < _sitters.length; i++) {
       QuerySnapshot slotQuerySnapshot = await _db
-          .collection('Users')
+          .collection('Sitters')
           .document(filteredSitter.id)
           .collection('slots')
           .getDocuments();
