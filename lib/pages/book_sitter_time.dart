@@ -6,17 +6,21 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;
+  final Map<String, List<DateTime>> _sitterSlotMap;
 
-  BookSitterTimePage(this._slots);
+  BookSitterTimePage(this._slots, this._sitterSlotMap);
 
   @override
-  State createState() => BookSitterTimePageState(this._slots);
+  State createState() =>
+      BookSitterTimePageState(this._slots, this._sitterSlotMap);
 }
 
 class BookSitterTimePageState extends State<BookSitterTimePage>
     with SingleTickerProviderStateMixin {
-  BookSitterTimePageState(this._slots);
+  BookSitterTimePageState(this._slots, this._sitterSlotMap);
+
   final List<dynamic> _slots;
+  final Map<String, List<DateTime>> _sitterSlotMap;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
@@ -93,6 +97,23 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
+                List<String> relax = List<String>();
+
+                //Pick sitters for the slot selected.
+                _sitterSlotMap.forEach(
+                  (sitterName, slots) {
+                    slots.forEach(
+                      (slot) {
+                        if (_selected == slot) {
+                          relax.add(sitterName);
+                        }
+                      },
+                    );
+                  },
+                );
+
+                print(relax);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -137,8 +158,13 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
           DateFormat(timeFormat).format(slot),
         ),
         leading: CircleAvatar(
-          backgroundColor: _selected == slot ? Colors.green : Colors. red,
-          child: _selected == slot ? Icon(Icons.check, color: Colors.white,) : Icon(Icons.close, color: Colors.white),
+          backgroundColor: _selected == slot ? Colors.green : Colors.red,
+          child: _selected == slot
+              ? Icon(
+                  Icons.check,
+                  color: Colors.white,
+                )
+              : Icon(Icons.close, color: Colors.white),
         ),
       ),
       onTap: () {

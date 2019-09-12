@@ -8,31 +8,29 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarPage extends StatefulWidget {
-  final String service_name;
+  final String serviceName;
 
-  BookSitterCalendarPage(this.service_name);
+  BookSitterCalendarPage(this.serviceName);
 
   @override
-  State createState() => BookSitterCalendarPageState(this.service_name);
+  State createState() => BookSitterCalendarPageState(this.serviceName);
 }
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     with SingleTickerProviderStateMixin {
-  final String service_name;
+  final String serviceName;
 
-  BookSitterCalendarPageState(this.service_name);
+  BookSitterCalendarPageState(this.serviceName);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CalendarController _calendarController;
   List<dynamic> _selectedEvents;
-  Map<DateTime, List<dynamic>> dateTimeMap = Map<DateTime, List<dynamic>>();
-  Map<String, List<DateTime>> sitterSlotMap = Map<String, List<DateTime>>();
-
+  Map<DateTime, List<dynamic>> _dateTimeMap = Map<DateTime, List<dynamic>>();
+  Map<String, List<DateTime>> _sitterSlotMap = Map<String, List<DateTime>>();
+  final _db = Firestore.instance;
   String _sitter;
   bool _isLoading = true;
-  final _db = Firestore.instance;
   List<Sitter> _sitters = List<Sitter>();
-
   List<String> _sitterOptions;
 
   @override
@@ -90,7 +88,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         slots.add(slot);
       }
 
-      sitterSlotMap[_sitters[i].name] = slots;
+      _sitterSlotMap[_sitters[i].name] = slots;
     }
   }
 
@@ -102,25 +100,23 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   }
 
   void _setCalendar() {
-    print(sitterSlotMap);
-
     final _selectedDay = DateTime.now();
 
     //Iterate through all slots on each sitter.
-    sitterSlotMap.forEach((sitter, slots) {
+    _sitterSlotMap.forEach((sitter, slots) {
       //Iterate through each slot and add to 'events' map.
       slots.forEach((slot) {
         DateTime dayWithoutTime = DateTime(slot.year, slot.month, slot.day);
 
-        if (dateTimeMap.containsKey(dayWithoutTime)) {
-          dateTimeMap[dayWithoutTime].add(slot);
+        if (_dateTimeMap.containsKey(dayWithoutTime)) {
+          _dateTimeMap[dayWithoutTime].add(slot);
         } else {
-          dateTimeMap[dayWithoutTime] = [slot];
+          _dateTimeMap[dayWithoutTime] = [slot];
         }
       });
     });
 
-    _selectedEvents = dateTimeMap[_selectedDay] ?? [];
+    _selectedEvents = _dateTimeMap[_selectedDay] ?? [];
   }
 
   _load() async {
@@ -170,7 +166,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        service_name,
+                        serviceName,
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
@@ -232,7 +228,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        BookSitterTimePage(this._selectedEvents),
+                        BookSitterTimePage(_selectedEvents, _sitterSlotMap),
                   ),
                 );
               },
@@ -262,7 +258,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   TableCalendar _buildTableCalendar() {
     return TableCalendar(
       calendarController: _calendarController,
-      events: dateTimeMap,
+      events: _dateTimeMap,
       // holidays: _holidays,
       startingDayOfWeek: StartingDayOfWeek.monday,
       calendarStyle: CalendarStyle(
