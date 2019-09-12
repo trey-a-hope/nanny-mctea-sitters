@@ -51,6 +51,15 @@ class PlansPricingState extends State<PlansPricingPage>
               height: 520,
               width: screen_width * 0.9,
               decoration: BoxDecoration(
+                border: Border.all(
+                    color: Colors.white, width: 2.0, style: BorderStyle.solid),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0.0, 2.0),
+                      blurRadius: 4.0,
+                      spreadRadius: 4.0)
+                ],
                 gradient: LinearGradient(
                   colors: [Colors.grey.shade800, Colors.grey.shade500],
                   begin: Alignment.topCenter,

@@ -122,7 +122,6 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       }
 
       _sitterSlotMap[filteredSitter] = slots;
-      // }
     }
   }
 
@@ -197,6 +196,15 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text('PICK A DATE'),
+        centerTitle: true,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () async {
+              await _getSlotsAndCaledar();
+            },
+          )
+        ],
       ),
       body: _isLoading
           ? Center(
@@ -329,21 +337,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         setState(
           () async {
             _sitterOption = newValue;
-            if (_sitterOption == 'All Staff') {
-              await _getAvailability(all: true);
-              setState(
-                () {
-                  _setCalendar();
-                },
-              );
-            } else {
-              await _getAvailability(all: false);
-              setState(
-                () {
-                  _setCalendar();
-                },
-              );
-            }
+            await _getSlotsAndCaledar();
           },
         );
       },
@@ -356,5 +350,23 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         },
       ).toList(),
     );
+  }
+
+  _getSlotsAndCaledar() async {
+    if (_sitterOption == 'All Staff') {
+      await _getAvailability(all: true);
+      setState(
+        () {
+          _setCalendar();
+        },
+      );
+    } else {
+      await _getAvailability(all: false);
+      setState(
+        () {
+          _setCalendar();
+        },
+      );
+    }
   }
 }

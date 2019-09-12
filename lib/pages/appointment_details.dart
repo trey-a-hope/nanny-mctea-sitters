@@ -98,6 +98,18 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
                       height: 250,
                       width: double.infinity,
                       decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                          style: BorderStyle.solid,
+                          width: 2.0
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0.0, 2.0),
+                              blurRadius: 4.0,
+                              spreadRadius: 4.0)
+                        ],
                         color: Colors.grey.shade300,
                         borderRadius: BorderRadius.all(
                           Radius.circular(8),
