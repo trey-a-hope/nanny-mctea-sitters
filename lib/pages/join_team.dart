@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/common/job_posting_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
-import 'package:nanny_mctea_sitters_flutter/models/job_posting.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/job_posting.dart';
 
 class JoinTeamPage extends StatefulWidget {
   @override

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
 class Sitter extends User {
   String imgUrl;

@@ -4,8 +4,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/models/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';

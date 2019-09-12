@@ -1,5 +1,5 @@
 import 'package:flutter/rendering.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 
 import 'common/book_sitter_tile_widget.dart';

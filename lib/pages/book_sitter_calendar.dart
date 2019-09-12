@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -27,7 +28,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   CalendarController _calendarController;
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _dateTimeMap = Map<DateTime, List<dynamic>>();
-  Map<Sitter, List<DateTime>> _sitterSlotMap = Map<Sitter, List<DateTime>>();
+  Map<Sitter, List<Slot>> _sitterSlotMap = Map<Sitter, List<Slot>>();
   final _db = Firestore.instance;
   bool _isLoading = true;
   String _sitterOption;
@@ -52,9 +53,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     List<Sitter> sitters = List<Sitter>();
 
     //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Sitters')
-        .getDocuments();
+    QuerySnapshot querySnapshot =
+        await _db.collection('Sitters').getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -75,14 +75,20 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
             .collection('Sitters')
             .document(_sitters[i].id)
             .collection('slots')
+            .where('taken', isEqualTo: false)
             .getDocuments();
         List<DocumentSnapshot> slotDocumentSnapshots =
             slotQuerySnapshot.documents;
 
-        List<DateTime> slots = List<DateTime>();
+        List<Slot> slots = List<Slot>();
 
         for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-          DateTime slot = slotDocumentSnapshots[j].data['time'].toDate();
+          Slot slot = Slot();
+
+          slot.id = slotDocumentSnapshots[j].data['id'];
+          slot.taken = slotDocumentSnapshots[j].data['taken'];
+          slot.time = slotDocumentSnapshots[j].data['time'].toDate();
+
           slots.add(slot);
         }
 
@@ -98,14 +104,20 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
           .collection('Sitters')
           .document(filteredSitter.id)
           .collection('slots')
+          .where('taken', isEqualTo: false)
           .getDocuments();
       List<DocumentSnapshot> slotDocumentSnapshots =
           slotQuerySnapshot.documents;
 
-      List<DateTime> slots = List<DateTime>();
+      List<Slot> slots = List<Slot>();
 
       for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-        DateTime slot = slotDocumentSnapshots[j].data['time'].toDate();
+        Slot slot = Slot();
+
+        slot.id = slotDocumentSnapshots[j].data['id'];
+        slot.taken = slotDocumentSnapshots[j].data['taken'];
+        slot.time = slotDocumentSnapshots[j].data['time'].toDate();
+
         slots.add(slot);
       }
 
@@ -131,7 +143,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         //Iterate through each slot and add to 'events' map.
         slots.forEach(
           (slot) {
-            DateTime dayKey = DateTime(slot.year, slot.month, slot.day);
+            DateTime dayKey =
+                DateTime(slot.time.year, slot.time.month, slot.time.day);
 
             if (_dateTimeMap.containsKey(dayKey)) {
               //Add time slot to day if it's hasn't been added already.

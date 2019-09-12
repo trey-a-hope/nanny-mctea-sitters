@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_calendar.dart';
 
 class BookSitterTileWidget extends StatelessWidget {

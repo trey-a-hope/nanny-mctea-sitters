@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/appointment_details.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -49,24 +49,34 @@ class ProfilePageState extends State<ProfilePage>
     return User.extractDocument(ds);
   }
 
-  Future<List<Appointment>> _getAppointments() async {
-    QuerySnapshot querySnapshot = await _db
+  Future<void> _getAppointments() async {
+    Stream<QuerySnapshot> stream = _db
         .collection('Appointments')
         .where('userID', isEqualTo: _currentUser.id)
-        .getDocuments();
-    List<DocumentSnapshot> documentSnapshots = querySnapshot.documents;
-    List<Appointment> appointments = List<Appointment>();
-    for (var i = 0; i < documentSnapshots.length; i++) {
-      Appointment appointment =
-          Appointment.extractDocument(documentSnapshots[i]);
-      appointments.add(appointment);
-    }
-    return appointments;
+        .snapshots();
+
+    stream.listen(
+      (data) {
+        List<DocumentSnapshot> documentSnapshots = data.documents;
+        List<Appointment> appointments = List<Appointment>();
+        for (var i = 0; i < documentSnapshots.length; i++) {
+          Appointment appointment =
+              Appointment.extractDocument(documentSnapshots[i]);
+          appointments.add(appointment);
+        }
+        setState(
+          () {
+            _appointments = appointments;
+            return;
+          },
+        );
+      },
+    );
   }
 
   void _load() async {
     _currentUser = await _fetchUserProfile();
-    _appointments = await _getAppointments();
+    await _getAppointments();
     setState(
       () {
         _isLoading = false;
@@ -190,12 +200,13 @@ class ProfilePageState extends State<ProfilePage>
       },
       child: ListTile(
         leading: CircleAvatar(
+          child: Text(
+            'A',
+            style: TextStyle(color: Colors.white),
+          ),
           backgroundColor: Colors.blue,
         ),
-        title: Text(appointment.service),
-        subtitle: Text(
-          DateFormat(timeFormat).format(appointment.date),
-        ),
+        title: Text(appointment.formData.service),
         trailing: Icon(Icons.chevron_right),
       ),
     );

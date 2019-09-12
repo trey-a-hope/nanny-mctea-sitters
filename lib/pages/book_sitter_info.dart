@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
@@ -58,54 +58,75 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   }
 
   _submit() async {
-    // if (_formKey.currentState.validate()) {
-    // _formKey.currentState.save();
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
 
-    try {
-      setState(
-        () {
-          _isLoading = true;
-        },
-      );
+      try {
+        setState(
+          () {
+            _isLoading = true;
+          },
+        );
 
-      var data = {
-        'service': serviceOrder.serviceName,
-        'sitterID': serviceOrder.sitter.id,
-        'date': serviceOrder.date,
-        'userID': _currentUser.id
-      };
+        //TODO: Pay with paypal.
 
-      CollectionReference colRef = _db.collection('Appointments');
-      DocumentReference docRef = await colRef.add(data);
-      await colRef
-          .document(docRef.documentID)
-          .updateData({'id': docRef.documentID});
+        //Create appointment.
+        var appointmentData = {
+          'formData': {
+            'aptNo': _aptFloorController.text,
+            'city': _cityController.text,
+            'email': _emailController.text,
+            'message': _messageController.text,
+            'name': _nameController.text,
+            'phone': _phoneController.text,
+            'service': serviceOrder.serviceName,
+            'street': _streetController.text,
+          },
+          'sitterID': serviceOrder.sitter.id,
+          'slotID': serviceOrder.slot.id,
+          'userID': _currentUser.id
+        };
 
-      setState(
-        () {
-          Modal.showInSnackBar(_scaffoldKey, 'APPOINTMENT CREATED');
-          _isLoading = false;
-        },
-      );
-    } catch (e) {
-      Modal.showInSnackBar(
-        _scaffoldKey,
-        e.toString(),
-      );
+        CollectionReference aptColRef = _db.collection('Appointments');
+        DocumentReference aptDocRef = await aptColRef.add(appointmentData);
+        await aptColRef.document(aptDocRef.documentID).updateData(
+          {'id': aptDocRef.documentID},
+        );
+
+        //Set sitters time slot to taken.
+        _db
+            .collection('Sitters')
+            .document(serviceOrder.sitter.id)
+            .collection('slots')
+            .document(serviceOrder.slot.id)
+            .updateData(
+          {'taken': true},
+        );
+
+        setState(
+          () {
+            Modal.showInSnackBar(_scaffoldKey, 'APPOINTMENT CREATED');
+            _isLoading = false;
+          },
+        );
+      } catch (e) {
+        Modal.showInSnackBar(
+          _scaffoldKey,
+          e.toString(),
+        );
+        setState(
+          () {
+            _autoValidate = true;
+          },
+        );
+      }
+    } else {
       setState(
         () {
           _autoValidate = true;
         },
       );
     }
-
-    // } else {
-    //   setState(
-    //     () {
-    //       _autoValidate = true;
-    //     },
-    //   );
-    // }
   }
 
   Future<User> _fetchUserProfile() async {
@@ -192,7 +213,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
             ),
             Divider(),
             Text(
-              DateFormat(timeFormat).format(serviceOrder.date),
+              DateFormat(timeFormat).format(serviceOrder.slot.time),
               style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
             ),
             Text(
@@ -283,7 +304,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
   Widget _buildAptFloorFormField() {
     return TextFormField(
-      controller: _streetController,
+      controller: _aptFloorController,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.next,
       maxLengthEnforced: true,
@@ -301,7 +322,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
   Widget _buildCityFormField() {
     return TextFormField(
-      controller: _streetController,
+      controller: _cityController,
       keyboardType: TextInputType.text,
       textInputAction: TextInputAction.next,
       maxLengthEnforced: true,
@@ -350,14 +371,14 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(
-                MdiIcons.book,
+                MdiIcons.paypal,
                 color: Colors.white,
               ),
               SizedBox(
                 width: 4.0,
               ),
               Text(
-                'BOOK IT',
+                'PAY WITH PAYPAL',
                 style: TextStyle(color: Colors.white),
               ),
             ],

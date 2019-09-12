@@ -4,10 +4,10 @@ import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 
 import '../style/text.dart';
 
-class SitterWidget extends StatelessWidget {
+class SitterWidgetX extends StatelessWidget {
   final Sitter sitter;
 
-  const SitterWidget({Key key, @required this.sitter}) : super(key: key);
+  const SitterWidgetX({Key key, @required this.sitter}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +18,8 @@ class SitterWidget extends StatelessWidget {
           Stack(
             children: <Widget>[
               Container(
-                height: 250,
-                width: 150,
+                height: 200,
+                width: 100,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
@@ -29,8 +29,8 @@ class SitterWidget extends StatelessWidget {
                 ),
               ),
               Container(
-                height: 250,
-                width: 150,
+                height: 200,
+                width: 100,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topCenter,
@@ -48,24 +48,7 @@ class SitterWidget extends StatelessWidget {
               ),
             ],
           ),
-          Positioned(
-              left: 10,
-              bottom: 10,
-              child: RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: sitter.name,
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-                  TextSpan(text: '\n'),
-                  TextSpan(text: sitter.details)
-                ]),
-              )
-              // child: Text(
-              //   sitter.name + '\n' + sitter.info,
-              //   style: TextStyle(color: Colors.white),
-              // ),
-              )
+
         ],
       ),
     );

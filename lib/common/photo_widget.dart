@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 
 import '../style/text.dart';
 

@@ -1,7 +1,9 @@
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
+
+import '../database/slot.dart';
 
 class ServiceOrder {
   String serviceName;
   Sitter sitter;
-  DateTime date;
+  Slot slot;
 }

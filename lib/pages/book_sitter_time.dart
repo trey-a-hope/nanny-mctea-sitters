@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_sitter.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;
-  final Map<Sitter, List<DateTime>> _sitterSlotMap;
+  final Map<Sitter, List<Slot>> _sitterSlotMap;
   final ServiceOrder serviceOrder;
 
   BookSitterTimePage(this._slots, this._sitterSlotMap, this.serviceOrder);
@@ -22,12 +23,12 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
   BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   final List<dynamic> _slots;
-  final Map<Sitter, List<DateTime>> _sitterSlotMap;
+  final Map<Sitter, List<Slot>> _sitterSlotMap;
   final ServiceOrder serviceOrder;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
-  dynamic _selected;
+  Slot _selected;
 
   @override
   void initState() {
@@ -106,7 +107,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
                   (sitter, slots) {
                     slots.forEach(
                       (slot) {
-                        if (_selected == slot) {
+                        if (_selected.time == slot.time) {
                           availableSitters.add(sitter);
                         }
                       },
@@ -114,8 +115,8 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
                   },
                 );
 
-                //Attach date to service order.
-                serviceOrder.date = _selected;
+                //Attach slot to order.
+                serviceOrder.slot = _selected;
 
                 Navigator.push(
                   context,
@@ -154,11 +155,11 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
     );
   }
 
-  Widget _buildSlot(dynamic slot) {
+  Widget _buildSlot(Slot slot) {
     return InkWell(
       child: ListTile(
         title: Text(
-          DateFormat(timeFormat).format(slot),
+          DateFormat(timeFormat).format(slot.time),
         ),
         leading: CircleAvatar(
           backgroundColor: _selected == slot ? Colors.green : Colors.red,
