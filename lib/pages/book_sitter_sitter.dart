@@ -1,19 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_info.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookSitterSitterPage extends StatefulWidget {
-  BookSitterSitterPage();
+  final List<Sitter> _availableSitters;
+  final ServiceOrder serviceOrder;
+
+  BookSitterSitterPage(this._availableSitters, this.serviceOrder);
 
   @override
-  State createState() => BookSitterSitterPageState();
+  State createState() =>
+      BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
 }
 
 class BookSitterSitterPageState extends State<BookSitterSitterPage>
     with SingleTickerProviderStateMixin {
+  BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
+
+  final List<Sitter> _availableSitters;
+  final ServiceOrder serviceOrder;
+  Sitter _selectedSitter;
   bool _isLoading = true;
 
   @override
@@ -39,13 +50,13 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : Container()
-          // ListView.builder(
-          //     itemCount: _sitters.length,
-          //     itemBuilder: (BuildContext ctx, int index) {
-          //       return _buildSitterWidget(_sitters[index]);
-          //     },
-          //   ),
+          : ListView.builder(
+              itemCount: _availableSitters.length,
+              itemBuilder: (BuildContext ctx, int index) {
+                return _buildSitterWidget(_availableSitters[index]);
+              },
+            ),
+      bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
@@ -59,11 +70,10 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
   Widget _buildSitterWidget(Sitter sitter) {
     return InkWell(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BookSitterInfoPage(),
-          ),
+        setState(
+          () {
+            _selectedSitter = sitter;
+          },
         );
       },
       child: ListTile(
@@ -75,5 +85,72 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
         trailing: Icon(Icons.chevron_right),
       ),
     );
+  }
+
+  Container _buildBottomNavigationBar() {
+    return (_selectedSitter == null)
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {},
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.close,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'NO SITTER SELECTED',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {
+                
+                //Attach selected sitter to service order.
+                serviceOrder.sitter = _selectedSitter;
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BookSitterInfoPage(serviceOrder),
+                  ),
+                );
+              },
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.check,
+                      color: Colors.black,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'FINISH UP',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 }

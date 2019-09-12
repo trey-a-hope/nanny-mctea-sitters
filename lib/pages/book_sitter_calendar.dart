@@ -2,31 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarPage extends StatefulWidget {
-  final String serviceName;
+  final ServiceOrder serviceOrder;
 
-  BookSitterCalendarPage(this.serviceName);
+  BookSitterCalendarPage(this.serviceOrder);
 
   @override
-  State createState() => BookSitterCalendarPageState(this.serviceName);
+  State createState() => BookSitterCalendarPageState(this.serviceOrder);
 }
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     with SingleTickerProviderStateMixin {
-  final String serviceName;
+  final ServiceOrder serviceOrder;
 
-  BookSitterCalendarPageState(this.serviceName);
+  BookSitterCalendarPageState(this.serviceOrder);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CalendarController _calendarController;
-  List<dynamic> _selectedEvents;
+  List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _dateTimeMap = Map<DateTime, List<dynamic>>();
-  Map<String, List<DateTime>> _sitterSlotMap = Map<String, List<DateTime>>();
+  Map<Sitter, List<DateTime>> _sitterSlotMap = Map<Sitter, List<DateTime>>();
   final _db = Firestore.instance;
   String _sitter;
   bool _isLoading = true;
@@ -88,7 +89,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         slots.add(slot);
       }
 
-      _sitterSlotMap[_sitters[i].name] = slots;
+      _sitterSlotMap[_sitters[i]] = slots;
     }
   }
 
@@ -106,17 +107,22 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     _sitterSlotMap.forEach((sitter, slots) {
       //Iterate through each slot and add to 'events' map.
       slots.forEach((slot) {
-        DateTime dayWithoutTime = DateTime(slot.year, slot.month, slot.day);
+        DateTime dayKey = DateTime(slot.year, slot.month, slot.day);
 
-        if (_dateTimeMap.containsKey(dayWithoutTime)) {
-          _dateTimeMap[dayWithoutTime].add(slot);
-        } else {
-          _dateTimeMap[dayWithoutTime] = [slot];
+        if (_dateTimeMap.containsKey(dayKey)) {
+          //Add time slot to day if it's hasn't been added already.
+          if (!_dateTimeMap[dayKey].contains(slot)) {
+            _dateTimeMap[dayKey].add(slot);
+          }
+        }
+        //Set firs ttime slot to day. 
+        else {
+          _dateTimeMap[dayKey] = [slot];
         }
       });
     });
 
-    _selectedEvents = _dateTimeMap[_selectedDay] ?? [];
+    _avialableSlots = _dateTimeMap[_selectedDay] ?? [];
   }
 
   _load() async {
@@ -136,7 +142,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     print('CALLBACK: _onDaySelected');
     setState(
       () {
-        _selectedEvents = events;
+        _avialableSlots = events;
       },
     );
   }
@@ -166,7 +172,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        serviceName,
+                        serviceOrder.serviceName,
                         textAlign: TextAlign.start,
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 20),
@@ -189,14 +195,12 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   }
 
   Container _buildBottomNavigationBar() {
-    return (_selectedEvents == null || _selectedEvents.isEmpty)
+    return (_avialableSlots == null || _avialableSlots.isEmpty)
         ? Container(
             width: MediaQuery.of(context).size.width,
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                Modal.showInSnackBar(
-                    _scaffoldKey, 'Please select an available day.');
               },
               color: Colors.grey.shade200,
               child: Center(
@@ -228,7 +232,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                   context,
                   MaterialPageRoute(
                     builder: (context) =>
-                        BookSitterTimePage(_selectedEvents, _sitterSlotMap),
+                        BookSitterTimePage(_avialableSlots, _sitterSlotMap, serviceOrder),
                   ),
                 );
               },
@@ -277,28 +281,6 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       ),
       onDaySelected: _onDaySelected,
       onVisibleDaysChanged: _onVisibleDaysChanged,
-    );
-  }
-
-  Widget _buildEventList() {
-    return ListView(
-      children: _selectedEvents
-          .map(
-            (event) => Container(
-              decoration: BoxDecoration(
-                border: Border.all(width: 0.8),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              margin:
-                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: ListTile(
-                title: Text(
-                  event.toString(),
-                ),
-              ),
-            ),
-          )
-          .toList(),
     );
   }
 

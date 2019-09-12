@@ -5,5 +5,4 @@ import 'package:nanny_mctea_sitters_flutter/models/user.dart';
 class Sitter extends User {
   String imgUrl;
   String details;
-  List<Appointment> slots = List<Appointment>();
 }

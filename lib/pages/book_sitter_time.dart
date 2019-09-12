@@ -1,26 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
+import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;
-  final Map<String, List<DateTime>> _sitterSlotMap;
+  final Map<Sitter, List<DateTime>> _sitterSlotMap;
+  final ServiceOrder serviceOrder;
 
-  BookSitterTimePage(this._slots, this._sitterSlotMap);
+  BookSitterTimePage(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   @override
   State createState() =>
-      BookSitterTimePageState(this._slots, this._sitterSlotMap);
+      BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 }
 
 class BookSitterTimePageState extends State<BookSitterTimePage>
     with SingleTickerProviderStateMixin {
-  BookSitterTimePageState(this._slots, this._sitterSlotMap);
+  BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   final List<dynamic> _slots;
-  final Map<String, List<DateTime>> _sitterSlotMap;
+  final Map<Sitter, List<DateTime>> _sitterSlotMap;
+  final ServiceOrder serviceOrder;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
@@ -69,7 +72,6 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                Modal.showInSnackBar(_scaffoldKey, 'Please pick a time.');
               },
               color: Colors.grey.shade200,
               child: Center(
@@ -97,27 +99,28 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                List<String> relax = List<String>();
+                List<Sitter> availableSitters = List<Sitter>();
 
                 //Pick sitters for the slot selected.
                 _sitterSlotMap.forEach(
-                  (sitterName, slots) {
+                  (sitter, slots) {
                     slots.forEach(
                       (slot) {
                         if (_selected == slot) {
-                          relax.add(sitterName);
+                          availableSitters.add(sitter);
                         }
                       },
                     );
                   },
                 );
 
-                print(relax);
+                //Attach date to service order.
+                serviceOrder.date = _selected;
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookSitterSitterPage(),
+                    builder: (context) => BookSitterSitterPage(availableSitters, serviceOrder),
                   ),
                 );
               },
@@ -175,17 +178,5 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
         );
       },
     );
-    // return Container(
-    //   decoration: BoxDecoration(
-    //     border: Border.all(width: 0.8),
-    //     borderRadius: BorderRadius.circular(12.0),
-    //   ),
-    //   margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-    //   child: ListTile(
-    //     title: Text(
-    //       slot.toString(),
-    //     ),
-    //   ),
-    // );
   }
 }

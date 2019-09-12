@@ -1,25 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/models/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
-  BookSitterInfoPage();
+  final ServiceOrder serviceOrder;
+  BookSitterInfoPage(this.serviceOrder);
 
   @override
-  State createState() => BookSitterInfoPageState();
+  State createState() => BookSitterInfoPageState(this.serviceOrder);
 }
 
 class BookSitterInfoPageState extends State<BookSitterInfoPage>
     with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = true;
-  bool _autoValidate = false;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  BookSitterInfoPageState(this.serviceOrder);
 
+  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ServiceOrder serviceOrder;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -27,6 +33,14 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   final TextEditingController _aptFloorController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
+  final _db = Firestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final String timeFormat = 'MMM d, yyyy @ hh:mm a';
+
+  bool _isLoading = true;
+  bool _autoValidate = false;
+
+  User _currentUser;
 
   @override
   void initState() {
@@ -36,6 +50,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   }
 
   _load() async {
+    _currentUser = await _fetchUserProfile();
+    _setTextFields();
     setState(
       () {
         _isLoading = false;
@@ -44,16 +60,71 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   }
 
   _submit() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      Modal.showInSnackBar(_scaffoldKey, 'SUBMIT...');
-    } else {
+    // if (_formKey.currentState.validate()) {
+    // _formKey.currentState.save();
+
+    try {
+      setState(
+        () {
+          _isLoading = true;
+        },
+      );
+
+      var data = {
+        'service': serviceOrder.serviceName,
+        'sitterID': serviceOrder.sitter.id,
+        'date': serviceOrder.date,
+        'userID': _currentUser.id
+      };
+
+      CollectionReference colRef = _db.collection('Appointments');
+      DocumentReference docRef = await colRef.add(data);
+      await colRef
+          .document(docRef.documentID)
+          .updateData({'id': docRef.documentID});
+
+      setState(
+        () {
+          Modal.showInSnackBar(_scaffoldKey, 'APPOINTMENT CREATED');
+          _isLoading = false;
+        },
+      );
+    } catch (e) {
+      Modal.showInSnackBar(
+        _scaffoldKey,
+        e.toString(),
+      );
       setState(
         () {
           _autoValidate = true;
         },
       );
     }
+
+    // } else {
+    //   setState(
+    //     () {
+    //       _autoValidate = true;
+    //     },
+    //   );
+    // }
+  }
+
+  Future<User> _fetchUserProfile() async {
+    FirebaseUser user = await _auth.currentUser();
+    QuerySnapshot qs = await _db
+        .collection('Users')
+        .where('uid', isEqualTo: user.uid)
+        .getDocuments();
+    DocumentSnapshot ds = qs.documents.first;
+
+    return User.extractDocument(ds);
+  }
+
+  void _setTextFields() {
+    _nameController.text = _currentUser.name;
+    _emailController.text = _currentUser.email;
+    _phoneController.text = _currentUser.phone;
   }
 
   @override
@@ -120,22 +191,22 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
         child: Column(
           children: <Widget>[
             Text(
-              'Membership Booking',
-              style: TextStyle(fontSize: 25),
-            ),
-            Text(
-              '3 hr Waived booking fee!',
+              serviceOrder.serviceName,
               style: TextStyle(fontSize: 20, color: Colors.grey.shade700),
             ),
             Divider(),
             Text(
-              'September 08, 2019 12:00 am',
+              DateFormat(timeFormat).format(serviceOrder.date),
               style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
             ),
             Text(
-              'Talea Chenault',
+              serviceOrder.sitter.name,
               style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
-            )
+            ),
+            Text(
+              'Minimum Deposit: \$25',
+              style: TextStyle(fontSize: 25),
+            ),
           ],
         ),
       ),
