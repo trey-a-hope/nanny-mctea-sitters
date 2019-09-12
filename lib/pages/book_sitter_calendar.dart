@@ -29,8 +29,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   Map<DateTime, List<dynamic>> _dateTimeMap = Map<DateTime, List<dynamic>>();
   Map<Sitter, List<DateTime>> _sitterSlotMap = Map<Sitter, List<DateTime>>();
   final _db = Firestore.instance;
-  String _sitter;
   bool _isLoading = true;
+  String _sitterOption;
   List<Sitter> _sitters = List<Sitter>();
   List<String> _sitterOptions;
 
@@ -71,12 +71,38 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     return sitters;
   }
 
-  _getAvailability() async {
-    //Iterate through each sitter and look for their availability, (slots).
-    for (var i = 0; i < _sitters.length; i++) {
+  _getAvailability({@required bool all}) async {
+    _sitterSlotMap.clear();
+
+    if (all) {
+      //Iterate through each sitter and look for their availability, (slots).
+      for (var i = 0; i < _sitters.length; i++) {
+        QuerySnapshot slotQuerySnapshot = await _db
+            .collection('Users')
+            .document(_sitters[i].id)
+            .collection('slots')
+            .getDocuments();
+        List<DocumentSnapshot> slotDocumentSnapshots =
+            slotQuerySnapshot.documents;
+
+        List<DateTime> slots = List<DateTime>();
+
+        for (var j = 0; j < slotDocumentSnapshots.length; j++) {
+          DateTime slot = slotDocumentSnapshots[j].data['time'].toDate();
+          slots.add(slot);
+        }
+
+        _sitterSlotMap[_sitters[i]] = slots;
+      }
+    } else {
+      //Find specific sitter and look for their availability, (slots).
+      Sitter filteredSitter =
+          _sitters.where((sitter) => sitter.name == _sitterOption).first;
+
+      // for (var i = 0; i < _sitters.length; i++) {
       QuerySnapshot slotQuerySnapshot = await _db
           .collection('Users')
-          .document(_sitters[i].id)
+          .document(filteredSitter.id)
           .collection('slots')
           .getDocuments();
       List<DocumentSnapshot> slotDocumentSnapshots =
@@ -89,7 +115,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
         slots.add(slot);
       }
 
-      _sitterSlotMap[_sitters[i]] = slots;
+      _sitterSlotMap[filteredSitter] = slots;
+      // }
     }
   }
 
@@ -97,37 +124,42 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOptions.insert(0, 'All Staff');
-    _sitter = _sitterOptions[0];
+    _sitterOption = _sitterOptions[0];
   }
 
   void _setCalendar() {
     final _selectedDay = DateTime.now();
+    _dateTimeMap.clear();
 
     //Iterate through all slots on each sitter.
-    _sitterSlotMap.forEach((sitter, slots) {
-      //Iterate through each slot and add to 'events' map.
-      slots.forEach((slot) {
-        DateTime dayKey = DateTime(slot.year, slot.month, slot.day);
+    _sitterSlotMap.forEach(
+      (sitter, slots) {
+        //Iterate through each slot and add to 'events' map.
+        slots.forEach(
+          (slot) {
+            DateTime dayKey = DateTime(slot.year, slot.month, slot.day);
 
-        if (_dateTimeMap.containsKey(dayKey)) {
-          //Add time slot to day if it's hasn't been added already.
-          if (!_dateTimeMap[dayKey].contains(slot)) {
-            _dateTimeMap[dayKey].add(slot);
-          }
-        }
-        //Set firs ttime slot to day. 
-        else {
-          _dateTimeMap[dayKey] = [slot];
-        }
-      });
-    });
+            if (_dateTimeMap.containsKey(dayKey)) {
+              //Add time slot to day if it's hasn't been added already.
+              if (!_dateTimeMap[dayKey].contains(slot)) {
+                _dateTimeMap[dayKey].add(slot);
+              }
+            }
+            //Set first time slot to day.
+            else {
+              _dateTimeMap[dayKey] = [slot];
+            }
+          },
+        );
+      },
+    );
 
     _avialableSlots = _dateTimeMap[_selectedDay] ?? [];
   }
 
   _load() async {
     _sitters = await _getSitters();
-    await _getAvailability();
+    await _getAvailability(all: true);
     _setOptions();
     _setCalendar();
 
@@ -200,8 +232,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
             width: MediaQuery.of(context).size.width,
             height: 50.0,
             child: RaisedButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               color: Colors.grey.shade200,
               child: Center(
                 child: Row(
@@ -231,8 +262,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        BookSitterTimePage(_avialableSlots, _sitterSlotMap, serviceOrder),
+                    builder: (context) => BookSitterTimePage(
+                        _avialableSlots, _sitterSlotMap, serviceOrder),
                   ),
                 );
               },
@@ -286,20 +317,37 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
 
   DropdownButton _buildSitterDropDown() {
     return DropdownButton<String>(
-      value: _sitter,
-      onChanged: (String newValue) {
+      value: _sitterOption,
+      onChanged: (String newValue) async {
         setState(
-          () {
-            _sitter = newValue;
+          () async {
+            _sitterOption = newValue;
+            if (_sitterOption == 'All Staff') {
+              await _getAvailability(all: true);
+              setState(
+                () {
+                  _setCalendar();
+                },
+              );
+            } else {
+              await _getAvailability(all: false);
+              setState(
+                () {
+                  _setCalendar();
+                },
+              );
+            }
           },
         );
       },
-      items: _sitterOptions.map<DropdownMenuItem<String>>((String value) {
-        return DropdownMenuItem<String>(
-          value: value,
-          child: Text(value),
-        );
-      }).toList(),
+      items: _sitterOptions.map<DropdownMenuItem<String>>(
+        (String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        },
+      ).toList(),
     );
   }
 }

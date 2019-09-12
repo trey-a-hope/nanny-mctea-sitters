@@ -82,7 +82,15 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
         ),
         title: Text(sitter.name),
         subtitle: Text(sitter.details),
-        trailing: Icon(Icons.chevron_right),
+        trailing: CircleAvatar(
+          backgroundColor: _selectedSitter == sitter ? Colors.green : Colors.red,
+          child: _selectedSitter == sitter
+              ? Icon(
+                  Icons.check,
+                  color: Colors.white,
+                )
+              : Icon(Icons.close, color: Colors.white),
+        ),
       ),
     );
   }
