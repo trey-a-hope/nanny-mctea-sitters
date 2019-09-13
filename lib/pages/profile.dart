@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/appointment_details.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/edit_profile.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -142,7 +143,14 @@ class ProfilePageState extends State<ProfilePage>
                               'EDIT',
                               style: TextStyle(color: Colors.white),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfilePage(),
+                                ),
+                              );
+                            },
                             color: Colors.blue,
                           )
                         ],
