@@ -6,7 +6,6 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 class Sitter extends User {
   String imgUrl;
   String details;
-  String name;
 
   static Sitter extractDocument(DocumentSnapshot ds) {
     Sitter sitter = Sitter();
