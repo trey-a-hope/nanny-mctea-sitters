@@ -139,7 +139,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
     return Padding(
       padding: EdgeInsets.all(16),
       child: Container(
-        height: 250,
+        height: 245,
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border.all(
@@ -158,9 +158,38 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
         ),
         padding: EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text('Service'),
-            Text(appointment.formData.service)
+            Text(
+              'Service',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              appointment.formData.service,
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Address',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              '${appointment.formData.street}, ${appointment.formData.city}',
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Text(
+              'Message',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              appointment.formData.message,
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            )
           ],
         ),
       ),
@@ -177,21 +206,22 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   _buildSitterLabel() {
     return Positioned(
       left: 130,
-      top: 35,
+      top: 25,
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
               text: 'Sitter',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: _fontSize,
-                  color: Colors.black),
+              style: TextStyle(fontSize: _fontSize, color: Colors.black),
             ),
             TextSpan(text: '\n'),
             TextSpan(
               text: _sitter.name,
-              style: TextStyle(fontSize: _fontSize - 2, color: Colors.black),
+              style: TextStyle(
+                fontSize: _fontSize - 2,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             )
           ],
         ),
@@ -202,21 +232,22 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   _buildSitterDate() {
     return Positioned(
       left: 130,
-      top: 95,
+      top: 85,
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
               text: 'Date',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: _fontSize,
-                  color: Colors.black),
+              style: TextStyle(fontSize: _fontSize, color: Colors.black),
             ),
             TextSpan(text: '\n'),
             TextSpan(
               text: DateFormat(dateFormat).format(_slot.time),
-              style: TextStyle(fontSize: _fontSize - 2, color: Colors.black),
+              style: TextStyle(
+                fontSize: _fontSize - 2,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             )
           ],
         ),
@@ -227,21 +258,22 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   _buildSitterTime() {
     return Positioned(
       left: 130,
-      top: 155,
+      top: 145,
       child: RichText(
         text: TextSpan(
           children: [
             TextSpan(
               text: 'Time',
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: _fontSize,
-                  color: Colors.black),
+              style: TextStyle(fontSize: _fontSize, color: Colors.black),
             ),
             TextSpan(text: '\n'),
             TextSpan(
               text: DateFormat(timeFormat).format(_slot.time),
-              style: TextStyle(fontSize: _fontSize - 2, color: Colors.black),
+              style: TextStyle(
+                fontSize: _fontSize - 2,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             )
           ],
         ),

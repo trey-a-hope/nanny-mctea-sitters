@@ -53,68 +53,160 @@ class ProfileInfoPageState extends State<ProfileInfoPage>
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading || _user == null //Added _user == null check because of latency issue with snapshots vs documents.
+    return _isLoading ||
+            _user ==
+                null //Added _user == null check because of latency issue with snapshots vs documents.
         ? Center(
             child: CircularProgressIndicator(),
           )
         : SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(20),
+              padding: EdgeInsets.all(8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    'Name',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(
-                    _user.name,
-                    style: TextStyle(color: Colors.grey, fontSize: 25),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Email',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(
-                    _user.email,
-                    style: TextStyle(color: Colors.grey, fontSize: 25),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    'Phone',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  Text(
-                    _user.phone,
-                    style: TextStyle(color: Colors.grey, fontSize: 25),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  MaterialButton(
-                    child: Text(
-                      'EDIT',
-                      style: TextStyle(color: Colors.white),
+                  _buildName(),
+                  _buildEmail(),
+                  _buildPhone(),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: MaterialButton(
+                      child: Text(
+                        'EDIT',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(),
+                          ),
+                        );
+                      },
+                      color: Colors.blue,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfilePage(),
-                        ),
-                      );
-                    },
-                    color: Colors.blue,
                   )
                 ],
               ),
             ),
           );
+  }
+
+  _buildName() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        height: 95,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white, style: BorderStyle.solid, width: 2.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.shade300,
+                offset: Offset(0.0, 2.0),
+                blurRadius: 2.0,
+                spreadRadius: 2.0)
+          ],
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Name',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              _user.name,
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildEmail() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        height: 95,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white, style: BorderStyle.solid, width: 2.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.shade300,
+                offset: Offset(0.0, 2.0),
+                blurRadius: 2.0,
+                spreadRadius: 2.0)
+          ],
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Email',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              _user.email,
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildPhone() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        height: 95,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white, style: BorderStyle.solid, width: 2.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.shade300,
+                offset: Offset(0.0, 2.0),
+                blurRadius: 2.0,
+                spreadRadius: 2.0)
+          ],
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              'Phone',
+              style: TextStyle(fontSize: 20),
+            ),
+            Text(
+              _user.phone,
+              style: TextStyle(fontSize: 25, color: Colors.black),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
