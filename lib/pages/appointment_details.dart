@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+// import 'package:device_calendar/device_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
@@ -30,6 +30,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
+
+  // DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
 
   bool _isLoading = true;
   Slot _slot;
@@ -79,6 +81,24 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       },
     );
   }
+
+  // Future _addEventsToCalendar() async {
+  //   final eventTime = DateTime.now();
+  //   final eventToCreate = Event("SOME ID");
+  //   eventToCreate.title = 'Event Name';
+  //   eventToCreate.start = eventTime;
+  //   eventToCreate.description = 'Description goes here.';
+  //   // String mmaEventId = prefs.getString(mmaEvent.getPrefKey());
+  //   // if (mmaEventId != null) {
+  //   //   eventToCreate.eventId = mmaEventId;
+  //   // }
+  //   eventToCreate.end = eventTime.add(
+  //     Duration(hours: 3),
+  //   );
+  //   final createEventResult =
+  //       await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
+  //   print(createEventResult);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -314,33 +334,65 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   }
 
   _buildBottomNavigationBar() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 50.0,
-      child: RaisedButton(
-        onPressed: () {
-          _cancelAppoinment();
-        },
-        color: Colors.red,
-        child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                MdiIcons.close,
-                color: Colors.white,
+    return Row(
+      children: <Widget>[
+        Container(
+          width: MediaQuery.of(context).size.width / 2,
+          height: 50.0,
+          child: RaisedButton(
+            onPressed: () {
+              // _addEventsToCalendar();
+            },
+            color: Colors.blue,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    MdiIcons.calendar,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 4.0,
+                  ),
+                  Text(
+                    'ADD TO CALENDAR',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
               ),
-              SizedBox(
-                width: 4.0,
-              ),
-              Text(
-                'CANCEL APPOINTMENT',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        Container(
+          width: MediaQuery.of(context).size.width / 2,
+          height: 50.0,
+          child: RaisedButton(
+            onPressed: () {
+              _cancelAppoinment();
+            },
+            color: Colors.red,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    MdiIcons.close,
+                    color: Colors.white,
+                  ),
+                  SizedBox(
+                    width: 4.0,
+                  ),
+                  Text(
+                    'CANCEL APPOINTMENT',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

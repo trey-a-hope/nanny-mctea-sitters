@@ -3,8 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/edit_profile.dart';
-
 import 'appointment_details.dart';
 
 class ProfileAppointmentPage extends StatefulWidget {
@@ -19,7 +17,6 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage>
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User _user;
   List<Appointment> _appointments = List<Appointment>();
-
   @override
   void initState() {
     super.initState();
@@ -28,6 +25,7 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage>
 
   void _load() async {
     await _getAppointments();
+
     setState(
       () {
         _isLoading = false;
