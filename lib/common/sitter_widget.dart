@@ -56,15 +56,11 @@ class SitterWidget extends StatelessWidget {
                   TextSpan(
                       text: sitter.name,
                       style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17),),
                   TextSpan(text: '\n'),
                   TextSpan(text: sitter.details)
                 ]),
               )
-              // child: Text(
-              //   sitter.name + '\n' + sitter.info,
-              //   style: TextStyle(color: Colors.white),
-              // ),
               )
         ],
       ),

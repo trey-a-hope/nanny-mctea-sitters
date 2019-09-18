@@ -7,6 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
@@ -43,9 +44,8 @@ class HomePageState extends State<HomePage>
 
   void loadPage() async {
     //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Sitters')
-        .getDocuments();
+    QuerySnapshot querySnapshot =
+        await _db.collection('Sitters').getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -77,7 +77,7 @@ class HomePageState extends State<HomePage>
                     children: <Widget>[
                       Container(
                         width: double.infinity,
-                        height: 250,
+                        height: 300,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: group_nannies,
@@ -118,7 +118,112 @@ class HomePageState extends State<HomePage>
                   ContentHeadingWidget(
                     heading: 'Services',
                   ),
-                  _buildServicesWidget(),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: InkWell(
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            'Event Services',
+                            style: serviceButtonStyle,
+                          ),
+                        ),
+                        height: 50,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.green[800], Colors.green[400]],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0, 1],
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EventServicesPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: InkWell(
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            'Sitter Services',
+                            style: serviceButtonStyle,
+                          ),
+                        ),
+                        height: 50,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.blue[800], Colors.blue[400]],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0, 1],
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SitterServicesPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: InkWell(
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            'Professional Nannies',
+                            style: serviceButtonStyle,
+                          ),
+                        ),
+                        height: 50,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.purple[800], Colors.purple[400]],
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            stops: [0, 1],
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfessionalNanniesPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
                   SizedBox(height: 20),
                   Divider(),
                   ContentHeadingWidget(
@@ -324,8 +429,12 @@ class HomePageState extends State<HomePage>
                 sitter: _sitters[i],
               ),
               onTap: () {
-                Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SitterDetailsPage(_sitters[i])
+                  ),
+                );
               },
             )
         ],

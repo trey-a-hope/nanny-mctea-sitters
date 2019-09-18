@@ -111,7 +111,6 @@ class EditProfilePageState extends State<EditProfilePage>
 
     await _db.collection('Users').document(_user.id).updateData(data);
 
-
     return;
   }
 
@@ -138,37 +137,15 @@ class EditProfilePageState extends State<EditProfilePage>
                       SizedBox(height: 30),
                       _phoneFormField(),
                       SizedBox(height: 30),
-                      RaisedButton(
-                        padding: EdgeInsets.all(10),
-                        color: Colors.green,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30.0),
-                                bottomLeft: Radius.circular(30.0),
-                                topRight: Radius.circular(30.0),
-                                bottomRight: Radius.circular(30.0))),
+                      MaterialButton(
+                        child: Text(
+                          'SUBMIT',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         onPressed: () {
                           _submit();
                         },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              'SUBMIT',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16.0),
-                            ),
-                            const SizedBox(width: 40.0),
-                            Icon(
-                              MdiIcons.send,
-                              size: 18.0,
-                              color: Colors.white,
-                            )
-                          ],
-                        ),
+                        color: Colors.blue,
                       ),
                     ],
                   ),

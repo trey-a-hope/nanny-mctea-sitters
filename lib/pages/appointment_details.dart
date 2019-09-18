@@ -92,44 +92,78 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Container(
-                      height: 250,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                          style: BorderStyle.solid,
-                          width: 2.0
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0.0, 2.0),
-                              blurRadius: 4.0,
-                              spreadRadius: 4.0)
-                        ],
-                        color: Colors.grey.shade300,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8),
-                        ),
-                      ),
-                      padding: EdgeInsets.all(16),
-                      child: Stack(
-                        children: <Widget>[
-                          SitterWidgetX(sitter: _sitter),
-                          _buildSitterLabel(),
-                          _buildSitterDate(),
-                          _buildSitterTime(),
-                        ],
-                      ),
-                    ),
-                  )
+                  _buildTopCard(),
+                  _buildSecondCard(),
                 ],
               ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  _buildTopCard() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        height: 250,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white, style: BorderStyle.solid, width: 2.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 2.0),
+                blurRadius: 2.0,
+                spreadRadius: 2.0)
+          ],
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Stack(
+          children: <Widget>[
+            SitterWidgetX(sitter: _sitter),
+            _buildSitterLabel(),
+            _buildSitterDate(),
+            _buildSitterTime(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildSecondCard() {
+    return Padding(
+      padding: EdgeInsets.all(16),
+      child: Container(
+        height: 250,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(
+              color: Colors.white, style: BorderStyle.solid, width: 2.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey,
+                offset: Offset(0.0, 2.0),
+                blurRadius: 2.0,
+                spreadRadius: 2.0)
+          ],
+          color: Colors.grey.shade300,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+        ),
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: <Widget>[
+            Text('Service'),
+            Text(appointment.formData.service)
+          ],
+        ),
+      ),
     );
   }
 
