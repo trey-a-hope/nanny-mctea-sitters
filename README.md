@@ -69,3 +69,13 @@ git checkout origin/master -ft
 pod update
 "NameError - uninitialized constant Concurrent::Promises, Did you mean?  Concurrent::Promise"
 sudo gem update concurrent-ruby
+
+# iOS Swift Version Error
+Bridging Header must be created.
+Open the project with XCode. Then choose File -> New -> File -> Swift File.
+A dialog will be displayed when creating the swift file(Since this file is deleted, any name can be used.). XCode will ask you if you wish to create Bridging Header, click yes.
+Make sure you have use_frameworks! in the Runner block, in ios/Podfile。
+Make sure you have SWIFT_VERSION 4.2 selected in you XCode -> Build Settings
+Do flutter clean
+Go to your ios folder, delete Podfile.lock and Pods folder and then execute pod install --repo-update
+Thank you for giving detailed report!!

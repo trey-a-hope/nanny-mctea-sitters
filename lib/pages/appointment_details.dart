@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import 'package:device_calendar/device_calendar.dart';
+import 'package:device_calendar/device_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
@@ -31,7 +31,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
 
-  // DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
+  DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
 
   bool _isLoading = true;
   Slot _slot;
@@ -82,23 +82,42 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
     );
   }
 
-  // Future _addEventsToCalendar() async {
-  //   final eventTime = DateTime.now();
-  //   final eventToCreate = Event("SOME ID");
-  //   eventToCreate.title = 'Event Name';
-  //   eventToCreate.start = eventTime;
-  //   eventToCreate.description = 'Description goes here.';
-  //   // String mmaEventId = prefs.getString(mmaEvent.getPrefKey());
-  //   // if (mmaEventId != null) {
-  //   //   eventToCreate.eventId = mmaEventId;
-  //   // }
-  //   eventToCreate.end = eventTime.add(
-  //     Duration(hours: 3),
-  //   );
-  //   final createEventResult =
-  //       await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
-  //   print(createEventResult);
-  // }
+  void _addEventToCalendar() async {
+    //Retrieve user's calendars from mobile device
+    //Request permissions first if they haven't been granted
+    try {
+      var permissionsGranted = await _deviceCalendarPlugin.hasPermissions();
+      if (permissionsGranted.isSuccess && !permissionsGranted.data) {
+        permissionsGranted = await _deviceCalendarPlugin.requestPermissions();
+        if (!permissionsGranted.isSuccess || !permissionsGranted.data) {
+          return;
+        }
+      }
+
+      final calendarsResult = await _deviceCalendarPlugin.retrieveCalendars();
+      Iterable<Calendar> calendar =
+          calendarsResult.data.where((c) => c.isReadOnly == false);
+      String calendarID = calendar.first.id;
+
+      final Event eventToCreate = Event(calendarID);
+      eventToCreate.title = 'Sitter - ' + _sitter.name;
+      eventToCreate.start = _slot.time;
+      eventToCreate.description = appointment.formData.service;
+      eventToCreate.end = _slot.time.add(
+        Duration(hours: 1),
+      );
+      final Result<String> createEventResult =
+          await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
+      print(createEventResult);
+
+      Modal.showInSnackBar(_scaffoldKey, 'Event added to calendar.');
+    } catch (e) {
+      Modal.showInSnackBar(
+        _scaffoldKey,
+        e.toString(),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +178,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
     return Padding(
       padding: EdgeInsets.all(16),
       child: Container(
-        height: 245,
+        height: 235,
         width: double.infinity,
         decoration: BoxDecoration(
           border: Border.all(
@@ -182,33 +201,34 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
           children: <Widget>[
             Text(
               'Service',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 15),
             ),
             Text(
               appointment.formData.service,
-              style: TextStyle(fontSize: 25, color: Colors.black),
+              style: TextStyle(fontSize: 20, color: Colors.black),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
               'Address',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 15),
             ),
             Text(
               '${appointment.formData.street}, ${appointment.formData.city}',
-              style: TextStyle(fontSize: 25, color: Colors.black),
+              style: TextStyle(fontSize: 20, color: Colors.black),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
               'Message',
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 15),
             ),
             Text(
               appointment.formData.message,
-              style: TextStyle(fontSize: 25, color: Colors.black),
+              style: TextStyle(fontSize: 20, color: Colors.black),
+              maxLines: 2,
             )
           ],
         ),
@@ -220,6 +240,14 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
     return AppBar(
       title: Text('APPOINTMENT DETAILS'),
       centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(MdiIcons.trashCan),
+          onPressed: () {
+            _cancelAppoinment();
+          },
+        )
+      ],
     );
   }
 
@@ -334,65 +362,33 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   }
 
   _buildBottomNavigationBar() {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width / 2,
-          height: 50.0,
-          child: RaisedButton(
-            onPressed: () {
-              // _addEventsToCalendar();
-            },
-            color: Colors.blue,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    MdiIcons.calendar,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 4.0,
-                  ),
-                  Text(
-                    'ADD TO CALENDAR',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50.0,
+      child: RaisedButton(
+        onPressed: () {
+          _addEventToCalendar();
+        },
+        color: Colors.red,
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                MdiIcons.calendar,
+                color: Colors.white,
               ),
-            ),
+              SizedBox(
+                width: 4.0,
+              ),
+              Text(
+                'ADD TO CALENDAR',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
           ),
         ),
-        Container(
-          width: MediaQuery.of(context).size.width / 2,
-          height: 50.0,
-          child: RaisedButton(
-            onPressed: () {
-              _cancelAppoinment();
-            },
-            color: Colors.red,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    MdiIcons.close,
-                    color: Colors.white,
-                  ),
-                  SizedBox(
-                    width: 4.0,
-                  ),
-                  Text(
-                    'CANCEL APPOINTMENT',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
-      ],
+      ),
     );
   }
 }

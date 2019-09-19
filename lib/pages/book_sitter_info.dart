@@ -105,7 +105,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
         setState(
           () {
-            Modal.showInSnackBar(_scaffoldKey, 'APPOINTMENT CREATED');
+            Modal.showInSnackBar(_scaffoldKey, 'Appointment Created');
             _isLoading = false;
           },
         );
