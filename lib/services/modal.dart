@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class Modal {
-  static void showInSnackBar(
-      GlobalKey<ScaffoldState> scaffoldKey, String text) {
+  static void showInSnackBar({
+      @required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
     scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(text)));
   }
 

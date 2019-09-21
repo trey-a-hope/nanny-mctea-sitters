@@ -74,8 +74,8 @@ class ContactPageState extends State<ContactPage>
         //   await FlutterMailer.send(mailOptions);
       } catch (e) {
         Modal.showInSnackBar(
-          _scaffoldKey,
-          e.message,
+          scaffoldKey: _scaffoldKey,
+          text: e.message,
         );
       }
     } else {

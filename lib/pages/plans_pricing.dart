@@ -121,7 +121,7 @@ class PlansPricingState extends State<PlansPricingPage>
                     child: Text('SELECT'),
                     onPressed: () {
                       Modal.showInSnackBar(
-                          _scaffoldKey, 'Do you have a credit card?');
+                          scaffoldKey: _scaffoldKey, text: 'Do you have a credit card?');
                     },
                   ),
                   Divider(color: Colors.white),

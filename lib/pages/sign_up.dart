@@ -86,7 +86,7 @@ class SignUpPageState extends State<SignUpPage>
         } catch (e) {
           setState(
             () {
-              Modal.showInSnackBar(_scaffoldKey, e.message);
+              Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
             },
           );
         }

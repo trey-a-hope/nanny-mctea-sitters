@@ -13,40 +13,6 @@ const String DUMMY_PROFILE_PHOTO_URL =
 const String COMPANY_EMAIL = 'nannymctea@gmail.com';
 const String COMPANY_PHONE = '(859)905-0174';
 
-final List<AssetImage> images = [
-  group_nannies,
-  group_nannies
+const List<String> ADMIN_UIDS = [
+  'KFO2MAjsJNP1racr4Uivs8Zz3h32'
 ];
-
-// final List<Sitter> sitters = [
-//   Sitter(
-//     'Talea Chenault',
-//     'CEO & Owner',
-//     AssetImage('assets/images/talea_chenault.jpg'),
-//   ),
-//   Sitter(
-//     'Mariah Johnson',
-//     'COO & Consultant',
-//     AssetImage('assets/images/mariah_johnson.jpg'),
-//   ),
-//   Sitter(
-//     'Tkeyah James',
-//     'COO & Consultant',
-//     AssetImage('assets/images/tkeyah_james.jpg'),
-//   ),
-//   Sitter(
-//     'Deaira Mitchell',
-//     'Sitter',
-//     AssetImage('assets/images/deaira_mitchell.jpg'),
-//   ),
-//   Sitter(
-//     'Jibril McCaster',
-//     'Sitter',
-//     AssetImage('assets/images/jibril_mccaster.jpg'),
-//   ),
-//     Sitter(
-//     'Tamara Samedy',
-//     'Sitter',
-//     AssetImage('assets/images/tamara_samedy.jpg'),
-//   )
-// ];

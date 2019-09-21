@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
@@ -8,6 +9,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_service.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/submit_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -84,6 +86,7 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildPlansPricing(),
           _buildJoinTeam(),
           _buildProfile(),
+          _buildAvailability(),
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
@@ -127,6 +130,29 @@ class DrawerWidgetState extends State<DrawerWidget>
               );
             },
           );
+  }
+
+  Widget _buildAvailability() {
+    return ADMIN_UIDS.contains(user.uid)
+        ? ListTile(
+            leading: Icon(MdiIcons.timelapse, color: _drawerIconColor),
+            title: Text(
+              'Sitter Hours',
+            ),
+            subtitle: Text(
+              'Provide availability for sitters.',
+              style: TextStyle(color: Colors.black),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SubmitAvailabilityPage(),
+                ),
+              );
+            },
+          )
+        : Container();
   }
 
   Widget _buildBookSitter() {

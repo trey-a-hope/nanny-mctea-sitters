@@ -110,11 +110,11 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
           await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
       print(createEventResult);
 
-      Modal.showInSnackBar(_scaffoldKey, 'Event added to calendar.');
+      Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
     } catch (e) {
       Modal.showInSnackBar(
-        _scaffoldKey,
-        e.toString(),
+        scaffoldKey: _scaffoldKey,
+        text: e.toString(),
       );
     }
   }

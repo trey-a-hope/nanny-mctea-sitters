@@ -79,14 +79,14 @@ class EditProfilePageState extends State<EditProfilePage>
           setState(
             () {
               _isLoading = false;
-              Modal.showInSnackBar(_scaffoldKey, 'Profile updated.');
+              Modal.showInSnackBar(scaffoldKey :_scaffoldKey, text: 'Profile updated.');
             },
           );
         } catch (e) {
           setState(
             () {
               _isLoading = false;
-              Modal.showInSnackBar(_scaffoldKey, e.message);
+              Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
             },
           );
         }

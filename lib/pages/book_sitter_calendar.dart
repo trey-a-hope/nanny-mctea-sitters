@@ -194,18 +194,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('PICK A DATE'),
-        centerTitle: true,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () async {
-              await _getSlotsAndCaledar();
-            },
-          )
-        ],
-      ),
+      appBar: _buildAppBar(),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -238,6 +227,21 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
               ],
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text('PICK A DATE'),
+      centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.refresh),
+          onPressed: () async {
+            await _getSlotsAndCaledar();
+          },
+        )
+      ],
     );
   }
 

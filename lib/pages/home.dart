@@ -452,27 +452,6 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  _buildPhotosWidget() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          for (var i = 0; i < images.length; i++)
-            InkWell(
-              child: PhotoWidget(
-                title: 'Test',
-                image: images[i],
-              ),
-              onTap: () {
-                Modal.showInSnackBar(
-                    _scaffoldKey, 'Clicked ' + _sitters[i].name);
-              },
-            )
-        ],
-      ),
-    );
-  }
-
   _buildSocialMedias() {
     return Row(
       children: <Widget>[

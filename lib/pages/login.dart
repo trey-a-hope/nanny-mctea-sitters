@@ -41,8 +41,8 @@ class LoginPageState extends State<LoginPage>
           () {
             _isLoading = false;
             Modal.showInSnackBar(
-              _scaffoldKey,
-              e.message,
+              scaffoldKey: _scaffoldKey,
+              text: e.message,
             );
           },
         );
@@ -106,8 +106,8 @@ class LoginPageState extends State<LoginPage>
         setState(
           () {
             _isLoading = false;
-            Modal.showInSnackBar(_scaffoldKey,
-                'Sent - A link to reset your password has been sent via the email provided.');
+            Modal.showInSnackBar(scaffoldKey: _scaffoldKey,
+                text: 'Sent - A link to reset your password has been sent via the email provided.');
           },
         );
       }
@@ -115,7 +115,7 @@ class LoginPageState extends State<LoginPage>
       setState(
         () {
           _isLoading = false;
-          Modal.showInSnackBar(_scaffoldKey, e.message);
+          Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
         },
       );
     }
