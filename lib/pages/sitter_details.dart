@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
@@ -7,10 +8,11 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+
+import 'messages/message_page.dart';
 
 class SitterDetailsPage extends StatefulWidget {
   final Sitter _sitter;
@@ -29,6 +31,8 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
+  final _db = Firestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   bool _isLoading = true;
 
@@ -109,8 +113,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
                       contentPadding: EdgeInsets.all(0),
                       title: Text(
                         _sitter.details,
-                        style: TextStyle(
-                            fontSize: 20),
+                        style: TextStyle(fontSize: 20),
                       ),
                       // subtitle: Text(_gem.subCategory),
                     ),
@@ -163,8 +166,55 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text('SITTER DETAILS'),
+      title: Text('Sitter Details'),
       centerTitle: true,
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.message),
+          onPressed: () async {
+            FirebaseUser user = await _auth.currentUser();
+            if (user == null) {
+              Modal.showInSnackBar(
+                  scaffoldKey: _scaffoldKey, text: 'Must be logged in.');
+            } else {
+              QuerySnapshot querySnapshot = await _db
+                  .collection('Users')
+                  .where('uid', isEqualTo: user.uid)
+                  .getDocuments();
+              DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
+              User u = User.extractDocument(documentSnapshot);
+              _openMessageThread(u.id, _sitter.id);
+            }
+          },
+        )
+      ],
     );
+  }
+
+  void _openMessageThread(String userAId, String userBId) async {
+    try {
+      final CollectionReference conversationRef =
+          _db.collection('Conversations');
+      Query query = conversationRef;
+      query = query.where(userAId, isEqualTo: true);
+      query = query.where(userBId, isEqualTo: true);
+      QuerySnapshot result = await query.snapshots().first;
+      String convoId = null;
+      if (!result.documents.isEmpty) {
+        DocumentSnapshot conversationDoc = result.documents.first;
+        convoId = conversationDoc.documentID;
+      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessagePage(userAId, userBId, convoId),
+        ),
+      );
+    } catch (e) {
+      Modal.showInSnackBar(
+        scaffoldKey: _scaffoldKey,
+        text: e.toString(),
+      );
+    }
   }
 }

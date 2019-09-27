@@ -7,23 +7,24 @@ import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/appointment_details.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/edit_profile.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/profile_appointments.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/profile_info.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/messages/messages_page.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/profile/profile_appointments.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/profile/profile_info.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ProfilePage extends StatefulWidget {
-  final String userID;
+  final String uid;
 
-  ProfilePage(this.userID);
+  ProfilePage(this.uid);
 
   @override
-  State createState() => ProfilePageState(this.userID);
+  State createState() => ProfilePageState(this.uid);
 }
 
 class ProfilePageState extends State<ProfilePage>
     with SingleTickerProviderStateMixin {
-  final String id;
+  final String uid;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _isLoading = true;
@@ -33,7 +34,7 @@ class ProfilePageState extends State<ProfilePage>
   List<Appointment> _appointments = List<Appointment>();
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
 
-  ProfilePageState(this.id);
+  ProfilePageState(this.uid);
 
   @override
   void initState() {
@@ -72,7 +73,7 @@ class ProfilePageState extends State<ProfilePage>
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: Text('MY PROFILE'),
+      title: Text('Profile'),
       centerTitle: true,
       bottom: TabBar(
         tabs: [
@@ -90,7 +91,19 @@ class ProfilePageState extends State<ProfilePage>
           ),
         ],
       ),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.message),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MessagesPage(uid),
+              ),
+            );
+          },
+        )
+      ],
     );
   }
-
 }

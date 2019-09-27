@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_time.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -53,8 +53,10 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
     List<Sitter> sitters = List<Sitter>();
 
     //Get sitters.
-    QuerySnapshot querySnapshot =
-        await _db.collection('Sitters').getDocuments();
+    QuerySnapshot querySnapshot = await _db
+        .collection('Users')
+        .where('isSitter', isEqualTo: true)
+        .getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -72,7 +74,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
         QuerySnapshot slotQuerySnapshot = await _db
-            .collection('Sitters')
+            .collection('Users')
             .document(_sitters[i].id)
             .collection('slots')
             .where('taken', isEqualTo: false)
@@ -101,7 +103,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
 
       // for (var i = 0; i < _sitters.length; i++) {
       QuerySnapshot slotQuerySnapshot = await _db
-          .collection('Sitters')
+          .collection('Users')
           .document(filteredSitter.id)
           .collection('slots')
           .where('taken', isEqualTo: false)

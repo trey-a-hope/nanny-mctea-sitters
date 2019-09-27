@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -55,7 +55,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
 
     //Get sitters.
     QuerySnapshot querySnapshot =
-        await _db.collection('Sitters').getDocuments();
+        await _db.collection('Users').getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -81,7 +81,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
 
     // for (var i = 0; i < _sitters.length; i++) {
     QuerySnapshot slotQuerySnapshot = await _db
-        .collection('Sitters')
+        .collection('Users')
         .document(filteredSitter.id)
         .collection('slots')
         .where('taken', isEqualTo: false)

@@ -5,10 +5,10 @@ import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/login.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/profile.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_service.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/submit_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -133,7 +133,7 @@ class DrawerWidgetState extends State<DrawerWidget>
   }
 
   Widget _buildAvailability() {
-    return ADMIN_UIDS.contains(user.uid)
+    return user != null && ADMIN_UIDS.contains(user.uid)
         ? ListTile(
             leading: Icon(MdiIcons.timelapse, color: _drawerIconColor),
             title: Text(

@@ -95,7 +95,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
         //Set sitters time slot to taken.
         _db
-            .collection('Sitters')
+            .collection('Users')
             .document(serviceOrder.sitter.id)
             .collection('slots')
             .document(serviceOrder.slot.id)

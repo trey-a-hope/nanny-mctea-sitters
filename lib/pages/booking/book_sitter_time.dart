@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/book_sitter_sitter.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_sitter.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;

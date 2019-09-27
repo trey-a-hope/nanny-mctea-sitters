@@ -4,7 +4,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
@@ -44,8 +43,10 @@ class HomePageState extends State<HomePage>
 
   void loadPage() async {
     //Get sitters.
-    QuerySnapshot querySnapshot =
-        await _db.collection('Sitters').getDocuments();
+    QuerySnapshot querySnapshot = await _db
+        .collection('Users')
+        .where('isSitter', isEqualTo: true)
+        .getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -432,8 +433,7 @@ class HomePageState extends State<HomePage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SitterDetailsPage(_sitters[i])
-                  ),
+                      builder: (context) => SitterDetailsPage(_sitters[i])),
                 );
               },
             )

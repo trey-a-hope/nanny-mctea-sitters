@@ -6,9 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/sitter.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
@@ -47,7 +46,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
 
   Future<Sitter> _fetchSitter() async {
     DocumentSnapshot documentSnapshot =
-        await _db.collection('Sitters').document(appointment.sitterID).get();
+        await _db.collection('Users').document(appointment.sitterID).get();
     Sitter sitter = Sitter.extractDocument(documentSnapshot);
     return sitter;
   }
@@ -61,7 +60,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
 
   Future<Slot> _fetchSlot() async {
     DocumentSnapshot documentSnapshot = await _db
-        .collection('Sitters')
+        .collection('Users')
         .document(appointment.sitterID)
         .collection('slots')
         .document(appointment.slotID)
@@ -110,7 +109,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
           await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
       print(createEventResult);
 
-      Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
+      Modal.showInSnackBar(
+          scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
     } catch (e) {
       Modal.showInSnackBar(
         scaffoldKey: _scaffoldKey,
@@ -341,7 +341,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
 
       //Set sitter slot availability to free.
       await _db
-          .collection('Sitters')
+          .collection('Users')
           .document(appointment.sitterID)
           .collection('slots')
           .document(appointment.slotID)
@@ -366,8 +366,12 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       width: MediaQuery.of(context).size.width,
       height: 50.0,
       child: RaisedButton(
-        onPressed: () {
-          _addEventToCalendar();
+        onPressed: () async {
+          bool confirm = await Modal.showConfirmation(
+              context, 'Add To Calendar', 'Are you sure?');
+          if (confirm) {
+            _addEventToCalendar();
+          }
         },
         color: Colors.red,
         child: Center(

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'appointment_details.dart';
+import '../appointment_details.dart';
 
 class ProfileAppointmentPage extends StatefulWidget {
   @override
