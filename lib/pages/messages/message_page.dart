@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/notification.dart';
 
 import '../../constants.dart';
 
@@ -111,9 +112,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     name: messageDoc['name'],
                     imageUrl: messageDoc['imageUrl'],
                     text: messageDoc['text'],
-                    timestamp: DateFormat(timeFormat).format(
-                        DateTime.fromMillisecondsSinceEpoch(
-                            messageDoc['timestamp'])),
+                    time: messageDoc['timestamp'].toDate(),
                     userId: messageDoc['userId'],
                     myUserId: _userA.id,
                     animationController: AnimationController(
@@ -157,7 +156,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       return;
     }
 
-    //If this is a message...
+    //If this is a new message...
     if (_conversationId == null) {
       //Create thread.
       _thisConversationDoc = _conversationsRef.document();
@@ -175,11 +174,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 name: messageDoc['name'],
                 imageUrl: messageDoc['imageUrl'],
                 text: messageDoc['text'],
-                timestamp: DateFormat(timeFormat).format(
-                  DateTime.parse(
-                    messageDoc['timestamp'],
-                  ),
-                ),
+                time: messageDoc['timestamp'].toDate(),
                 userId: messageDoc['userId'],
                 myUserId: _userA.id,
                 animationController: AnimationController(
@@ -229,12 +224,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
       _thisConversationDoc.setData(convoData);
 
-      //Notifiy users of message.
-      // _selectedUsers.forEach((user) {
-      //   MyNotification.sendNotificationToUser(user.fcmToken,
-      //       _currentUser.firstName + ' ' + _currentUser.lastName, text);
-      // });
-
       // _analytics.logEvent(name: 'Message_Sent');
     }
 
@@ -247,6 +236,12 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _thisConversationDoc.updateData(
         {'lastMessage': text, 'lastImageUrl': DUMMY_PROFILE_PHOTO_URL});
 
+    //Notifiy user of new message.
+    NotificationService.sendNotificationToUser(
+        fcmToken: _userB.fcmToken,
+        title: 'New Message From ${_userA.name}',
+        body: text.length > 25 ? text.substring(0, 25) + '...' : text);
+
     _textController.clear();
 
     ChatMessage message = ChatMessage(
@@ -254,7 +249,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       name: _userA.name,
       imageUrl: DUMMY_PROFILE_PHOTO_URL,
       text: text,
-      timestamp: DateFormat(timeFormat).format(DateTime.now()),
+      time: DateTime.now(),
       userId: _userB.id,
       myUserId: _userA.id,
       animationController: AnimationController(
@@ -351,14 +346,12 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   createChatMessage(CollectionReference messageRef, String messageId,
       String text, String imageUrl, String userName, String userId) async {
-    DateTime now = DateTime.now();
-
     var data = {
       'text': text,
       'imageUrl': imageUrl,
       'name': userName,
       'userId': userId,
-      'timestamp': now.millisecondsSinceEpoch
+      'timestamp': DateTime.now()
     };
 
     await messageRef.document(messageId).setData(data);

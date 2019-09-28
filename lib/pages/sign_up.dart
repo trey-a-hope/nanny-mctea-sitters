@@ -72,6 +72,12 @@ class SignUpPageState extends State<SignUpPage>
             'imgUrl': DUMMY_PROFILE_PHOTO_URL,
             'time': DateTime.now(),
             'uid': user.uid,
+            'isSitter': false,
+            'bio': '',
+            'details': '',
+            'name': '',
+            'phone': '',
+            'fcmToken': ''
           };
 
           CollectionReference colRef = _db.collection('Users');
@@ -79,8 +85,6 @@ class SignUpPageState extends State<SignUpPage>
           await colRef
               .document(docRef.documentID)
               .updateData({'id': docRef.documentID});
-
-            
 
           Navigator.of(context).pop();
         } catch (e) {

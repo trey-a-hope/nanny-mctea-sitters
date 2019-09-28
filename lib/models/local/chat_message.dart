@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatMessage extends StatelessWidget {
   ChatMessage(
@@ -6,7 +7,7 @@ class ChatMessage extends StatelessWidget {
       this.name,
       this.imageUrl,
       this.text,
-      this.timestamp,
+      this.time,
       this.userId,
       this.myUserId,
       this.animationController});
@@ -15,10 +16,12 @@ class ChatMessage extends StatelessWidget {
   final String name;
   final String imageUrl;
   final String text;
-  final String timestamp;
+  final DateTime time;
   final String userId;
   final String myUserId;
   final AnimationController animationController;
+
+  final String timeFormat = 'MMM d, yyyy @ h:mm a';
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class ChatMessage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(name + ' @ ' + timestamp,
+                  Text(name + ' - ' + DateFormat(timeFormat).format(time),
                       style: TextStyle(color: Colors.grey)),
                   Container(
                     margin: const EdgeInsets.only(top: 5.0),

@@ -2,9 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class Modal {
-  static void showInSnackBar({
-      @required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
-    scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(text)));
+  static void showInSnackBar(
+      {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(text),
+    ));
+  }
+
+  static showAlert(
+      {@required BuildContext context,
+      @required String title,
+      @required String message}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext buildContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   static Future<String> showPasswordResetEmail(BuildContext context) {

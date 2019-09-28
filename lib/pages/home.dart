@@ -1,3 +1,8 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -16,6 +21,7 @@ import 'package:nanny_mctea_sitters_flutter/common/review_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nanny_mctea_sitters_flutter/services/notification.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 import 'package:nanny_mctea_sitters_flutter/style/text.dart';
 
@@ -31,7 +37,8 @@ class HomePageState extends State<HomePage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _db = Firestore.instance;
   List<Sitter> _sitters = List<Sitter>();
-
+  FirebaseMessaging _fcm = FirebaseMessaging();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = true;
 
   @override
@@ -39,6 +46,53 @@ class HomePageState extends State<HomePage>
     super.initState();
 
     loadPage();
+  }
+
+  void _setUpFirebaseMessaging({@required FirebaseUser firebaseUser}) async {
+    //Fetch the ID of the user document.
+    QuerySnapshot querySnapshot = await _db
+        .collection('Users')
+        .where('uid', isEqualTo: firebaseUser.uid)
+        .getDocuments();
+    DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
+    String id = documentSnapshot.data['id'];
+
+    if (Platform.isIOS) {
+      //Request permission on iOS device.
+      _fcm.requestNotificationPermissions(
+        IosNotificationSettings(),
+      );
+    }
+
+    //Update user's fcm token.
+    String fcmToken = await _fcm.getToken();
+    if (fcmToken != null) {
+      print(fcmToken);
+      _db.collection('Users').document(id).updateData(
+        {'fcmToken': fcmToken},
+      );
+    }
+
+    //Configure notifications for several action types.
+    _fcm.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        Modal.showAlert(
+            context: context,
+            title: message['notification']['title'],
+            message: message['notification']['body']);
+        //  _showItemDialog(message);
+      },
+      //  onBackgroundMessage: myBackgroundMessageHandler,
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+        //  _navigateToItemDetail(message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+        //  _navigateToItemDetail(message);
+      },
+    );
   }
 
   void loadPage() async {
@@ -53,6 +107,11 @@ class HomePageState extends State<HomePage>
         _sitters.add(sitter);
       },
     );
+
+    FirebaseUser firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      _setUpFirebaseMessaging(firebaseUser: firebaseUser);
+    }
 
     setState(
       () {

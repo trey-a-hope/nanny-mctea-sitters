@@ -8,6 +8,7 @@ class User {
   String name;
   String phone;
   bool isSitter;
+  String fcmToken;
 
   static User extractDocument(DocumentSnapshot ds) {
     User user = User();
@@ -19,6 +20,7 @@ class User {
     user.name = ds.data['name'];
     user.phone = ds.data['phone'];
     user.isSitter = ds.data['isSitter'];
+    user.fcmToken = ds.data['fcmToken'];
 
     return user;
   }
@@ -42,6 +44,7 @@ class Sitter extends User {
     sitter.bio = ds.data['bio'];
     sitter.phone = ds.data['phone'];
     sitter.isSitter = ds.data['isSitter'];
+    sitter.fcmToken = ds.data['fcmToken'];
 
     return sitter;
   }
