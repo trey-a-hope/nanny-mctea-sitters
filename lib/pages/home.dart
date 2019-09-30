@@ -9,6 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
@@ -124,52 +125,30 @@ class HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      // appBar: _buildAppBar(),
+      backgroundColor: Colors.yellow[50],
       drawer: DrawerWidget(),
-      body: Builder(
-        builder: (context) => _isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
-            : ListView(
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
                 children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                        width: double.infinity,
-                        height: 300,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: group_nannies,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        right: 10,
-                        bottom: 10,
-                        child: Stack(
-                          children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.yellowAccent,
-                                borderRadius: BorderRadius.circular(3.0),
-                              ),
-                              padding: EdgeInsets.all(10),
-                              child: Text(
-                                'Nanny McTea Sitters',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
+                  SimpleNavbar(
+                    leftWidget: Icon(MdiIcons.menu, color: Colors.grey),
+                    leftTap: () {
+                      _scaffoldKey.currentState.openDrawer();
+                    },
+                    rightWidget: Icon(MdiIcons.phone, color: Colors.grey),
+                    rightTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ContactPage()),
+                      );
+                    },
                   ),
+                  _buildHeaderImage(),
                   ContentHeadingWidget(
                     heading: 'About',
                   ),
@@ -179,111 +158,15 @@ class HomePageState extends State<HomePage>
                     heading: 'Services',
                   ),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: InkWell(
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            'Event Services',
-                            style: serviceButtonStyle,
-                          ),
-                        ),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.green[800], Colors.green[400]],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [0, 1],
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => EventServicesPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  _buildEventServicesButton(),
                   SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: InkWell(
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            'Sitter Services',
-                            style: serviceButtonStyle,
-                          ),
-                        ),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.blue[800], Colors.blue[400]],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [0, 1],
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SitterServicesPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  _buildSitterServicesButton(),
                   SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: InkWell(
-                      child: Container(
-                        child: Center(
-                          child: Text(
-                            'Professional Nannies',
-                            style: serviceButtonStyle,
-                          ),
-                        ),
-                        height: 50,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.purple[800], Colors.purple[400]],
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            stops: [0, 1],
-                          ),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(8),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfessionalNanniesPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
+                  _buildProfessionalNanniesButton(),
                   SizedBox(height: 20),
                   Divider(),
                   ContentHeadingWidget(
@@ -298,185 +181,227 @@ class HomePageState extends State<HomePage>
                     heading: 'Reviews',
                   ),
                   //Review 1
-                  InkWell(
-                    child: ReviewWidget(
-                      review: reviews[0].review,
-                      author: reviews[0].author,
-                      height: 260,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\"I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.\"',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                          TextSpan(text: '\n\n'),
+                          TextSpan(
+                              text: '~Morales Family',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ],
+                      ),
                     ),
-                    onTap: () {},
                   ),
+                  SizedBox(height: 30),
+                  Divider(),
+                  SizedBox(height: 30),
+
                   //Review 2
-                  InkWell(
-                    child: ReviewWidget(
-                      review: reviews[1].review,
-                      author: reviews[1].author,
-                      height: 360,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\"We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!\"',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                          TextSpan(text: '\n\n'),
+                          TextSpan(
+                              text: '~Cady  Family',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ],
+                      ),
                     ),
-                    onTap: () {},
                   ),
+                  SizedBox(height: 30),
+                  Divider(),
+                  SizedBox(height: 30),
+
                   //Review 3
-                  InkWell(
-                    child: ReviewWidget(
-                      review: reviews[2].review,
-                      author: reviews[2].author,
-                      height: 200,
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(
+                            text:
+                                '\"Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!\"',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                          TextSpan(text: '\n\n'),
+                          TextSpan(
+                              text: '~Eavenson Family',
+                              style:
+                                  TextStyle(color: Colors.black, fontSize: 15)),
+                        ],
+                      ),
                     ),
-                    onTap: () {},
                   ),
-                  // _buildReviewsWidget(),
                   ContentHeadingWidget(
                     heading: 'Social Media',
                   ),
                   _buildSocialMedias()
                 ],
               ),
-      ),
+            ),
     );
   }
 
-  _buildAppBar() {
-    return AppBar(
-      centerTitle: true,
-      title: Text(
-        'Home',
-        style: TextStyle(letterSpacing: 2.0),
-      ),
-    );
-  }
-
-  _buildServicesWidget() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: InkWell(
-              child: Container(
-                child: Center(
-                  child: Text(
-                    'Event Services',
-                    style: serviceButtonStyle,
-                  ),
-                ),
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.green[800], Colors.green[400]],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0, 1],
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
+  _buildHeaderImage() {
+    return Stack(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Container(
+            width: double.infinity,
+            height: 300,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(16),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EventServicesPage(),
-                  ),
-                );
-              },
+              image: DecorationImage(
+                image: group_nannies,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: InkWell(
-              child: Container(
-                child: Center(
-                  child: Text(
-                    'Sitter Services',
-                    style: serviceButtonStyle,
-                  ),
-                ),
-                height: 50,
-                width: 150,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.blue[800], Colors.blue[400]],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0, 1],
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
+        ),
+        Positioned.fill(
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(3.0),
+              ),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                'Nanny McTea Sitters',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20.0,
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SitterServicesPage(),
-                  ),
-                );
-              },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            child: InkWell(
-              child: Container(
-                child: Center(
-                  child: Text(
-                    'Professional Nannies',
-                    style: serviceButtonStyle,
-                  ),
-                ),
-                height: 50,
-                width: 200,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.purple[800], Colors.purple[400]],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0, 1],
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(8),
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfessionalNanniesPage(),
-                  ),
-                );
-              },
+        )
+      ],
+    );
+  }
+
+  _buildEventServicesButton() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        child: Container(
+          child: Center(
+            child: Text(
+              'Event Services',
+              style: serviceButtonStyle,
             ),
-          )
-        ],
+          ),
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.green,
+            // gradient: LinearGradient(
+            //   colors: [Colors.green[800], Colors.green[400]],
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            //   stops: [0, 1],
+            // ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
+            ),
+          ),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EventServicesPage(),
+            ),
+          );
+        },
       ),
     );
   }
 
-  // _buildReviewsWidget() {
-  //   return SingleChildScrollView(
-  //     scrollDirection: Axis.horizontal,
-  //     child: Row(
-  //       children: <Widget>[
-  //         for (var i = 0; i < reviews.length; i++)
-  //           InkWell(
-  //             child: ReviewWidget(
-  //               review: reviews[i].review,
-  //               author: reviews[i].author,
-  //             ),
-  //             onTap: () {
-  //               Modal.showInSnackBar(
-  //                   _scaffoldKey, 'Clicked ' + _sitters[i].name);
-  //             },
-  //           )
-  //       ],
-  //     ),
-  //   );
-  // }
+  _buildSitterServicesButton() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        child: Container(
+          child: Center(
+            child: Text(
+              'Sitter Services',
+              style: serviceButtonStyle,
+            ),
+          ),
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.blue,
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
+            ),
+          ),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SitterServicesPage(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  _buildProfessionalNanniesButton() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        child: Container(
+          child: Center(
+            child: Text(
+              'Professional Nannies',
+              style: serviceButtonStyle,
+            ),
+          ),
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.purple,
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
+            ),
+          ),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfessionalNanniesPage(),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   _buildTeamWidget() {
     return SingleChildScrollView(
@@ -507,6 +432,7 @@ class HomePageState extends State<HomePage>
       child: Text(
         about,
         style: TextStyle(color: Colors.black, fontSize: 20),
+        textAlign: TextAlign.center,
       ),
     );
   }
@@ -517,7 +443,7 @@ class HomePageState extends State<HomePage>
         Padding(
           padding: EdgeInsets.all(30),
           child: InkWell(
-            child: Icon(MdiIcons.facebook, color: Colors.blue),
+            child: Icon(MdiIcons.facebook, color: Colors.blue, size: 30),
             onTap: () {
               URLLauncher.launchUrl('https://www.facebook.com/nannymctea');
             },
@@ -526,7 +452,7 @@ class HomePageState extends State<HomePage>
         Padding(
           padding: EdgeInsets.all(30),
           child: InkWell(
-            child: Icon(MdiIcons.instagram, color: Colors.blue),
+            child: Icon(MdiIcons.instagram, color: Colors.blue, size: 30),
             onTap: () {
               URLLauncher.launchUrl(
                   'https://www.instagram.com/nannymcteasitters');

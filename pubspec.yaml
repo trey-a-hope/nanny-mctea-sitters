@@ -2,7 +2,7 @@ name: nanny_mctea_sitters_flutter
 
 description: Client mobile app for baby sitting business.
 
-version: 1.0.3+3
+version: 1.0.4+4
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -46,7 +46,7 @@ flutter:
    - assets/images/
 
   fonts:
-    - family: SourceSansPro
+    - family: Montserrat
       fonts:
-        - asset: fonts/SourceSansPro-Regular.ttf
-          # style: italic
+        - asset: fonts/Montserrat-Regular.ttf
+          style: italic

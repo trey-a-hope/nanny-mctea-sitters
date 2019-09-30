@@ -90,7 +90,7 @@ class DrawerWidgetState extends State<DrawerWidget>
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
-          _buildContact(),
+          // _buildContact(),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,

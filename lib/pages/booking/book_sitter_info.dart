@@ -2,11 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/paypal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
@@ -68,7 +70,12 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
           },
         );
 
-        //TODO: Pay with paypal.
+        Response result = await PayPalService.createPayment(
+          name: serviceOrder.serviceName,
+          description: serviceOrder.sitter.name,
+          price: 25.00,
+          sku: serviceOrder.serviceName + DateTime.now().toString()
+        );
 
         //Create appointment.
         var appointmentData = {

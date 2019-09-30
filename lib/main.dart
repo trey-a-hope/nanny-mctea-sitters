@@ -18,20 +18,7 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         accentColor: Colors.blue,
         primaryColor: Colors.blueAccent,
-        fontFamily: 'SourceSansPro',
-        textTheme: TextTheme(
-          // headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          // title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-          // body1: TextStyle(fontSize: 14.0),
-          // subhead: TextStyle(color: Colors.black, fontSize: 16),
-          // caption: TextStyle(color: Colors.white, fontSize: 30)
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        buttonTheme: ButtonThemeData(
-          buttonColor: Colors.red
-        )
+        fontFamily: 'Montserrat',
       ),
       home: HomePage(),
     );
