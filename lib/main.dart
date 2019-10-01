@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/home.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/home_page.dart';
 
 void main() => runApp(MyApp());
 

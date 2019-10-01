@@ -10,6 +10,8 @@ import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/slant_header_image.dart';
+import 'package:nanny_mctea_sitters_flutter/common/wavy_header_image.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
@@ -148,12 +150,55 @@ class HomePageState extends State<HomePage>
                       );
                     },
                   ),
-                  _buildHeaderImage(),
+                  Stack(
+                    children: <Widget>[
+                      SlantHeaderImage(image: floor),
+                      Positioned(
+                        top: 80,
+                        left: 0,
+                        right: 0,
+                        child: _buildHeaderImage(),
+                      )
+                    ],
+                  ),
                   ContentHeadingWidget(
                     heading: 'About',
                   ),
                   _buildAboutWidget(),
-                  Divider(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      SlantHeaderImage(image: pike_street),
+                      Positioned(
+                        top: 220,
+                        left: 0,
+                        right: 0,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16),
+                          child: Container(
+                            width: double.infinity,
+                            height: 300,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.yellow[50],
+                                  style: BorderStyle.solid,
+                                  width: 5.0),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(16),
+                              ),
+                              image: DecorationImage(
+                                image: AssetImage('assets/images/dispicable_me.jpg'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                    ],
+                  ),
                   ContentHeadingWidget(
                     heading: 'Services',
                   ),
@@ -270,6 +315,10 @@ class HomePageState extends State<HomePage>
             width: double.infinity,
             height: 300,
             decoration: BoxDecoration(
+              border: Border.all(
+                  color: Colors.yellow[50],
+                  style: BorderStyle.solid,
+                  width: 5.0),
               borderRadius: BorderRadius.all(
                 Radius.circular(16),
               ),
