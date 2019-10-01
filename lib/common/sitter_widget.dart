@@ -21,6 +21,13 @@ class SitterWidget extends StatelessWidget {
                 height: 250,
                 width: 150,
                 decoration: BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(
+                      spreadRadius: 1.0,
+                      blurRadius: 4.0,
+                      color: Colors.grey
+                    )
+                  ],
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
                   ),

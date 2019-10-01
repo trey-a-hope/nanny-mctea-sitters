@@ -30,7 +30,7 @@ class PlansPricingState extends State<PlansPricingPage>
           Container(
             decoration: BoxDecoration(
                 image: DecorationImage(
-                    image: floor_crayons,
+                    image: asImgFloorCrayons,
                     fit: BoxFit.cover,
                     alignment: Alignment.center)),
           ),

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-class WavyHeaderImage extends StatelessWidget {
-  const WavyHeaderImage({@required this.image});
-
-  final Image image;
-
+class ClipperWavy extends StatelessWidget {
+  const ClipperWavy({@required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      child: image,
+      child: child,
       clipper: BottomWaveClipper(),
     );
   }

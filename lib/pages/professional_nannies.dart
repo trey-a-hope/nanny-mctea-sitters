@@ -43,7 +43,7 @@ class ProfessionalNanniesPageState extends State<ProfessionalNanniesPage>
                   height: 250,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: group_nannies,
+                      image: asImgGroup_nannies,
                       fit: BoxFit.cover,
                     ),
                   ),

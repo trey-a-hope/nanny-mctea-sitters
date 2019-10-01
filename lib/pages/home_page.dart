@@ -10,8 +10,8 @@ import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/common/slant_header_image.dart';
-import 'package:nanny_mctea_sitters_flutter/common/wavy_header_image.dart';
+import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
@@ -20,7 +20,6 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/common/review_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -43,6 +42,7 @@ class HomePageState extends State<HomePage>
   FirebaseMessaging _fcm = FirebaseMessaging();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool _isLoading = true;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -130,49 +130,49 @@ class HomePageState extends State<HomePage>
       // appBar: _buildAppBar(),
       backgroundColor: Colors.yellow[50],
       drawer: DrawerWidget(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.arrow_upward),
+        onPressed: () {
+          _scrollController.animateTo(
+            0.0,
+            curve: Curves.easeOut,
+            duration: Duration(milliseconds: 300),
+          );
+        },
+      ),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
             )
           : SingleChildScrollView(
+              controller: _scrollController,
               child: Column(
                 children: <Widget>[
-                  SimpleNavbar(
-                    leftWidget: Icon(MdiIcons.menu, color: Colors.grey),
-                    leftTap: () {
-                      _scaffoldKey.currentState.openDrawer();
-                    },
-                    rightWidget: Icon(MdiIcons.phone, color: Colors.grey),
-                    rightTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ContactPage()),
-                      );
-                    },
-                  ),
                   Stack(
+                    overflow: Overflow.visible,
                     children: <Widget>[
-                      SlantHeaderImage(image: floor),
+                      ClipperWavy(
+                        child: Container(
+                          height: 400,
+                          color: Colors.red,
+                        ),
+                      ),
+                      SimpleNavbar(
+                        leftWidget: Icon(MdiIcons.menu, color: Colors.white),
+                        leftTap: () {
+                          _scaffoldKey.currentState.openDrawer();
+                        },
+                        rightWidget: Icon(MdiIcons.phone, color: Colors.white),
+                        rightTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ContactPage()),
+                          );
+                        },
+                      ),
                       Positioned(
-                        top: 80,
-                        left: 0,
-                        right: 0,
-                        child: _buildHeaderImage(),
-                      )
-                    ],
-                  ),
-                  ContentHeadingWidget(
-                    heading: 'About',
-                  ),
-                  _buildAboutWidget(),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Stack(
-                    children: <Widget>[
-                      SlantHeaderImage(image: pike_street),
-                      Positioned(
-                        top: 220,
+                        top: 200,
                         left: 0,
                         right: 0,
                         child: Padding(
@@ -189,18 +189,122 @@ class HomePageState extends State<HomePage>
                                 Radius.circular(16),
                               ),
                               image: DecorationImage(
-                                image: AssetImage('assets/images/dispicable_me.jpg'),
+                                image: asImgGroup_nannies,
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
                         ),
                       ),
+                      Positioned(
+                          top: 100,
+                          left: 32,
+                          right: 0,
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Nanny McTea Sitters',
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(text: '\n'),
+                                TextSpan(
+                                  text: 'Sitting made simple.',
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.white),
+                                ),
+                              ],
+                            ),
+                          )
 
+                          // Text(
+                          //   'Nanny McTea Sitters',
+                          //   style: TextStyle(
+                          //     fontSize: 25,
+                          //     color: Colors.white,
+                          //     fontWeight: FontWeight.bold
+                          //   ),
+                          // ),
+                          )
                     ],
                   ),
-                  ContentHeadingWidget(
-                    heading: 'Services',
+
+                  // Stack(
+                  //   children: <Widget>[
+                  //     // SlantHeaderImage(image: floor),
+                  //     Positioned(
+                  //       top: 80,
+                  //       left: 0,
+                  //       right: 0,
+                  //       child: _buildHeaderImage(),
+                  //     )
+                  //   ],
+                  // ),
+                  SizedBox(
+                    height: 100,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                          'About',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                    ),
+                  ),
+                  _buildAboutWidget(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  // Stack(
+                  //   children: <Widget>[
+                  //     // SlantHeaderImage(image: pike_street),
+                  //     Positioned(
+                  //       top: 220,
+                  //       left: 0,
+                  //       right: 0,
+                  //       child: Padding(
+                  //         padding: EdgeInsets.symmetric(horizontal: 16),
+                  //         child: Container(
+                  //           width: double.infinity,
+                  //           height: 300,
+                  //           decoration: BoxDecoration(
+                  //             border: Border.all(
+                  //                 color: Colors.yellow[50],
+                  //                 style: BorderStyle.solid,
+                  //                 width: 5.0),
+                  //             borderRadius: BorderRadius.all(
+                  //               Radius.circular(16),
+                  //             ),
+                  //             image: DecorationImage(
+                  //               image: AssetImage(
+                  //                   'assets/images/dispicable_me.jpg'),
+                  //               fit: BoxFit.cover,
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  ClipperWavy(
+                    child: imgPikeStreet,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Services',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold))
+                      ],
+                    ),
                   ),
 
                   _buildEventServicesButton(),
@@ -213,23 +317,39 @@ class HomePageState extends State<HomePage>
                   ),
                   _buildProfessionalNanniesButton(),
                   SizedBox(height: 20),
-                  Divider(),
-                  ContentHeadingWidget(
-                    heading: 'Meet the Team',
+                  ClipperWavy(child: imgGroup),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Meet The Team',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold))
+                      ],
+                    ),
                   ),
                   _buildTeamWidget(),
+                  SizedBox(height: 40),
+
                   // ContentHeadingWidget(
                   //   heading: 'Photos',
                   // ),
                   // _buildPhotosWidget(),
-                  ContentHeadingWidget(
-                    heading: 'Reviews',
+                  ClipperWavy(child: imgDispicableMe),
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Reviews',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold))
+                      ],
+                    ),
                   ),
                   //Review 1
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: RichText(
-                      textAlign: TextAlign.center,
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
@@ -241,7 +361,7 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                               text: '~Morales Family',
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
+                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -249,12 +369,10 @@ class HomePageState extends State<HomePage>
                   SizedBox(height: 30),
                   Divider(),
                   SizedBox(height: 30),
-
                   //Review 2
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: RichText(
-                      textAlign: TextAlign.center,
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
@@ -266,7 +384,7 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                               text: '~Cady  Family',
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
+                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
@@ -279,7 +397,6 @@ class HomePageState extends State<HomePage>
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24),
                     child: RichText(
-                      textAlign: TextAlign.center,
                       text: TextSpan(
                         children: <TextSpan>[
                           TextSpan(
@@ -291,13 +408,24 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                               text: '~Eavenson Family',
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 15)),
+                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
                   ),
-                  ContentHeadingWidget(
-                    heading: 'Social Media',
+                  SizedBox(height: 30),
+
+                  ClipperWavy(child: imgQueenCity),
+
+                  Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Row(
+                      children: <Widget>[
+                        Text('Social Media',
+                            style: TextStyle(
+                                fontSize: 30, fontWeight: FontWeight.bold))
+                      ],
+                    ),
                   ),
                   _buildSocialMedias()
                 ],
@@ -306,148 +434,142 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  _buildHeaderImage() {
-    return Stack(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Container(
-            width: double.infinity,
-            height: 300,
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: Colors.yellow[50],
-                  style: BorderStyle.solid,
-                  width: 5.0),
-              borderRadius: BorderRadius.all(
-                Radius.circular(16),
-              ),
-              image: DecorationImage(
-                image: group_nannies,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(3.0),
-              ),
-              padding: EdgeInsets.all(10),
-              child: Text(
-                'Nanny McTea Sitters',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
+  // _buildHeaderImage() {
+  //   return Stack(
+  //     children: <Widget>[
+  //       Padding(
+  //         padding: EdgeInsets.symmetric(horizontal: 16),
+  //         child: Container(
+  //           width: double.infinity,
+  //           height: 300,
+  //           decoration: BoxDecoration(
+  //             border: Border.all(
+  //                 color: Colors.yellow[50],
+  //                 style: BorderStyle.solid,
+  //                 width: 5.0),
+  //             borderRadius: BorderRadius.all(
+  //               Radius.circular(16),
+  //             ),
+  //             image: DecorationImage(
+  //               image: asImgGroup_nannies,
+  //               fit: BoxFit.cover,
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       Positioned.fill(
+  //         child: Align(
+  //           alignment: Alignment.bottomCenter,
+  //           child: Container(
+  //             decoration: BoxDecoration(
+  //               color: Colors.transparent,
+  //               borderRadius: BorderRadius.circular(3.0),
+  //             ),
+  //             padding: EdgeInsets.all(10),
+  //             child: Text(
+  //               'Nanny McTea Sitters',
+  //               style: TextStyle(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.bold,
+  //                 fontSize: 20.0,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       )
+  //     ],
+  //   );
+  // }
 
   _buildEventServicesButton() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        child: Container(
-          child: Center(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            'Event Services',
+            style: TextStyle(
+                fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+          RaisedButton(
+            color: Colors.red,
             child: Text(
-              'Event Services',
-              style: serviceButtonStyle,
+              'Read More',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.green,
-            // gradient: LinearGradient(
-            //   colors: [Colors.green[800], Colors.green[400]],
-            //   begin: Alignment.topCenter,
-            //   end: Alignment.bottomCenter,
-            //   stops: [0, 1],
-            // ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EventServicesPage(),
-            ),
-          );
-        },
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventServicesPage(),
+                ),
+              );
+            },
+          )
+        ],
       ),
     );
   }
 
   _buildSitterServicesButton() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        child: Container(
-          child: Center(
-            child: Text(
-              'Sitter Services',
-              style: serviceButtonStyle,
-            ),
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            'Sitter Services',
+            style: TextStyle(
+                fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold),
           ),
-          height: 50,
-          decoration: BoxDecoration(
+          RaisedButton(
             color: Colors.blue,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
+            child: Text(
+              'Read More',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => SitterServicesPage(),
-            ),
-          );
-        },
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SitterServicesPage(),
+                ),
+              );
+            },
+          )
+        ],
       ),
     );
   }
 
   _buildProfessionalNanniesButton() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
-        child: Container(
-          child: Center(
+      padding: EdgeInsets.symmetric(horizontal: 25),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            'Professional Nannies',
+            style: TextStyle(
+                fontSize: 20, color: Colors.amber, fontWeight: FontWeight.bold),
+          ),
+          RaisedButton(
+            color: Colors.amber,
             child: Text(
-              'Professional Nannies',
-              style: serviceButtonStyle,
+              'Read More',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-          height: 50,
-          decoration: BoxDecoration(
-            color: Colors.purple,
-            borderRadius: BorderRadius.all(
-              Radius.circular(8),
-            ),
-          ),
-        ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ProfessionalNanniesPage(),
-            ),
-          );
-        },
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfessionalNanniesPage(),
+                ),
+              );
+            },
+          )
+        ],
       ),
     );
   }
@@ -477,11 +599,10 @@ class HomePageState extends State<HomePage>
 
   _buildAboutWidget() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30),
+      padding: EdgeInsets.symmetric(horizontal: 25),
       child: Text(
         about,
         style: TextStyle(color: Colors.black, fontSize: 20),
-        textAlign: TextAlign.center,
       ),
     );
   }
@@ -492,7 +613,7 @@ class HomePageState extends State<HomePage>
         Padding(
           padding: EdgeInsets.all(30),
           child: InkWell(
-            child: Icon(MdiIcons.facebook, color: Colors.blue, size: 30),
+            child: Icon(MdiIcons.facebook, color: Colors.red, size: 30),
             onTap: () {
               URLLauncher.launchUrl('https://www.facebook.com/nannymctea');
             },
@@ -501,7 +622,7 @@ class HomePageState extends State<HomePage>
         Padding(
           padding: EdgeInsets.all(30),
           child: InkWell(
-            child: Icon(MdiIcons.instagram, color: Colors.blue, size: 30),
+            child: Icon(MdiIcons.instagram, color: Colors.red, size: 30),
             onTap: () {
               URLLauncher.launchUrl(
                   'https://www.instagram.com/nannymcteasitters');

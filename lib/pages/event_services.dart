@@ -43,7 +43,7 @@ class EventServicesPageState extends State<EventServicesPage>
                   height: 250,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: group_nannies,
+                      image: asImgGroup_nannies,
                       fit: BoxFit.cover,
                     ),
                   ),

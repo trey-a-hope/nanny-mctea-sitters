@@ -43,7 +43,7 @@ class SitterServicesPageState extends State<SitterServicesPage>
                   height: 250,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: group_nannies,
+                      image: asImgGroup_nannies,
                       fit: BoxFit.cover,
                     ),
                   ),

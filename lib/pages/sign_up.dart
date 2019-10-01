@@ -132,7 +132,7 @@ class SignUpPageState extends State<SignUpPage>
                 Container(
                   decoration: BoxDecoration(
                       image: DecorationImage(
-                          image: floor_crayons,
+                          image: asImgFloorCrayons,
                           fit: BoxFit.cover,
                           alignment: Alignment.center)),
                 ),

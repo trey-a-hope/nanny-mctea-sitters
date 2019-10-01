@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-class SlantHeaderImage extends StatelessWidget {
-  const SlantHeaderImage({@required this.image});
-
-  final Image image;
-
+class ClipperSlant extends StatelessWidget {
+  const ClipperSlant({@required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return ClipPath(
-      child: image,
+      child: child,
       clipper: BottomSlantClipper(),
     );
   }

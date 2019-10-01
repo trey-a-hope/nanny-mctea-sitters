@@ -15,6 +15,7 @@ class ContentHeadingWidget extends StatelessWidget {
       child: Text(
         heading,
         style: headingOneTextStyle,
+        textAlign: TextAlign.left,
       ),
     );
   }
