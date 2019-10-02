@@ -24,6 +24,7 @@ import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nanny_mctea_sitters_flutter/services/notification.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe_service.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 import 'package:nanny_mctea_sitters_flutter/style/text.dart';
 
