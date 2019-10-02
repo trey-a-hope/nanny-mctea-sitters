@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 
-import '../asset_images.dart';
 
 class EventServicesPage extends StatefulWidget {
   @override

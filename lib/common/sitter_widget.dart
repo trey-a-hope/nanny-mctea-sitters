@@ -5,7 +5,7 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import '../style/text.dart';
 
 class SitterWidget extends StatelessWidget {
-  final Sitter sitter;
+  final User sitter;
 
   const SitterWidget({Key key, @required this.sitter}) : super(key: key);
 

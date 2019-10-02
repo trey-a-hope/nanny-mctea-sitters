@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/sign_up.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   @override

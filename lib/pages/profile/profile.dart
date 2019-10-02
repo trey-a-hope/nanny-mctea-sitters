@@ -2,16 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/appointment_details.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/edit_profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/messages_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile_appointments.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile_info.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class ProfilePage extends StatefulWidget {
   final String uid;

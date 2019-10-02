@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 
-import '../asset_images.dart';
-
-class SitterServicesPage extends StatefulWidget {
+class ProfessionalNanniesPage extends StatefulWidget {
   @override
-  State createState() => SitterServicesPageState();
+  State createState() => ProfessionalNanniesPageState();
 }
 
-class SitterServicesPageState extends State<SitterServicesPage>
+class ProfessionalNanniesPageState extends State<ProfessionalNanniesPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
@@ -53,21 +52,13 @@ class SitterServicesPageState extends State<SitterServicesPage>
             Padding(
               padding: EdgeInsets.all(16),
               child: Text(
-                'Sitter Services',
-                style: TextStyle(color: Colors.black, fontSize: 30),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                'We’ve Got You Covered',
-                style: TextStyle(color: Colors.black, fontSize: 24),
+                'Professional Nannies', style: TextStyle(color: Colors.black, fontSize: 30),
               ),
             ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Everyone doesn\'t need a nanny, sometimes you just need a break to breath, relax, go to the store, go on a date, even take a nap. Whatever the reason we are prepared. Nanny McTea Sitters offers a variety of sitter services, all available for your family.',
+                'With many years of experience, our professional consultants have you covered. Our Consultant began in the nanny world themselves. We have learned the in\'s and out\'s of selecting a quality caregiver and are happy to share this with you.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -76,7 +67,7 @@ class SitterServicesPageState extends State<SitterServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '1. Planned Sitter Service -- This service you can book directly on our website under the book us tab! This service is for planned events like your cousins wedding or your anniversary, anything that you know the date prior to. A  non refundable \$25 booking fee is required to secure your date in advance. The day of your sit you are required to pay your sitter \$13 per hour. We have a 4 hour minimum.',
+                'Nanny McTea Sitters Consultants handles the entire screening process for you. With our 5 step interview process we fully vet applicants to send your family qualified candidates.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -85,7 +76,7 @@ class SitterServicesPageState extends State<SitterServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '2. Last Minute Sitter Service -- A last minute is a sit scheduled within 36 hours of its start time. For this service you must fill out the Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                'We work closely with your family to draft your work agreement and set your nanny/employer relationship for success.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -94,7 +85,7 @@ class SitterServicesPageState extends State<SitterServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '3. Sick Care Service  --  For this service you must fill out the  Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                'Our total placement cost \$1,475 split into a non refundable deposit of \$350 this allows us to post your application and begin screening candidates on your behalf. If you select a nanny that our team has vetted for you, the remainder balance of \$1,125 is due upon signing the work agreement.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
@@ -103,12 +94,22 @@ class SitterServicesPageState extends State<SitterServicesPage>
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                '4. Monthly Sitter Membership --  This awesome service helps eliminate the booking fee for the above mentioned planned sitter service. If you know you are consistently going to be receiving care you\'ll want to book the membership. This membership guarantee you unlimited week nights after 5 and unlimited weekend sits. You\'ll pay a monthly fee of \$100 and pay your sitter their hourly rate of \$13 whenever you use them. ',
+                'We receive anywhere from 15 to 30 applicants per job posting depending on hours, location, pay and number of children etc. With our 5 step interview process we are spending roughly 5 or more hours with each candidate to determine their eligibility with your family.  The final nanny placement of \$1,125 is only paid if your family selects a nanny that we bring to you and is based on the amount of hours we spend reviewing candidates. 15 candidate x 5 hours = 75 hours, 75 hours x \$15/hr = \$1,125.',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                '​For more information fill out our family application and a Nanny McTea Sitter consultant will be in touch.',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18),
               ),
             ),
             SizedBox(height: 20)
+
           ],
         ),
       ),
@@ -128,8 +129,7 @@ class SitterServicesPageState extends State<SitterServicesPage>
       height: 50.0,
       child: RaisedButton(
         onPressed: () {
-          URLLauncher.launchUrl(
-              'https://docs.google.com/forms/d/e/1FAIpQLSdAMrVxgoEDLzcfy-hC9X3h_HNsGVYzXCPubTB-5sssB4BAjA/viewform');
+          URLLauncher.launchUrl('https://docs.google.com/forms/d/e/1FAIpQLSc1BoEVUcebGSTZaGRMvMfebVC-G7YX2EVBhxPs8niHv4HYkA/viewform');
         },
         color: Colors.redAccent,
         child: Center(
@@ -137,14 +137,14 @@ class SitterServicesPageState extends State<SitterServicesPage>
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Icon(
-                MdiIcons.faceAgent,
+                MdiIcons.face,
                 color: Colors.white,
               ),
               SizedBox(
                 width: 4.0,
               ),
               Text(
-                'LAST MINUTE/SICK CARE SITTER REQUEST',
+                'FAMILY APPLICATION',
                 style: TextStyle(color: Colors.white),
               ),
             ],

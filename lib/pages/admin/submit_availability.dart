@@ -54,8 +54,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
     List<Sitter> sitters = List<Sitter>();
 
     //Get sitters.
-    QuerySnapshot querySnapshot =
-        await _db.collection('Users').getDocuments();
+    QuerySnapshot querySnapshot = await _db.collection('Users').getDocuments();
     querySnapshot.documents.forEach(
       (document) {
         Sitter sitter = Sitter.extractDocument(document);
@@ -217,69 +216,42 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
   }
 
   Container _buildBottomNavigationBar() {
-    return (_avialableSlots == null || _avialableSlots.isEmpty)
-        ? Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50.0,
-            child: RaisedButton(
-              onPressed: () {},
-              color: Colors.grey.shade200,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      MdiIcons.close,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      'NO AVAILABILITY',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
-                ),
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 50.0,
+      child: RaisedButton(
+        onPressed: () {
+          Modal.showInSnackBar(
+              scaffoldKey: _scaffoldKey, text: 'Proceed to Times...');
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) => BookSitterTimePage(
+          //         _avialableSlots, _sitterSlotMap, serviceOrder),
+          //   ),
+          // );
+        },
+        color: Colors.grey.shade200,
+        child: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                MdiIcons.clock,
+                color: Colors.black,
               ),
-            ),
-          )
-        : Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50.0,
-            child: RaisedButton(
-              onPressed: () {
-                Modal.showInSnackBar(
-                    scaffoldKey: _scaffoldKey, text: 'Proceed to Times...');
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => BookSitterTimePage(
-                //         _avialableSlots, _sitterSlotMap, serviceOrder),
-                //   ),
-                // );
-              },
-              color: Colors.grey.shade200,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      MdiIcons.clock,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      'PICK A TIME',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
-                ),
+              SizedBox(
+                width: 4.0,
               ),
-            ),
-          );
+              Text(
+                'PICK A TIME',
+                style: TextStyle(color: Colors.black),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   TableCalendar _buildTableCalendar() {
