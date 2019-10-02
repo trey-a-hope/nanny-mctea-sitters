@@ -208,13 +208,13 @@ class Modal {
         content: Text(text),
         actions: <Widget>[
           FlatButton(
-            child: const Text('NO'),
+            child: const Text('NO', style: TextStyle(color: Colors.black)),
             onPressed: () {
               Navigator.of(context).pop(false);
             },
           ),
           FlatButton(
-            child: const Text('YES'),
+            child: const Text('YES', style: TextStyle(color: Colors.black)),
             onPressed: () {
               Navigator.of(context).pop(true);
             },

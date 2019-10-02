@@ -1,16 +1,11 @@
-import 'dart:async';
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/common/drawer_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/common/content_heading_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/common/photo_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/professional_nannies.dart';
@@ -21,13 +16,8 @@ import 'package:nanny_mctea_sitters_flutter/pages/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nanny_mctea_sitters_flutter/services/notification.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe_service.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
-import 'package:nanny_mctea_sitters_flutter/style/text.dart';
-
 import 'contact.dart';
 
 class HomePage extends StatefulWidget {
@@ -38,18 +28,43 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _db = Firestore.instance;
-  List<Sitter> _sitters = List<Sitter>();
-  FirebaseMessaging _fcm = FirebaseMessaging();
+  final Firestore _db = Firestore.instance;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  bool _isLoading = true;
   final ScrollController _scrollController = ScrollController();
+  List<User> _sitters = List<User>();
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
     loadPage();
+  }
+
+  void loadPage() async {
+    //Get sitters.
+    QuerySnapshot querySnapshot = await _db
+        .collection('Users')
+        .where('isSitter', isEqualTo: true)
+        .getDocuments();
+    querySnapshot.documents.forEach(
+      (document) {
+        User sitter = User.extractDocument(document);
+        _sitters.add(sitter);
+      },
+    );
+
+    FirebaseUser firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      _setUpFirebaseMessaging(firebaseUser: firebaseUser);
+    }
+
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
   }
 
   void _setUpFirebaseMessaging({@required FirebaseUser firebaseUser}) async {
@@ -69,7 +84,7 @@ class HomePageState extends State<HomePage>
     }
 
     //Update user's fcm token.
-    String fcmToken = await _fcm.getToken();
+    final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
       print(fcmToken);
       _db.collection('Users').document(id).updateData(
@@ -99,40 +114,17 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  void loadPage() async {
-    //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
-        .getDocuments();
-    querySnapshot.documents.forEach(
-      (document) {
-        Sitter sitter = Sitter.extractDocument(document);
-        _sitters.add(sitter);
-      },
-    );
-
-    FirebaseUser firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      _setUpFirebaseMessaging(firebaseUser: firebaseUser);
-    }
-
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      // appBar: _buildAppBar(),
-      backgroundColor: Colors.yellow[50],
-      drawer: DrawerWidget(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      drawer: NavDrawer(),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.arrow_upward),
+        elevation: Theme.of(context).floatingActionButtonTheme.elevation,
+        backgroundColor:
+            Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        child: Icon(Icons.arrow_upward, color: Colors.white),
         onPressed: () {
           _scrollController.animateTo(
             0.0,
@@ -155,7 +147,7 @@ class HomePageState extends State<HomePage>
                       ClipperWavy(
                         child: Container(
                           height: 400,
-                          color: Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       SimpleNavbar(
@@ -183,7 +175,7 @@ class HomePageState extends State<HomePage>
                             height: 300,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Colors.yellow[50],
+                                  color: Theme.of(context).accentColor,
                                   style: BorderStyle.solid,
                                   width: 5.0),
                               borderRadius: BorderRadius.all(
@@ -219,31 +211,9 @@ class HomePageState extends State<HomePage>
                                 ),
                               ],
                             ),
-                          )
-
-                          // Text(
-                          //   'Nanny McTea Sitters',
-                          //   style: TextStyle(
-                          //     fontSize: 25,
-                          //     color: Colors.white,
-                          //     fontWeight: FontWeight.bold
-                          //   ),
-                          // ),
-                          )
+                          ))
                     ],
                   ),
-
-                  // Stack(
-                  //   children: <Widget>[
-                  //     // SlantHeaderImage(image: floor),
-                  //     Positioned(
-                  //       top: 80,
-                  //       left: 0,
-                  //       right: 0,
-                  //       child: _buildHeaderImage(),
-                  //     )
-                  //   ],
-                  // ),
                   SizedBox(
                     height: 100,
                   ),
@@ -251,49 +221,21 @@ class HomePageState extends State<HomePage>
                     padding: EdgeInsets.all(30),
                     child: Row(
                       children: <Widget>[
-                        Text(
-                          'About',
-                          style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
-                        )
+                        Text('About',
+                            style: Theme.of(context).primaryTextTheme.headline)
                       ],
                     ),
                   ),
-                  _buildAboutWidget(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: Text(
+                      about,
+                      style: Theme.of(context).primaryTextTheme.body1,
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
-                  // Stack(
-                  //   children: <Widget>[
-                  //     // SlantHeaderImage(image: pike_street),
-                  //     Positioned(
-                  //       top: 220,
-                  //       left: 0,
-                  //       right: 0,
-                  //       child: Padding(
-                  //         padding: EdgeInsets.symmetric(horizontal: 16),
-                  //         child: Container(
-                  //           width: double.infinity,
-                  //           height: 300,
-                  //           decoration: BoxDecoration(
-                  //             border: Border.all(
-                  //                 color: Colors.yellow[50],
-                  //                 style: BorderStyle.solid,
-                  //                 width: 5.0),
-                  //             borderRadius: BorderRadius.all(
-                  //               Radius.circular(16),
-                  //             ),
-                  //             image: DecorationImage(
-                  //               image: AssetImage(
-                  //                   'assets/images/dispicable_me.jpg'),
-                  //               fit: BoxFit.cover,
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   ClipperWavy(
                     child: imgPikeStreet,
                   ),
@@ -302,12 +244,10 @@ class HomePageState extends State<HomePage>
                     child: Row(
                       children: <Widget>[
                         Text('Services',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold))
+                            style: Theme.of(context).primaryTextTheme.headline)
                       ],
                     ),
                   ),
-
                   _buildEventServicesButton(),
                   SizedBox(
                     height: 10,
@@ -324,26 +264,19 @@ class HomePageState extends State<HomePage>
                     child: Row(
                       children: <Widget>[
                         Text('Meet The Team',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold))
+                            style: Theme.of(context).primaryTextTheme.headline)
                       ],
                     ),
                   ),
                   _buildTeamWidget(),
                   SizedBox(height: 40),
-
-                  // ContentHeadingWidget(
-                  //   heading: 'Photos',
-                  // ),
-                  // _buildPhotosWidget(),
                   ClipperWavy(child: imgDispicableMe),
                   Padding(
                     padding: EdgeInsets.all(30),
                     child: Row(
                       children: <Widget>[
                         Text('Reviews',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold))
+                            style: Theme.of(context).primaryTextTheme.headline)
                       ],
                     ),
                   ),
@@ -356,13 +289,12 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                             text:
                                 '\"I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.\"',
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           TextSpan(text: '\n\n'),
                           TextSpan(
                               text: '~Morales Family',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
+                              style: Theme.of(context).primaryTextTheme.body2),
                         ],
                       ),
                     ),
@@ -379,13 +311,12 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                             text:
                                 '\"We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!\"',
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           TextSpan(text: '\n\n'),
                           TextSpan(
                               text: '~Cady  Family',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
+                              style: Theme.of(context).primaryTextTheme.body2),
                         ],
                       ),
                     ),
@@ -403,13 +334,12 @@ class HomePageState extends State<HomePage>
                           TextSpan(
                             text:
                                 '\"Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!\"',
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: Theme.of(context).primaryTextTheme.body1,
                           ),
                           TextSpan(text: '\n\n'),
                           TextSpan(
                               text: '~Eavenson Family',
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 25, fontWeight: FontWeight.bold)),
+                              style: Theme.of(context).primaryTextTheme.body2),
                         ],
                       ),
                     ),
@@ -423,8 +353,7 @@ class HomePageState extends State<HomePage>
                     child: Row(
                       children: <Widget>[
                         Text('Social Media',
-                            style: TextStyle(
-                                fontSize: 30, fontWeight: FontWeight.bold))
+                            style: Theme.of(context).primaryTextTheme.headline)
                       ],
                     ),
                   ),
@@ -435,53 +364,6 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  // _buildHeaderImage() {
-  //   return Stack(
-  //     children: <Widget>[
-  //       Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 16),
-  //         child: Container(
-  //           width: double.infinity,
-  //           height: 300,
-  //           decoration: BoxDecoration(
-  //             border: Border.all(
-  //                 color: Colors.yellow[50],
-  //                 style: BorderStyle.solid,
-  //                 width: 5.0),
-  //             borderRadius: BorderRadius.all(
-  //               Radius.circular(16),
-  //             ),
-  //             image: DecorationImage(
-  //               image: asImgGroup_nannies,
-  //               fit: BoxFit.cover,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       Positioned.fill(
-  //         child: Align(
-  //           alignment: Alignment.bottomCenter,
-  //           child: Container(
-  //             decoration: BoxDecoration(
-  //               color: Colors.transparent,
-  //               borderRadius: BorderRadius.circular(3.0),
-  //             ),
-  //             padding: EdgeInsets.all(10),
-  //             child: Text(
-  //               'Nanny McTea Sitters',
-  //               style: TextStyle(
-  //                 color: Colors.white,
-  //                 fontWeight: FontWeight.bold,
-  //                 fontSize: 20.0,
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       )
-  //     ],
-  //   );
-  // }
-
   _buildEventServicesButton() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 25),
@@ -490,14 +372,13 @@ class HomePageState extends State<HomePage>
         children: <Widget>[
           Text(
             'Event Services',
-            style: TextStyle(
-                fontSize: 20, color: Colors.red, fontWeight: FontWeight.bold),
+            style: Theme.of(context).primaryTextTheme.body1,
           ),
           RaisedButton(
-            color: Colors.red,
+            color: Theme.of(context).buttonColor,
             child: Text(
               'Read More',
-              style: TextStyle(color: Colors.white),
+              style: Theme.of(context).accentTextTheme.button,
             ),
             onPressed: () {
               Navigator.push(
@@ -521,14 +402,13 @@ class HomePageState extends State<HomePage>
         children: <Widget>[
           Text(
             'Sitter Services',
-            style: TextStyle(
-                fontSize: 20, color: Colors.blue, fontWeight: FontWeight.bold),
+            style: Theme.of(context).primaryTextTheme.body1,
           ),
           RaisedButton(
-            color: Colors.blue,
+            color: Theme.of(context).buttonColor,
             child: Text(
               'Read More',
-              style: TextStyle(color: Colors.white),
+              style: Theme.of(context).accentTextTheme.button,
             ),
             onPressed: () {
               Navigator.push(
@@ -552,15 +432,11 @@ class HomePageState extends State<HomePage>
         children: <Widget>[
           Text(
             'Professional Nannies',
-            style: TextStyle(
-                fontSize: 20, color: Colors.amber, fontWeight: FontWeight.bold),
+            style: Theme.of(context).primaryTextTheme.body1,
           ),
           RaisedButton(
-            color: Colors.amber,
-            child: Text(
-              'Read More',
-              style: TextStyle(color: Colors.white),
-            ),
+            color: Theme.of(context).buttonColor,
+            child: Text('Read More', style: Theme.of(context).accentTextTheme.button),
             onPressed: () {
               Navigator.push(
                 context,
@@ -589,7 +465,10 @@ class HomePageState extends State<HomePage>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SitterDetailsPage(_sitters[i])),
+                    builder: (context) => SitterDetailsPage(
+                      _sitters[i],
+                    ),
+                  ),
                 );
               },
             )
@@ -598,32 +477,26 @@ class HomePageState extends State<HomePage>
     );
   }
 
-  _buildAboutWidget() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Text(
-        about,
-        style: TextStyle(color: Colors.black, fontSize: 20),
-      ),
-    );
-  }
-
   _buildSocialMedias() {
     return Row(
       children: <Widget>[
         Padding(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.all(20),
           child: InkWell(
-            child: Icon(MdiIcons.facebook, color: Colors.red, size: 30),
+            child: Icon(MdiIcons.facebook,
+                color: Theme.of(context).primaryIconTheme.color,
+                size: Theme.of(context).primaryIconTheme.size),
             onTap: () {
               URLLauncher.launchUrl('https://www.facebook.com/nannymctea');
             },
           ),
         ),
         Padding(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.all(20),
           child: InkWell(
-            child: Icon(MdiIcons.instagram, color: Colors.red, size: 30),
+            child: Icon(MdiIcons.instagram,
+                color: Theme.of(context).primaryIconTheme.color,
+                size: Theme.of(context).primaryIconTheme.size),
             onTap: () {
               URLLauncher.launchUrl(
                   'https://www.instagram.com/nannymcteasitters');
