@@ -34,7 +34,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
 
   bool _isLoading = true;
   Slot _slot;
-  Sitter _sitter;
+  User _sitter;
   User _user;
 
   @override
@@ -44,10 +44,10 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
     _load();
   }
 
-  Future<Sitter> _fetchSitter() async {
+  Future<User> _fetchSitter() async {
     DocumentSnapshot documentSnapshot =
         await _db.collection('Users').document(appointment.sitterID).get();
-    Sitter sitter = Sitter.extractDocument(documentSnapshot);
+    User sitter = User.extractDocument(documentSnapshot);
     return sitter;
   }
 

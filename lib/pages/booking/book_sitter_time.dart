@@ -8,7 +8,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_sitter.dar
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> _slots;
-  final Map<Sitter, List<Slot>> _sitterSlotMap;
+  final Map<User, List<Slot>> _sitterSlotMap;
   final ServiceOrder serviceOrder;
 
   BookSitterTimePage(this._slots, this._sitterSlotMap, this.serviceOrder);
@@ -23,7 +23,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
   BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   final List<dynamic> _slots;
-  final Map<Sitter, List<Slot>> _sitterSlotMap;
+  final Map<User, List<Slot>> _sitterSlotMap;
   final ServiceOrder serviceOrder;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -100,7 +100,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                List<Sitter> availableSitters = List<Sitter>();
+                List<User> availableSitters = List<User>();
 
                 //Pick sitters for the slot selected.
                 _sitterSlotMap.forEach(

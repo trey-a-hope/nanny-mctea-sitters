@@ -4,6 +4,6 @@ import '../database/slot.dart';
 
 class ServiceOrder {
   String serviceName;
-  Sitter sitter;
+  User sitter;
   Slot slot;
 }

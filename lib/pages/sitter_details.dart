@@ -15,7 +15,7 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'messages/message_page.dart';
 
 class SitterDetailsPage extends StatefulWidget {
-  final Sitter _sitter;
+  final User _sitter;
 
   SitterDetailsPage(this._sitter);
 
@@ -27,7 +27,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
     with SingleTickerProviderStateMixin {
   SitterDetailsPageState(this._sitter);
 
-  final Sitter _sitter;
+  final User _sitter;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';

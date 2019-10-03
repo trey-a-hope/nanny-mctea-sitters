@@ -31,11 +31,11 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
   final CalendarController _calendarController = CalendarController();
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
-  Map<Sitter, List<Slot>> _sitterSlotMap = Map<Sitter, List<Slot>>();
+  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
   final _db = Firestore.instance;
   bool _isLoading = true;
   String _sitterOption;
-  List<Sitter> _sitters = List<Sitter>();
+  List<User> _sitters = List<User>();
   List<String> _sitterOptions;
 
   @override
@@ -51,14 +51,14 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
     super.dispose();
   }
 
-  Future<List<Sitter>> _getSitters() async {
-    List<Sitter> sitters = List<Sitter>();
+  Future<List<User>> _getSitters() async {
+    List<User> sitters = List<User>();
 
     //Get sitters.
     QuerySnapshot querySnapshot = await _db.collection('Users').getDocuments();
     querySnapshot.documents.forEach(
       (document) {
-        Sitter sitter = Sitter.extractDocument(document);
+        User sitter = User.extractDocument(document);
         sitters.add(sitter);
       },
     );
@@ -76,7 +76,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
     _sitterSlotMap.clear();
 
     //Find specific sitter and look for their availability, (slots).
-    Sitter filteredSitter =
+    User filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
 
     // for (var i = 0; i < _sitters.length; i++) {

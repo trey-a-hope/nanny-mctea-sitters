@@ -7,7 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_info.dart'
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookSitterSitterPage extends StatefulWidget {
-  final List<Sitter> _availableSitters;
+  final List<User> _availableSitters;
   final ServiceOrder serviceOrder;
 
   BookSitterSitterPage(this._availableSitters, this.serviceOrder);
@@ -21,9 +21,9 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
     with SingleTickerProviderStateMixin {
   BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
 
-  final List<Sitter> _availableSitters;
+  final List<User> _availableSitters;
   final ServiceOrder serviceOrder;
-  Sitter _selectedSitter;
+  User _selectedSitter;
   bool _isLoading = true;
 
   @override
@@ -66,7 +66,7 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
     );
   }
 
-  Widget _buildSitterWidget(Sitter sitter) {
+  Widget _buildSitterWidget(User sitter) {
     return InkWell(
       onTap: () {
         setState(

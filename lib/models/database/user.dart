@@ -32,26 +32,26 @@ class User {
   }
 }
 
-class Sitter extends User {
-  String imgUrl;
-  String details;
-  String bio;
+// class Sitter extends User {
+//   String imgUrl;
+//   String details;
+//   String bio;
 
-  static Sitter extractDocument(DocumentSnapshot ds) {
-    Sitter sitter = Sitter();
+//   static Sitter extractDocument(DocumentSnapshot ds) {
+//     Sitter sitter = Sitter();
 
-    sitter.details = ds.data['details'];
-    sitter.email = ds.data['email'];
-    sitter.id = ds.data['id'];
-    sitter.imgUrl = ds.data['imgUrl'];
-    sitter.name = ds.data['name'];
-    sitter.time = ds.data['time'].toDate();
-    sitter.uid = ds.data['uid'];
-    sitter.bio = ds.data['bio'];
-    sitter.phone = ds.data['phone'];
-    sitter.isSitter = ds.data['isSitter'];
-    sitter.fcmToken = ds.data['fcmToken'];
+//     sitter.details = ds.data['details'];
+//     sitter.email = ds.data['email'];
+//     sitter.id = ds.data['id'];
+//     sitter.imgUrl = ds.data['imgUrl'];
+//     sitter.name = ds.data['name'];
+//     sitter.time = ds.data['time'].toDate();
+//     sitter.uid = ds.data['uid'];
+//     sitter.bio = ds.data['bio'];
+//     sitter.phone = ds.data['phone'];
+//     sitter.isSitter = ds.data['isSitter'];
+//     sitter.fcmToken = ds.data['fcmToken'];
 
-    return sitter;
-  }
-}
+//     return sitter;
+//   }
+// }
