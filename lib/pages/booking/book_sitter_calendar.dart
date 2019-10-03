@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
@@ -221,11 +222,11 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
                   ),
                 ),
                 Divider(),
-                _buildTableCalendar(),
-                // Divider(),
-                // Expanded(
-                //   child: _buildEventList(),
-                // ),
+                Calendar(
+                    calendarController: _calendarController,
+                    events: _dateTimeMap,
+                    onDaySelected: _onDaySelected,
+                    onVisibleDaysChanged: _onVisibleDaysChanged),
               ],
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -309,31 +310,6 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
               ),
             ),
           );
-  }
-
-  TableCalendar _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _dateTimeMap,
-      // holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
-    );
   }
 
   DropdownButton _buildSitterDropDown() {

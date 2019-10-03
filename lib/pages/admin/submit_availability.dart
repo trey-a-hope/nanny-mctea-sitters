@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
@@ -29,7 +30,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
   final String timeFormat = 'hh:mm a';
   final CalendarController _calendarController = CalendarController();
   List<dynamic> _avialableSlots;
-  Map<DateTime, List<dynamic>> _dateTimeMap = Map<DateTime, List<dynamic>>();
+  Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   Map<Sitter, List<Slot>> _sitterSlotMap = Map<Sitter, List<Slot>>();
   final _db = Firestore.instance;
   bool _isLoading = true;
@@ -104,7 +105,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
 
   void _setCalendar() {
     final _selectedDay = DateTime.now();
-    _dateTimeMap.clear();
+    _events.clear();
 
     //Iterate through all slots on each sitter.
     _sitterSlotMap.forEach(
@@ -115,22 +116,22 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
             DateTime dayKey =
                 DateTime(slot.time.year, slot.time.month, slot.time.day);
 
-            if (_dateTimeMap.containsKey(dayKey)) {
+            if (_events.containsKey(dayKey)) {
               //Add time slot to day if it's hasn't been added already.
-              if (!_dateTimeMap[dayKey].contains(slot)) {
-                _dateTimeMap[dayKey].add(slot);
+              if (!_events[dayKey].contains(slot)) {
+                _events[dayKey].add(slot);
               }
             }
             //Set first time slot to day.
             else {
-              _dateTimeMap[dayKey] = [slot];
+              _events[dayKey] = [slot];
             }
           },
         );
       },
     );
 
-    _avialableSlots = _dateTimeMap[_selectedDay] ?? [];
+    _avialableSlots = _events[_selectedDay] ?? [];
   }
 
   _load() async {
@@ -189,11 +190,11 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
                   ),
                 ),
                 Divider(),
-                _buildTableCalendar(),
-                // Divider(),
-                // Expanded(
-                //   child: _buildEventList(),
-                // ),
+                Calendar(
+                    calendarController: _calendarController,
+                    events: _events,
+                    onDaySelected: _onDaySelected,
+                    onVisibleDaysChanged: _onVisibleDaysChanged)
               ],
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
@@ -251,31 +252,6 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
           ),
         ),
       ),
-    );
-  }
-
-  TableCalendar _buildTableCalendar() {
-    return TableCalendar(
-      calendarController: _calendarController,
-      events: _dateTimeMap,
-      // holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
-      calendarStyle: CalendarStyle(
-        selectedColor: Colors.deepOrange[400],
-        todayColor: Colors.deepOrange[200],
-        markersColor: Colors.brown[700],
-        outsideDaysVisible: false,
-      ),
-      headerStyle: HeaderStyle(
-        formatButtonTextStyle:
-            TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
-        formatButtonDecoration: BoxDecoration(
-          color: Colors.deepOrange[400],
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-      ),
-      onDaySelected: _onDaySelected,
-      onVisibleDaysChanged: _onVisibleDaysChanged,
     );
   }
 
