@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/authentication/login_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/authentication/sign_up_page.dart';
@@ -85,7 +86,9 @@ class NavDrawerState extends State<NavDrawer>
           _buildPlansPricing(),
           _buildJoinTeam(),
           _buildProfile(),
-          _buildAvailability(),
+          _buildAddAvailability(),
+          _buildDeleteAvailability(),
+
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
@@ -132,13 +135,13 @@ class NavDrawerState extends State<NavDrawer>
           );
   }
 
-  Widget _buildAvailability() {
+  Widget _buildAddAvailability() {
     return user != null && ADMIN_UIDS.contains(user.uid)
         ? ListTile(
-            leading: Icon(MdiIcons.timelapse,
+            leading: Icon(MdiIcons.plus,
                 color: Theme.of(context).primaryIconTheme.color),
             title: Text(
-              'Sitter Hours',
+              'Add Sitter Hours',
             ),
             subtitle: Text(
               'Provide availability for sitters.',
@@ -149,6 +152,30 @@ class NavDrawerState extends State<NavDrawer>
                 context,
                 MaterialPageRoute(
                   builder: (context) => SubmitAvailabilityPage(),
+                ),
+              );
+            },
+          )
+        : Container();
+  }
+
+  Widget _buildDeleteAvailability() {
+    return user != null && ADMIN_UIDS.contains(user.uid)
+        ? ListTile(
+            leading: Icon(MdiIcons.delete,
+                color: Theme.of(context).primaryIconTheme.color),
+            title: Text(
+              'Delete Sitter Hours',
+            ),
+            subtitle: Text(
+              'Delete availability for sitters.',
+              style: TextStyle(color: Colors.grey),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DeleteAvailabilityPage(),
                 ),
               );
             },
@@ -189,7 +216,7 @@ class NavDrawerState extends State<NavDrawer>
       ),
       subtitle: Text(
         'Get an idea of costs.',
-              style: TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.grey),
       ),
       onTap: () {
         Navigator.push(
@@ -211,7 +238,7 @@ class NavDrawerState extends State<NavDrawer>
       ),
       subtitle: Text(
         'Become a nanny today.',
-              style: TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.grey),
       ),
       onTap: () {
         Navigator.push(
@@ -239,7 +266,7 @@ class NavDrawerState extends State<NavDrawer>
             ),
             onTap: () async {
               bool confirm = await Modal.showConfirmation(
-                  context, 'Sign Out', 'Are you sure?');
+                  context: context, title: 'Sign Out', text: 'Are you sure?');
               if (confirm) {
                 _auth.signOut().then(
                       (r) {},

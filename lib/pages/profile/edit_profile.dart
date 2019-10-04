@@ -64,7 +64,7 @@ class EditProfilePageState extends State<EditProfilePage>
       _formKey.currentState.save();
 
       bool confirm = await Modal.showConfirmation(
-          context, 'Update Profile', 'Are you sure?');
+          context: context, title: 'Update Profile', text: 'Are you sure?');
 
       if (confirm) {
         try {

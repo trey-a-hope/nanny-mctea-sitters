@@ -115,24 +115,16 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       List<Slot> slots = List<Slot>();
 
       for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-        Slot slot = Slot();
-
-        slot.id = slotDocumentSnapshots[j].data['id'];
-        slot.taken = slotDocumentSnapshots[j].data['taken'];
-        slot.time = slotDocumentSnapshots[j].data['time'].toDate();
+        Slot slot = Slot(
+            id: slotDocumentSnapshots[j].data['id'],
+            taken: slotDocumentSnapshots[j].data['taken'],
+            time: slotDocumentSnapshots[j].data['time'].toDate());
 
         slots.add(slot);
       }
 
       _sitterSlotMap[filteredSitter] = slots;
     }
-  }
-
-  void _setOptions() {
-    //Create options for dropdown.
-    _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
-    _sitterOptions.insert(0, 'All Staff');
-    _sitterOption = _sitterOptions[0];
   }
 
   void _setCalendar() {
@@ -169,7 +161,10 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
   _load() async {
     _sitters = await _getSitters();
     await _getAvailability(all: true);
-    _setOptions();
+    //Create options for dropdown.
+    _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
+    _sitterOptions.insert(0, 'All Staff');
+    _sitterOption = _sitterOptions[0];
     _setCalendar();
 
     setState(

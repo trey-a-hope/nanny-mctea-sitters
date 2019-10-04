@@ -199,7 +199,7 @@ class Modal {
   }
 
   static Future<bool> showConfirmation(
-      BuildContext context, String title, String text) {
+      {@required BuildContext context, @required String title, @required String text}) {
     return showDialog<bool>(
       barrierDismissible: false,
       context: context,

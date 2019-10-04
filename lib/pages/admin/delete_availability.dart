@@ -1,36 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability_time.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability_time.dart';
+import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class SubmitAvailabilityPage extends StatefulWidget {
-  SubmitAvailabilityPage();
-
+class DeleteAvailabilityPage extends StatefulWidget {
   @override
-  State createState() => SubmitAvailabilityPageState();
+  State createState() => DeleteAvailabilityPageState();
 }
 
-class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
+class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage>
     with SingleTickerProviderStateMixin {
-  SubmitAvailabilityPageState();
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
-  final CalendarController _calendarController = CalendarController();
-  List<dynamic> _avialableSlots;
-  Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
-  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
+  final String dateFormat = 'MMM, dd yyyy';
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Firestore _db = Firestore.instance;
+  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
+  List<dynamic> _avialableSlots;
   bool _isLoading = true;
   String _sitterOption;
   List<User> _sitters = List<User>();
   List<String> _sitterOptions;
+  List<Slot> _slots = List<Slot>();
+  Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
+  final CalendarController _calendarController = CalendarController();
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
 
@@ -41,10 +39,32 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
     _load();
   }
 
-  @override
-  void dispose() {
-    _calendarController.dispose();
-    super.dispose();
+  _load() async {
+    _sitters = await _getSitters();
+    _setOptions();
+    await _getAvailability();
+    _setCalendar();
+
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
+  }
+
+  void _onDaySelected(DateTime day, List events) {
+    print('CALLBACK: _onDaySelected');
+    setState(
+      () {
+        _selectedDay = day;
+        _avialableSlots = events;
+      },
+    );
+  }
+
+  void _onVisibleDaysChanged(
+      DateTime first, DateTime last, CalendarFormat format) {
+    print('CALLBACK: _onVisibleDaysChanged');
   }
 
   Future<List<User>> _getSitters() async {
@@ -66,7 +86,6 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
   }
 
   void _setOptions() {
-    //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];
   }
@@ -130,39 +149,11 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
     _avialableSlots = _events[_selectedDay] ?? [];
   }
 
-  _load() async {
-    _sitters = await _getSitters();
-    _setOptions();
-    await _getAvailability();
-    _setCalendar();
-
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
-  }
-
-  void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
-    setState(
-      () {
-        _selectedDay = day;
-        _avialableSlots = events;
-      },
-    );
-  }
-
-  void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
       key: _scaffoldKey,
+      appBar: _buildAppBar(),
       body: _isLoading
           ? Center(
               child: CircularProgressIndicator(),
@@ -177,100 +168,18 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
                     children: <Widget>[
                       SizedBox(height: 20),
                       _buildSitterDropDown(),
+                      Calendar(
+                          calendarController: _calendarController,
+                          events: _events,
+                          onDaySelected: _onDaySelected,
+                          onVisibleDaysChanged: _onVisibleDaysChanged)
                     ],
                   ),
                 ),
-                Divider(),
-                Calendar(
-                    calendarController: _calendarController,
-                    events: _events,
-                    onDaySelected: _onDaySelected,
-                    onVisibleDaysChanged: _onVisibleDaysChanged)
               ],
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Text('SUBMIT AVAILABILITY'),
-      centerTitle: true,
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.refresh),
-          onPressed: () async {
-            //await _getSlotsAndCaledar();
-          },
-        )
-      ],
-    );
-  }
-
-  Container _buildBottomNavigationBar() {
-    return _selectedDay == null
-        ? Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50.0,
-            child: RaisedButton(
-              onPressed: () {},
-              color: Colors.grey.shade200,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      MdiIcons.clock,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      'PICK A DATE',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
-        : Container(
-            width: MediaQuery.of(context).size.width,
-            height: 50.0,
-            child: RaisedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SubmitAvailabilityTimePage(
-                        takenSlots: _avialableSlots,
-                        selectedDay: _selectedDay,
-                        slotsColRef: _slotsColRef),
-                  ),
-                );
-              },
-              color: Colors.grey.shade200,
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      MdiIcons.clock,
-                      color: Colors.black,
-                    ),
-                    SizedBox(
-                      width: 4.0,
-                    ),
-                    Text(
-                      'PICK A TIME',
-                      style: TextStyle(color: Colors.black),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
   }
 
   DropdownButton _buildSitterDropDown() {
@@ -298,5 +207,130 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
         },
       ).toList(),
     );
+  }
+
+  Container _buildBottomNavigationBar() {
+    return (_avialableSlots == null || _avialableSlots.isEmpty)
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {},
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.clock,
+                      color: Colors.red,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'PICK A DATE WITH TAKEN SLOTS',
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        : Container(
+            width: MediaQuery.of(context).size.width,
+            height: 50.0,
+            child: RaisedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DeleteAvailabilityTimePage(
+                        takenSlots: _avialableSlots,
+                        selectedDay: _selectedDay,
+                        slotsColRef: _slotsColRef),
+                  ),
+                );
+              },
+              color: Colors.grey.shade200,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      MdiIcons.clock,
+                      color: Colors.black,
+                    ),
+                    SizedBox(
+                      width: 4.0,
+                    ),
+                    Text(
+                      'VIEW TIMES',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+  }
+
+  Future<void> deleteAvailability() async {
+    // bool confirm = await Modal.showConfirmation(
+    //   context: context,
+    //   title: 'Delete Availability',
+    //   text: '',
+    // );
+    // if (confirm) {
+    //   for (int i = 0; i < _selectedSlots.length; i++) {
+    //     DocumentReference docRef = await _slotsColRef.add(
+    //       {'taken': false, 'time': _selectedSlots[i].time},
+    //     );
+    //     _slotsColRef.document(docRef.documentID).updateData(
+    //       {'id': docRef.documentID},
+    //     );
+    //   }
+    //   Modal.showAlert(
+    //       context: context, title: 'Success', message: 'Time submitted.');
+    //   return;
+    // }
+  }
+
+  _buildAppBar() {
+    return AppBar(
+      title: Text('DELETE IT'),
+      centerTitle: true,
+    );
+  }
+
+  Widget _buildSlot(Slot slot) {
+    //   return InkWell(
+    //     child: ListTile(
+    //       title: Text(
+    //         DateFormat(timeFormat).format(slot.time),
+    //       ),
+    //       leading: CircleAvatar(
+    //         backgroundColor:
+    //             _selectedSlots.contains(slot) ? Colors.green : Colors.red,
+    //         child: _selectedSlots.contains(slot)
+    //             ? Icon(
+    //                 Icons.check,
+    //                 color: Colors.white,
+    //               )
+    //             : Icon(Icons.close, color: Colors.white),
+    //       ),
+    //     ),
+    //     onTap: () {
+    //       setState(
+    //         () {
+    //           if (_selectedSlots.contains(slot)) {
+    //             _selectedSlots.remove(slot);
+    //           } else {
+    //             _selectedSlots.add(slot);
+    //           }
+    //         },
+    //       );
+    //     },
+    //   );
   }
 }

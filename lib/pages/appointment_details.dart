@@ -331,7 +331,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
 
   _cancelAppoinment() async {
     bool confirm = await Modal.showConfirmation(
-        context, 'Cancel Appointment', 'Are you sure?');
+        context: context, title: 'Cancel Appointment', text: 'Are you sure?');
     if (confirm) {
       setState(
         () {
@@ -368,7 +368,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       child: RaisedButton(
         onPressed: () async {
           bool confirm = await Modal.showConfirmation(
-              context, 'Add To Calendar', 'Are you sure?');
+              context: context, title: 'Add To Calendar', text: 'Are you sure?');
           if (confirm) {
             _addEventToCalendar();
           }

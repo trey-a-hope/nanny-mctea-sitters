@@ -51,7 +51,7 @@ class SignUpPageState extends State<SignUpPage>
       _formKey.currentState.save();
 
       bool confirm =
-          await Modal.showConfirmation(context, 'Submit', 'Are you ready?');
+          await Modal.showConfirmation(context: context, title: 'Submit', text: 'Are you ready?');
       if (confirm) {
         try {
           setState(

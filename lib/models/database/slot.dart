@@ -1,17 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 
 class Slot {
   String id;
   DateTime time;
   bool taken;
 
-  static Slot extractDocument(DocumentSnapshot ds) { 
-    Slot slot = Slot();
+  Slot({@required this.id, @required this.time, @required this.taken});
 
-    slot.id = ds.data['id'];
-    slot.time = ds.data['time'].toDate();
-    slot.taken = ds.data['taken'];
-    
-    return slot;
+  static Slot extractDocument(DocumentSnapshot ds) { 
+    return Slot(id: ds.data['id'], time: ds.data['time'].toDate(), taken: ds.data['taken']);
   }
 }
