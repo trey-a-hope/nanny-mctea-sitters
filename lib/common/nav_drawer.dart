@@ -10,6 +10,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/settings_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -92,6 +93,7 @@ class NavDrawerState extends State<NavDrawer>
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
+          _buildSettings(),
           // _buildContact(),
           Expanded(
             child: Align(
@@ -322,5 +324,29 @@ class NavDrawerState extends State<NavDrawer>
             },
           )
         : Container();
+  }
+
+  Widget _buildSettings() {
+    return user == null
+        ? Container()
+        : ListTile(
+            leading: Icon(MdiIcons.settings,
+                color: Theme.of(context).primaryIconTheme.color),
+            title: Text(
+              'Settings',
+            ),
+            subtitle: Text(
+              'Manage your settings.',
+              style: TextStyle(color: Colors.grey),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(),
+                ),
+              );
+            },
+          );
   }
 }

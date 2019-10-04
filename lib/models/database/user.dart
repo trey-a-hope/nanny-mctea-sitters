@@ -1,32 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class User {
+  String bio;
+  String customerId;
+  String details;
   String email;
+  String fcmToken;
   String id;
-  DateTime time;
-  String uid;
+  String imgUrl;
+  bool isSitter;
   String name;
   String phone;
-  bool isSitter;
-  String fcmToken;
-  String imgUrl;
-  String details;
-  String bio;
+  DateTime time;
+  String uid;
 
   static User extractDocument(DocumentSnapshot ds) {
     User user = User();
 
-    user.id = ds.data['id'];
-    user.uid = ds.data['uid'];
+    user.bio = ds.data['bio'];
+    user.customerId = ds.data['customerId'];
+    user.details = ds.data['details'];
     user.email = ds.data['email'];
-    user.time = ds.data['time'].toDate();
+    user.fcmToken = ds.data['fcmToken'];
+    user.id = ds.data['id'];
+    user.imgUrl = ds.data['imgUrl'];
+    user.isSitter = ds.data['isSitter'];
     user.name = ds.data['name'];
     user.phone = ds.data['phone'];
-    user.isSitter = ds.data['isSitter'];
-    user.fcmToken = ds.data['fcmToken'];
-    user.imgUrl = ds.data['imgUrl'];
-    user.details = ds.data['details'];
-    user.bio = ds.data['bio'];
+    user.time = ds.data['time'].toDate();
+    user.uid = ds.data['uid'];
 
     return user;
   }
