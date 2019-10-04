@@ -1,6 +1,8 @@
 # NannyMcTeaSitters
 Client mobile app for baby sitting business.
 
+#killall -9 dart
+
 # https://www.nannymcteasitters.com/plans-pricing
 
 #Key for creating APK is located here.

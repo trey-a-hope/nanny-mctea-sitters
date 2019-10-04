@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
@@ -142,9 +143,7 @@ class LoginPageState extends State<LoginPage>
       key: _scaffoldKey,
       body: Builder(
         builder: (context) => _isLoading
-            ? Center(
-                child: CircularProgressIndicator(),
-              )
+            ? Spinner(text: 'Loading...')
             : Stack(
                 alignment: Alignment.center,
                 children: <Widget>[

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_info.dart';
@@ -46,9 +47,7 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
     return Scaffold(
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? Spinner(text: 'Loading...')
           : ListView.builder(
               itemCount: _availableSitters.length,
               itemBuilder: (BuildContext ctx, int index) {

@@ -1,8 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/home_page.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
 
-void main() => runApp(MyApp());
+// This is our global ServiceLocator
+GetIt getIt = GetIt.instance;
+
+final String _testSecretKey =
+    'sk_test_IM9ti8gurtw7BjCPCtm9hRar'; //THIS IS SCORBORDS!
+final String _testPublishableKey = '?';
+final String _liveSecretKey = '?';
+final String _livePublishableKey = '?';
+final String _endpoint =
+    'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
+
+void main() {
+  //Register dependencies.
+  getIt.registerSingleton<StripeCard>(
+      StripeCardImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
+      signalsReady: true);
+        getIt.registerSingleton<StripeCharge>(
+      StripeChargeImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
+      signalsReady: true);
+  getIt.registerSingleton<StripeCustomer>(
+      StripeCustomerImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
+      signalsReady: true);
+  getIt.registerSingleton<StripeToken>(
+      StripeTokenImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
+      signalsReady: true);
+
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override

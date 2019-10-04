@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import '../appointment_details.dart';
@@ -71,9 +72,7 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage>
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
+        ? Spinner(text: 'Loading...')
         : _appointments.isEmpty
             ? Center(
                 child: Text('You have nothing booked at the moment.'),

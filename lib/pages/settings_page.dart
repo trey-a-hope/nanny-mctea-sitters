@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings/credit_card_page.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/settings/paymet_history_page.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -50,12 +51,12 @@ class SettingsPageState extends State<SettingsPage> {
               subtitle: Text('View your past transactions.'),
               trailing: Icon(Icons.chevron_right),
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => CreditCardPage(),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentHistoryPage(),
+                  ),
+                );
               },
             )
           ],

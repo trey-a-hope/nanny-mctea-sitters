@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/edit_profile.dart';
 
@@ -56,9 +57,7 @@ class ProfileInfoPageState extends State<ProfileInfoPage>
     return _isLoading ||
             _user ==
                 null //Added _user == null check because of latency issue with snapshots vs documents.
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
+        ? Spinner(text: 'Loading...')
         : SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(8),

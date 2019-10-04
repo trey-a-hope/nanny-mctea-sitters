@@ -1,12 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings/add_credit_card_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe_service.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 
 import '../../asset_images.dart';
 
@@ -24,6 +26,7 @@ class CreditCardPageState extends State<CreditCardPage> {
   bool _autoValidate = false;
   User _currentUser;
   Customer _customer;
+  GetIt getIt = GetIt.instance;
 
   final List<String> _months = [
     'January',
@@ -57,7 +60,7 @@ class CreditCardPageState extends State<CreditCardPage> {
       DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
       _currentUser = User.extractDocument(documentSnapshot);
 
-      return await StripeService.retrieveCustomer(
+      return await getIt<StripeCustomer>().retrieve(
           customerId: _currentUser.customerId);
     } catch (e) {
       throw Exception('Could not fetch credit card information at this time.');
@@ -89,7 +92,7 @@ class CreditCardPageState extends State<CreditCardPage> {
             'This will delete the default card on file. You must add another one to continue using payment features in the app.');
     if (confirm) {
       try {
-        bool deleted = await StripeService.deleteCard(
+        bool deleted = await getIt<StripeCard>().delete(
             customerId: _customer.id, cardId: _customer.card.id);
         if (deleted) {
           setState(

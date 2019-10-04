@@ -5,6 +5,7 @@ import 'package:device_calendar/device_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
@@ -125,9 +126,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       appBar: _buildAppBar(),
       key: _scaffoldKey,
       body: _isLoading
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
+          ? Spinner(text: 'Loading...')
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[

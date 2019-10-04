@@ -1,27 +1,32 @@
+
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:nanny_mctea_sitters_flutter/models/stripe/CreditCard.dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/credit_card.dart';
 import 'dart:convert' show Encoding, json;
 
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 
-final String _testSecretKey =
-    'sk_test_IM9ti8gurtw7BjCPCtm9hRar'; //THIS IS SCORBORDS!
-final String _testPublishableKey = '?';
-final String _liveSecretKey = '?';
-final String _livePublishableKey = '?';
-final String _baseURL =
-    'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
+abstract class StripeCustomer extends ChangeNotifier {
+  Future<String> create({@required String email, @required String description});
+  Future<Customer> retrieve({@required String customerId});
+  Future<void> update({@required String customerId, @required String token});
+}
 
-final String apiKey = _testSecretKey;
+class StripeCustomerImplementation extends StripeCustomer {
+  StripeCustomerImplementation(
+      {@required this.apiKey, @required this.endpoint});
 
-class StripeService {
-  static Future<String> createCustomer(
+  final String apiKey;
+  final String endpoint;
+
+  @override
+  Future<String> create(
       {@required String email, @required String description}) async {
     Map data = {'apiKey': apiKey, 'email': email, 'description': description};
 
     http.Response response = await http.post(
-      _baseURL + 'StripeCreateCustomer',
+      endpoint + 'StripeCreateCustomer',
       body: data,
       headers: {'content-type': 'application/x-www-form-urlencoded'},
     );
@@ -34,12 +39,12 @@ class StripeService {
     }
   }
 
-  static Future<Customer> retrieveCustomer(
-      {@required String customerId}) async {
+  @override
+  Future<Customer> retrieve({@required String customerId}) async {
     Map data = {'apiKey': apiKey, 'customerId': customerId};
 
     http.Response response = await http.post(
-      _baseURL + 'StripeRetrieveCustomer',
+      endpoint + 'StripeRetrieveCustomer',
       body: data,
       headers: {'content-type': 'application/x-www-form-urlencoded'},
     );
@@ -70,64 +75,20 @@ class StripeService {
     }
   }
 
-  static Future<bool> deleteCard(
-      {@required String customerId, @required String cardId}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId, 'cardId': cardId};
-
-    http.Response response = await http.post(
-      _baseURL + 'StripeDeleteCard',
-      body: data,
-      headers: {'content-type': 'application/x-www-form-urlencoded'},
-    );
-
-    try {
-      Map map = json.decode(response.body);
-      return map['deleted'];
-    } catch (e) {
-      throw Exception();
-    }
-  }
-
-  static Future<String> createToken(
-      {@required String number,
-      @required String exp_month,
-      @required String exp_year,
-      @required String cvc}) async {
-    Map data = {
-      'apiKey': apiKey,
-      'number': number,
-      'exp_month': exp_month,
-      'exp_year': exp_year,
-      'cvc': cvc
-    };
-
-    http.Response response = await http.post(
-      _baseURL + 'StripeCreateToken',
-      body: data,
-      headers: {'content-type': 'application/x-www-form-urlencoded'},
-    );
-
-    try {
-      Map map = json.decode(response.body);
-      return map['id'];
-    } catch (e) {
-      throw Exception();
-    }
-  }
-
-  static Future<String> createCard(
+    @override
+  Future<void> update(
       {@required String customerId, @required String token}) async {
     Map data = {'apiKey': apiKey, 'customerId': customerId, 'token': token};
 
     http.Response response = await http.post(
-      _baseURL + 'StripeCreateCard',
+      endpoint + 'StripeUpdateCustomer',
       body: data,
       headers: {'content-type': 'application/x-www-form-urlencoded'},
     );
 
     try {
       Map map = json.decode(response.body);
-      return map['id'];
+      return;
     } catch (e) {
       throw Exception();
     }

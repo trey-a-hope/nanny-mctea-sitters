@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/CreditCard.dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/credit_card.dart';
 
 class Customer {
   String id;

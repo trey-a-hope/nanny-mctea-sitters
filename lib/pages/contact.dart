@@ -193,7 +193,7 @@ class ContactPageState extends State<ContactPage>
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
-        icon: Icon(Icons.face),
+        icon: Icon(Icons.face, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -210,7 +210,7 @@ class ContactPageState extends State<ContactPage>
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Subject',
-        icon: Icon(Icons.subject),
+        icon: Icon(Icons.subject, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -228,7 +228,7 @@ class ContactPageState extends State<ContactPage>
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Message',
-        icon: Icon(Icons.message),
+        icon: Icon(Icons.message, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );

@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe_service.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class AddCreditCardPage extends StatefulWidget {
@@ -29,6 +32,7 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
   final TextEditingController _expirationController = TextEditingController();
   final TextEditingController _cvcController = TextEditingController();
   final Customer _customer;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -65,14 +69,13 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
         String cvc = _cvcController.text;
 
         try {
-          String token = await StripeService.createToken(
+          String token = await getIt<StripeToken>().create(
               number: number,
               exp_month: exp_month,
               exp_year: exp_year,
               cvc: cvc);
 
-          await StripeService.createCard(
-              customerId: _customer.id, token: token);
+          await getIt<StripeCustomer>().update(customerId: _customer.id, token: token);
 
           print(token);
 
