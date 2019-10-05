@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
@@ -24,8 +25,7 @@ class SitterDetailsPage extends StatefulWidget {
   State createState() => SitterDetailsPageState(this._sitter);
 }
 
-class SitterDetailsPageState extends State<SitterDetailsPage>
-    with SingleTickerProviderStateMixin {
+class SitterDetailsPageState extends State<SitterDetailsPage> {
   SitterDetailsPageState(this._sitter);
 
   final User _sitter;
@@ -34,7 +34,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
   final String timeFormat = 'hh:mm a';
   final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
+  final GetIt getIt = GetIt.I;
   bool _isLoading = true;
 
   @override
@@ -58,7 +58,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
       appBar: _buildAppBar(),
       key: _scaffoldKey,
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : SingleChildScrollView(
               child: Stack(
                 children: <Widget>[
@@ -173,7 +173,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
           onPressed: () async {
             FirebaseUser user = await _auth.currentUser();
             if (user == null) {
-              Modal.showInSnackBar(
+              getIt<Modal>().showInSnackBar(
                   scaffoldKey: _scaffoldKey, text: 'Must be logged in.');
             } else {
               QuerySnapshot querySnapshot = await _db
@@ -210,7 +210,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
         ),
       );
     } catch (e) {
-      Modal.showInSnackBar(
+      getIt<Modal>().showInSnackBar(
         scaffoldKey: _scaffoldKey,
         text: e.toString(),
       );

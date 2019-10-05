@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
@@ -20,8 +21,7 @@ class BookSitterInfoPage extends StatefulWidget {
   State createState() => BookSitterInfoPageState(this.serviceOrder);
 }
 
-class BookSitterInfoPageState extends State<BookSitterInfoPage>
-    with SingleTickerProviderStateMixin {
+class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   BookSitterInfoPageState(this.serviceOrder);
 
   final _formKey = GlobalKey<FormState>();
@@ -35,12 +35,11 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
   final _db = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
   bool _isLoading = true;
   bool _autoValidate = false;
   User _currentUser;
-  GetIt getIt = GetIt.I;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -50,7 +49,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   }
 
   _load() async {
-    _currentUser = await _fetchUserProfile();
+    _currentUser = await getIt<Auth>().getCurrentUser();
     _setTextFields();
     setState(
       () {
@@ -116,13 +115,13 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
         setState(
           () {
-            Modal.showInSnackBar(
+            getIt<Modal>().showInSnackBar(
                 scaffoldKey: _scaffoldKey, text: 'Appointment Created');
             _isLoading = false;
           },
         );
       } catch (e) {
-        Modal.showInSnackBar(
+        getIt<Modal>().showInSnackBar(
           scaffoldKey: _scaffoldKey,
           text: e.toString(),
         );
@@ -141,17 +140,6 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
     }
   }
 
-  Future<User> _fetchUserProfile() async {
-    FirebaseUser user = await _auth.currentUser();
-    QuerySnapshot qs = await _db
-        .collection('Users')
-        .where('uid', isEqualTo: user.uid)
-        .getDocuments();
-    DocumentSnapshot ds = qs.documents.first;
-
-    return User.extractDocument(ds);
-  }
-
   void _setTextFields() {
     _emailController.text = _currentUser.email;
   }
@@ -164,7 +152,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : SingleChildScrollView(
               child: Padding(
                 padding: EdgeInsets.all(20),

@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
 class Spinner extends StatelessWidget {
-  final String text;
-
-  Spinner({@required this.text});
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -17,7 +13,7 @@ class Spinner extends StatelessWidget {
           ),
           SizedBox(height: 20),
           Text(
-            text,
+            'Loading',
             style: TextStyle(fontSize: 15.0, color: Colors.grey),
           ),
         ],

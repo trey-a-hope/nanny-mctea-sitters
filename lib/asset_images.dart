@@ -10,3 +10,4 @@ Image imgPikeStreet = Image.asset('assets/images/pike_street.jpg');
 Image imgDispicableMe = Image.asset('assets/images/dispicable_me.jpg');
 Image imgGroup = Image.asset('assets/images/group.jpg');
 Image creditCard = Image.asset('assets/images/credit-card.png');
+Image creditCard2 = Image.asset('assets/images/credit-card2.png');

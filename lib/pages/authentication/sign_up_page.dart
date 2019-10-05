@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,8 +14,7 @@ class SignUpPage extends StatefulWidget {
   State createState() => SignUpPageState();
 }
 
-class SignUpPageState extends State<SignUpPage>
-    with SingleTickerProviderStateMixin {
+class SignUpPageState extends State<SignUpPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _db = Firestore.instance;
@@ -24,6 +24,8 @@ class SignUpPageState extends State<SignUpPage>
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -44,7 +46,7 @@ class SignUpPageState extends State<SignUpPage>
       _formKey.currentState.save();
 
       bool confirm =
-          await Modal.showConfirmation(context: context, title: 'Submit', text: 'Are you ready?');
+          await getIt<Modal>().showConfirmation(context: context, title: 'Submit', text: 'Are you ready?');
       if (confirm) {
         try {
           setState(
@@ -83,7 +85,7 @@ class SignUpPageState extends State<SignUpPage>
         } catch (e) {
           setState(
             () {
-              Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
+              getIt<Modal>().showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
             },
           );
         }
@@ -104,7 +106,7 @@ class SignUpPageState extends State<SignUpPage>
     return Scaffold(
       key: _scaffoldKey,
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : Stack(
               alignment: Alignment.center,
               children: <Widget>[

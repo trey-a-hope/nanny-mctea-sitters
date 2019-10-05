@@ -20,8 +20,7 @@ class BookSitterCalendarPage extends StatefulWidget {
   State createState() => BookSitterCalendarPageState(this.serviceOrder);
 }
 
-class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
-    with SingleTickerProviderStateMixin {
+class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   final ServiceOrder serviceOrder;
 
   BookSitterCalendarPageState(this.serviceOrder);
@@ -195,7 +194,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

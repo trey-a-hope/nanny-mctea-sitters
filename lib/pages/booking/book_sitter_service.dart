@@ -11,8 +11,7 @@ class BookSitterServicePage extends StatefulWidget {
   State createState() => BookSitterServicePageState();
 }
 
-class BookSitterServicePageState extends State<BookSitterServicePage>
-    with SingleTickerProviderStateMixin {
+class BookSitterServicePageState extends State<BookSitterServicePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
 

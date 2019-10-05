@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/main.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/authentication/login_page.dart';
@@ -22,8 +23,7 @@ class NavDrawer extends StatefulWidget {
   State createState() => NavDrawerState();
 }
 
-class NavDrawerState extends State<NavDrawer>
-    with SingleTickerProviderStateMixin {
+class NavDrawerState extends State<NavDrawer> {
   final PDInfo _pdInfo = PDInfo();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _projectVersion;
@@ -269,7 +269,7 @@ class NavDrawerState extends State<NavDrawer>
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () async {
-              bool confirm = await Modal.showConfirmation(
+              bool confirm = await getIt<Modal>().showConfirmation(
                   context: context, title: 'Sign Out', text: 'Are you sure?');
               if (confirm) {
                 _auth.signOut().then(

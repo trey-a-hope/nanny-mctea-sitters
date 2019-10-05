@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,15 +12,14 @@ class LoginPage extends StatefulWidget {
   State createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage>
-    with SingleTickerProviderStateMixin {
+class LoginPageState extends State<LoginPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final GetIt getIt = GetIt.I;
   bool _autoValidate = false;
 
   _login() async {
@@ -39,7 +39,7 @@ class LoginPageState extends State<LoginPage>
         setState(
           () {
             _isLoading = false;
-            Modal.showInSnackBar(
+            getIt<Modal>().showInSnackBar(
               scaffoldKey: _scaffoldKey,
               text: e.message,
             );
@@ -92,7 +92,7 @@ class LoginPageState extends State<LoginPage>
 
   _sendForgotEmail() async {
     try {
-      String email = await Modal.showPasswordResetEmail(context);
+      String email = await getIt<Modal>().showPasswordResetEmail(context: context);
       if (email != null) {
         setState(
           () {
@@ -105,8 +105,10 @@ class LoginPageState extends State<LoginPage>
         setState(
           () {
             _isLoading = false;
-            Modal.showInSnackBar(scaffoldKey: _scaffoldKey,
-                text: 'Sent - A link to reset your password has been sent via the email provided.');
+            getIt<Modal>().showInSnackBar(
+                scaffoldKey: _scaffoldKey,
+                text:
+                    'Sent - A link to reset your password has been sent via the email provided.');
           },
         );
       }
@@ -114,7 +116,8 @@ class LoginPageState extends State<LoginPage>
       setState(
         () {
           _isLoading = false;
-          Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
+          getIt<Modal>()
+              .showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
         },
       );
     }
@@ -142,116 +145,114 @@ class LoginPageState extends State<LoginPage>
     return Scaffold(
       key: _scaffoldKey,
       body: Builder(
-        builder: (context) => _isLoading
-            ? Spinner(text: 'Loading...')
-            : Stack(
-                alignment: Alignment.center,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                            image: asImgFloorCrayons,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.center)),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          colors: [
-                            Colors.yellow.withOpacity(0.3),
-                            Colors.red.withOpacity(0.9)
-                          ],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          stops: [0, 1]),
+          builder: (context) => _isLoading
+              ? Spinner()
+              : Stack(
+                  alignment: Alignment.center,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: asImgFloorCrayons,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.center)),
                     ),
-                  ),
-                  Positioned(
-                    left: (screenWidth * 0.1) / 2,
-                    top: 50,
-                    child: Text(
-                      'Login',
-                      style: TextStyle(color: Colors.white, fontSize: 30),
+                    Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            colors: [
+                              Colors.yellow.withOpacity(0.3),
+                              Colors.red.withOpacity(0.9)
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            stops: [0, 1]),
+                      ),
                     ),
-                  ),
-                  Positioned(
-                    left: (screenWidth * 0.1) / 2,
-                    bottom: (screenWidth * 0.1) / 2,
-                    child: FloatingActionButton(
-                      mini: true,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      backgroundColor: Colors.blue,
-                      child: Icon(Icons.arrow_back),
+                    Positioned(
+                      left: (screenWidth * 0.1) / 2,
+                      top: 50,
+                      child: Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white, fontSize: 30),
+                      ),
                     ),
-                  ),
-                  Container(
-                    height: 350,
-                    width: screenWidth * 0.9,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            offset: Offset(0, 6),
-                            blurRadius: 6),
-                      ],
+                    Positioned(
+                      left: (screenWidth * 0.1) / 2,
+                      bottom: (screenWidth * 0.1) / 2,
+                      child: FloatingActionButton(
+                        mini: true,
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        backgroundColor: Colors.blue,
+                        child: Icon(Icons.arrow_back),
+                      ),
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Form(
-                        key: _formKey,
-                        autovalidate: _autoValidate,
-                        child: Column(
-                          children: <Widget>[
-                            emailFormField(),
-                            SizedBox(height: 30),
-                            passwordFormField(),
-                            SizedBox(height: 30),
-                            RaisedButton(
-                              padding: EdgeInsets.all(10),
-                              color: Colors.green,
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(30.0),
-                                      bottomLeft: Radius.circular(30.0),
-                                      topRight: Radius.circular(30.0),
-                                      bottomRight: Radius.circular(30.0))),
-                              onPressed: () {
-                                //_subm;
-                                _login();
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    'SUBMIT',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16.0),
-                                  ),
-                                  const SizedBox(width: 40.0),
-                                  Icon(
-                                    MdiIcons.send,
-                                    size: 18.0,
-                                    color: Colors.white,
-                                  )
-                                ],
+                    Container(
+                      height: 350,
+                      width: screenWidth * 0.9,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(0, 6),
+                              blurRadius: 6),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Form(
+                          key: _formKey,
+                          autovalidate: _autoValidate,
+                          child: Column(
+                            children: <Widget>[
+                              emailFormField(),
+                              SizedBox(height: 30),
+                              passwordFormField(),
+                              SizedBox(height: 30),
+                              RaisedButton(
+                                padding: EdgeInsets.all(10),
+                                color: Colors.green,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30.0),
+                                        bottomLeft: Radius.circular(30.0),
+                                        topRight: Radius.circular(30.0),
+                                        bottomRight: Radius.circular(30.0))),
+                                onPressed: () {
+                                  //_subm;
+                                  _login();
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text(
+                                      'SUBMIT',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0),
+                                    ),
+                                    const SizedBox(width: 40.0),
+                                    Icon(
+                                      MdiIcons.send,
+                                      size: 18.0,
+                                      color: Colors.white,
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                           
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              )
-      ),
+                  ],
+                )),
     );
   }
 }

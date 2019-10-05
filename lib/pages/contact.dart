@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
-import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
@@ -15,16 +15,13 @@ class ContactPage extends StatefulWidget {
   State createState() => ContactPageState();
 }
 
-class ContactPageState extends State<ContactPage>
-    with SingleTickerProviderStateMixin {
+class ContactPageState extends State<ContactPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
-
+  final GetIt getIt = GetIt.I;
   bool _isLoading = true;
   bool _autoValidate = false;
 
@@ -56,7 +53,7 @@ class ContactPageState extends State<ContactPage>
           throw 'Could not launch $uri';
         }
       } catch (e) {
-        Modal.showInSnackBar(
+        getIt<Modal>().showInSnackBar(
           scaffoldKey: _scaffoldKey,
           text: e.message,
         );
@@ -74,52 +71,22 @@ class ContactPageState extends State<ContactPage>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SingleChildScrollView(
-          child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           autovalidate: _autoValidate,
           child: Column(
             children: <Widget>[
-              Stack(
-                overflow: Overflow.visible,
-                children: <Widget>[
-                  ClipperSlant(
-                    child: Container(
-                      height: 250,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  SimpleNavbar(
-                    leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
-                    leftTap: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  Positioned(
-                      top: 100,
-                      left: 32,
-                      right: 0,
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: 'Contact',
-                              style: Theme.of(context).accentTextTheme.headline,
-                            ),
-                            TextSpan(
-                              text: '\n',
-                            ),
-                            TextSpan(
-                              text: 'Get in touch with us.',
-                              style: Theme.of(context).accentTextTheme.body1,
-                            ),
-                          ],
-                        ),
-                      ))
-                ],
+              SlantScaffold(
+                simpleNavbar: SimpleNavbar(
+                  leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
+                  leftTap: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                title: 'Contact',
+                subtitle: 'Get in touch with us.',
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
@@ -177,7 +144,7 @@ class ContactPageState extends State<ContactPage>
             ],
           ),
         ),
-      )),
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
@@ -210,7 +177,8 @@ class ContactPageState extends State<ContactPage>
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Subject',
-        icon: Icon(Icons.subject, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(Icons.subject,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -228,7 +196,8 @@ class ContactPageState extends State<ContactPage>
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Message',
-        icon: Icon(Icons.message, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(Icons.message,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );

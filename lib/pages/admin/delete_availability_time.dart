@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -21,8 +22,7 @@ class DeleteAvailabilityTimePage extends StatefulWidget {
       this.takenSlots, this.selectedDay, this.slotsColRef);
 }
 
-class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage>
-    with SingleTickerProviderStateMixin {
+class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage> {
   DeleteAvailabilityTimePageState(
       this._takenSlots, this._selectedDay, this._slotsColRef);
 
@@ -33,7 +33,7 @@ class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage>
   final DateTime _selectedDay;
   final List<dynamic> _takenSlots;
   final CollectionReference _slotsColRef;
-
+final GetIt getIt = GetIt.I;
   List<dynamic> _availableSlots = List<dynamic>();
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
@@ -87,7 +87,7 @@ class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : ListView.builder(
               itemCount: _availableSlots.length,
               itemBuilder: (BuildContext ctxt, int index) {
@@ -101,7 +101,7 @@ class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage>
   }
 
   Future<void> deleteAvailability() async {
-    bool confirm = await Modal.showConfirmation(
+    bool confirm = await getIt<Modal>().showConfirmation(
       context: context,
       title: 'Delete Availability',
       text: _slotsToString(),
@@ -110,7 +110,7 @@ class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage>
       for (int i = 0; i < _selectedSlots.length; i++) {
         await _slotsColRef.document(_selectedSlots[i].id).delete();
       }
-      Modal.showAlert(
+      getIt<Modal>().showAlert(
           context: context, title: 'Success', message: 'Time removed.');
       return;
     }

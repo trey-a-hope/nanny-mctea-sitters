@@ -18,8 +18,7 @@ class BookSitterSitterPage extends StatefulWidget {
       BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
 }
 
-class BookSitterSitterPageState extends State<BookSitterSitterPage>
-    with SingleTickerProviderStateMixin {
+class BookSitterSitterPageState extends State<BookSitterSitterPage> {
   BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
 
   final List<User> _availableSitters;
@@ -47,7 +46,7 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage>
     return Scaffold(
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : ListView.builder(
               itemCount: _availableSitters.length,
               itemBuilder: (BuildContext ctx, int index) {

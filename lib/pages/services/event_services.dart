@@ -9,8 +9,7 @@ class EventServicesPage extends StatefulWidget {
   State createState() => EventServicesPageState();
 }
 
-class EventServicesPageState extends State<EventServicesPage>
-    with SingleTickerProviderStateMixin {
+class EventServicesPageState extends State<EventServicesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
 

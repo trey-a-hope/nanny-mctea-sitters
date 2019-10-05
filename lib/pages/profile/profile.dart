@@ -18,8 +18,7 @@ class ProfilePage extends StatefulWidget {
   State createState() => ProfilePageState(this.uid);
 }
 
-class ProfilePageState extends State<ProfilePage>
-    with SingleTickerProviderStateMixin {
+class ProfilePageState extends State<ProfilePage> {
   final String uid;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -49,7 +48,7 @@ class ProfilePageState extends State<ProfilePage>
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Spinner(text: 'Loading...')
+        ? Spinner()
         : DefaultTabController(
             length: 2,
             child: Scaffold(

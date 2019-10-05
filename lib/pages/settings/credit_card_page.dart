@@ -2,10 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings/add_credit_card_page.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
@@ -19,14 +24,10 @@ class CreditCardPage extends StatefulWidget {
 
 class CreditCardPageState extends State<CreditCardPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  final GetIt getIt = GetIt.instance;
   bool _isLoading = true;
-  bool _autoValidate = false;
   User _currentUser;
   Customer _customer;
-  GetIt getIt = GetIt.instance;
 
   final List<String> _months = [
     'January',
@@ -49,34 +50,19 @@ class CreditCardPageState extends State<CreditCardPage> {
     _load();
   }
 
-  Future<Customer> _getCustomer() async {
-    try {
-      FirebaseUser firebaseUser = await _auth.currentUser();
-
-      QuerySnapshot querySnapshot = await _db
-          .collection('Users')
-          .where('uid', isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-      _currentUser = User.extractDocument(documentSnapshot);
-
-      return await getIt<StripeCustomer>().retrieve(
-          customerId: _currentUser.customerId);
-    } catch (e) {
-      throw Exception('Could not fetch credit card information at this time.');
-    }
-  }
-
   _load() async {
     try {
-      _customer = await _getCustomer();
+      _currentUser = await getIt<Auth>().getCurrentUser();
+      _customer = await getIt<StripeCustomer>()
+          .retrieve(customerId: _currentUser.customerId);
+
       setState(
         () {
           _isLoading = false;
         },
       );
     } catch (e) {
-      Modal.showAlert(
+      getIt<Modal>().showAlert(
         context: context,
         title: 'Error',
         message: e.toString(),
@@ -85,26 +71,30 @@ class CreditCardPageState extends State<CreditCardPage> {
   }
 
   _deleteCard() async {
-    bool confirm = await Modal.showConfirmation(
+    bool confirm = await getIt<Modal>().showConfirmation(
         context: context,
         title: 'Delete Card',
         text:
             'This will delete the default card on file. You must add another one to continue using payment features in the app.');
     if (confirm) {
       try {
-        bool deleted = await getIt<StripeCard>().delete(
-            customerId: _customer.id, cardId: _customer.card.id);
-        if (deleted) {
-          setState(
-            () {
-              _customer.default_source = null;
-            },
-          );
-          Modal.showInSnackBar(
-              scaffoldKey: _scaffoldKey, text: 'Card successfully removed.');
-        }
+        setState(() {
+          _isLoading = true;
+        });
+
+        await getIt<StripeCard>()
+            .delete(customerId: _customer.id, cardId: _customer.card.id);
+        setState(
+          () {
+            _isLoading = false;
+
+            _customer.default_source = null;
+          },
+        );
+        getIt<Modal>().showInSnackBar(
+            scaffoldKey: _scaffoldKey, text: 'Card successfully removed.');
       } catch (e) {
-        Modal.showAlert(
+        getIt<Modal>().showAlert(
           context: context,
           title: 'Error',
           message: e.toString(),
@@ -117,14 +107,23 @@ class CreditCardPageState extends State<CreditCardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text('Credit Card Page'),
-      ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
-          ? Spinner(text: 'Fetching credit card info...')
+          ? Spinner()
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
+                  SlantScaffold(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    title: 'Payment Method',
+                    subtitle: 'How do you want to pay?',
+                  ),
                   Container(
                     child: creditCard,
                     height: 250.0,
@@ -133,50 +132,49 @@ class CreditCardPageState extends State<CreditCardPage> {
                       ? SizedBox(
                           child: Column(
                             children: [
-                              ListTile(
-                                  leading: Icon(Icons.confirmation_number),
-                                  title: Text('Card Number'),
-                                  subtitle: Text('****-****-****-' +
-                                      _customer.card.last4)),
-                              Divider(),
-                              ListTile(
-                                  leading: Icon(Icons.date_range),
-                                  title: Text('Expiration'),
-                                  subtitle: Text(
-                                      _months[_customer.card.exp_month] +
-                                          ' ' +
-                                          '${_customer.card.exp_year}')),
-                              Divider(),
-                              ListTile(
-                                  leading: Icon(Icons.credit_card),
-                                  title: Text('Brand'),
-                                  subtitle: Text(_customer.card.brand)),
-                              Divider(),
-                              ListTile(
-                                  leading: Icon(Icons.location_city),
-                                  title: Text('Country'),
-                                  subtitle: Text(_customer.card.country)),
-                              Divider(),
+                              Padding(
+                                padding: EdgeInsets.all(10),
+                                child: Card(
+                                  elevation: 3,
+                                  child: ListTile(
+                                    leading: Icon(Icons.confirmation_number,
+                                        color: Theme.of(context)
+                                            .primaryIconTheme
+                                            .color),
+                                    title: Text(
+                                        '${_customer.card.brand} / ****-****-****-${_customer.card.last4}'),
+                                    subtitle: Text('Expires ' +
+                                        _months[_customer.card.exp_month] +
+                                        ' ' +
+                                        '${_customer.card.exp_year}'),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         )
                       : Container(
-                          height: 300.0,
+                          height: 150.0,
                           child: Center(
-                              child: Text(
-                            'Add a card to your account.',
-                            style:
-                                TextStyle(fontSize: 25.0, color: Colors.grey),
-                            textAlign: TextAlign.center,
-                          )),
+                            child: Text(
+                              'Add a card to your account.',
+                              style:
+                                  TextStyle(fontSize: 25.0, color: Colors.grey),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                         ),
                   _customer.default_source != null
                       ? RaisedButton(
-                          child: Text('Delete Card'),
+                          color: Theme.of(context).buttonColor,
+                          child: Text('Delete Card',
+                              style: Theme.of(context).accentTextTheme.button),
                           onPressed: _deleteCard,
                         )
                       : RaisedButton(
-                          child: Text('Add Card'),
+                          color: Theme.of(context).buttonColor,
+                          child: Text('Add Card',
+                              style: Theme.of(context).accentTextTheme.button),
                           onPressed: () {
                             Navigator.push(
                               context,

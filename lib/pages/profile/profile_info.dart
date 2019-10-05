@@ -10,8 +10,7 @@ class ProfileInfoPage extends StatefulWidget {
   State createState() => ProfileInfoPageState();
 }
 
-class ProfileInfoPageState extends State<ProfileInfoPage>
-    with SingleTickerProviderStateMixin {
+class ProfileInfoPageState extends State<ProfileInfoPage> {
   bool _isLoading = true;
   final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -57,7 +56,7 @@ class ProfileInfoPageState extends State<ProfileInfoPage>
     return _isLoading ||
             _user ==
                 null //Added _user == null check because of latency issue with snapshots vs documents.
-        ? Spinner(text: 'Loading...')
+        ? Spinner()
         : SingleChildScrollView(
             child: Padding(
               padding: EdgeInsets.all(8),

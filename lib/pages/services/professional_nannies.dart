@@ -8,8 +8,7 @@ class ProfessionalNanniesPage extends StatefulWidget {
   State createState() => ProfessionalNanniesPageState();
 }
 
-class ProfessionalNanniesPageState extends State<ProfessionalNanniesPage>
-    with SingleTickerProviderStateMixin {
+class ProfessionalNanniesPageState extends State<ProfessionalNanniesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
 

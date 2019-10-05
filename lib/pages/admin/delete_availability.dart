@@ -15,8 +15,7 @@ class DeleteAvailabilityPage extends StatefulWidget {
   State createState() => DeleteAvailabilityPageState();
 }
 
-class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage>
-    with SingleTickerProviderStateMixin {
+class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -156,7 +155,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

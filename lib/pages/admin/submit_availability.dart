@@ -16,8 +16,7 @@ class SubmitAvailabilityPage extends StatefulWidget {
   State createState() => SubmitAvailabilityPageState();
 }
 
-class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
-    with SingleTickerProviderStateMixin {
+class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   SubmitAvailabilityPageState();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -165,7 +164,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage>
       appBar: _buildAppBar(),
       key: _scaffoldKey,
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : Column(
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[

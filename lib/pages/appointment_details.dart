@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:device_calendar/device_calendar.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
@@ -20,8 +21,7 @@ class AppointmentDetailsPage extends StatefulWidget {
   State createState() => AppointmentDetailsPageState(this.appointment);
 }
 
-class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
-    with SingleTickerProviderStateMixin {
+class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   AppointmentDetailsPageState(this.appointment);
 
   final Appointment appointment;
@@ -30,7 +30,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
-
+final GetIt getIt = GetIt.I;
   DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
 
   bool _isLoading = true;
@@ -110,10 +110,10 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
           await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
       print(createEventResult);
 
-      Modal.showInSnackBar(
+      getIt<Modal>().showInSnackBar(
           scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
     } catch (e) {
-      Modal.showInSnackBar(
+      getIt<Modal>().showInSnackBar(
         scaffoldKey: _scaffoldKey,
         text: e.toString(),
       );
@@ -126,7 +126,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       appBar: _buildAppBar(),
       key: _scaffoldKey,
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
@@ -329,7 +329,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
   }
 
   _cancelAppoinment() async {
-    bool confirm = await Modal.showConfirmation(
+    bool confirm = await getIt<Modal>().showConfirmation(
         context: context, title: 'Cancel Appointment', text: 'Are you sure?');
     if (confirm) {
       setState(
@@ -366,7 +366,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage>
       height: 50.0,
       child: RaisedButton(
         onPressed: () async {
-          bool confirm = await Modal.showConfirmation(
+          bool confirm = await getIt<Modal>().showConfirmation(
               context: context, title: 'Add To Calendar', text: 'Are you sure?');
           if (confirm) {
             _addEventToCalendar();

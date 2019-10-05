@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/subscriptions.dart';
@@ -17,12 +18,9 @@ class PlansPricingPage extends StatefulWidget {
   State createState() => PlansPricingState();
 }
 
-class PlansPricingState extends State<PlansPricingPage>
-    with SingleTickerProviderStateMixin {
+class PlansPricingState extends State<PlansPricingPage> {
   bool _isLoading = true;
-  GetIt getIt = GetIt.I;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  final GetIt getIt = GetIt.I;
   Customer _customer;
   User _currentUser;
 
@@ -32,33 +30,10 @@ class PlansPricingState extends State<PlansPricingPage>
     _load();
   }
 
-  Future<User> _getUser() async {
-    try {
-      FirebaseUser firebaseUser = await _auth.currentUser();
-
-      QuerySnapshot querySnapshot = await _db
-          .collection('Users')
-          .where('uid', isEqualTo: firebaseUser.uid)
-          .getDocuments();
-      DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-      return User.extractDocument(documentSnapshot);
-    } catch (e) {
-      throw Exception('Could not fetch user at this time.');
-    }
-  }
-
-  Future<Customer> _getCustomer() async {
-    try {
-      return await getIt<StripeCustomer>()
-          .retrieve(customerId: _currentUser.customerId);
-    } catch (e) {
-      throw Exception('Could not fetch customer at this time.');
-    }
-  }
-
   _load() async {
-    _currentUser = await _getUser();
-    _customer = await _getCustomer();
+    _currentUser = await getIt<Auth>().getCurrentUser();
+    _customer = await getIt<StripeCustomer>()
+        .retrieve(customerId: _currentUser.customerId);
 
     setState(
       () {
@@ -69,14 +44,14 @@ class PlansPricingState extends State<PlansPricingPage>
 
   void _startSubscription() async {
     if (_customer.isSubscribed) {
-      Modal.showConfirmation(
+      getIt<Modal>().showAlert(
           context: context,
           title: 'Error',
-          text: 'You are already apart of the subscription.');
+          message: 'You are already apart of the subscription.');
       return;
     }
 
-    bool confirm = await Modal.showConfirmation(
+    bool confirm = await getIt<Modal>().showConfirmation(
         context: context,
         title: 'Start Subscription',
         text:
@@ -95,7 +70,7 @@ class PlansPricingState extends State<PlansPricingPage>
           _isLoading = false;
         });
 
-        Modal.showAlert(
+        getIt<Modal>().showAlert(
             context: context,
             title: 'Success',
             message: 'Your subscription has started.');
@@ -104,7 +79,7 @@ class PlansPricingState extends State<PlansPricingPage>
           _isLoading = false;
         });
 
-        Modal.showAlert(
+        getIt<Modal>().showAlert(
           context: context,
           title: 'Error',
           message: e.toString(),

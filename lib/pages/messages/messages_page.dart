@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/conversation.dart';
 import 'dart:collection';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/message_page.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class MessagesPage extends StatefulWidget {
@@ -23,7 +25,7 @@ class _MessagesPageState extends State<MessagesPage> {
   User _currentUser;
   final _db = Firestore.instance;
   final String uid;
-
+  final GetIt getIt = GetIt.I;
   @override
   void initState() {
     super.initState();
@@ -31,23 +33,8 @@ class _MessagesPageState extends State<MessagesPage> {
     _load();
   }
 
-  Future<User> _getCurrentUser() async {
-    try {
-      QuerySnapshot querySnapshot = await _db
-          .collection('Users')
-          .where('uid', isEqualTo: uid)
-          .getDocuments();
-
-      DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-      return User.extractDocument(documentSnapshot);
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
   _load() async {
-    _currentUser = await _getCurrentUser();
+    _currentUser = await getIt<Auth>().getCurrentUser();
 
     //Get conversations this user is apart of.
     Firestore.instance
@@ -157,7 +144,7 @@ class _MessagesPageState extends State<MessagesPage> {
       query = query.where(userBId, isEqualTo: true);
       QuerySnapshot result = await query.snapshots().first;
       if (result.documents.length == 0) {
-        Modal.showInSnackBar(
+        getIt<Modal>().showInSnackBar(
             scaffoldKey: _scaffoldKey,
             text: 'Could not find conversation thread.');
       }
@@ -170,7 +157,7 @@ class _MessagesPageState extends State<MessagesPage> {
         ),
       );
     } catch (e) {
-      Modal.showInSnackBar(
+      getIt<Modal>().showInSnackBar(
         scaffoldKey: _scaffoldKey,
         text: e.toString(),
       );

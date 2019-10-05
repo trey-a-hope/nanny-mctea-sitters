@@ -10,8 +10,7 @@ class JoinTeamPage extends StatefulWidget {
   State createState() => JoinTeamPageState();
 }
 
-class JoinTeamPageState extends State<JoinTeamPage>
-    with SingleTickerProviderStateMixin {
+class JoinTeamPageState extends State<JoinTeamPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
   final _db = Firestore.instance;
@@ -50,9 +49,10 @@ class JoinTeamPageState extends State<JoinTeamPage>
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? Spinner(text: 'Loading...') : DefaultTabController(
+    return _isLoading ? Spinner() : DefaultTabController(
       length: jobPostings.length,
       child: Scaffold(
+        key: _scaffoldKey,
         appBar: _buildAppBar(),
         body: TabBarView(
           children: [

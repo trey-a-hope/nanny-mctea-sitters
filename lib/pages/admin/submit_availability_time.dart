@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -21,8 +22,7 @@ class SubmitAvailabilityTimePage extends StatefulWidget {
       this.takenSlots, this.selectedDay, this.slotsColRef);
 }
 
-class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage>
-    with SingleTickerProviderStateMixin {
+class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage> {
   SubmitAvailabilityTimePageState(
       this._takenSlots, this._selectedDay, this._slotsColRef);
 
@@ -37,6 +37,7 @@ class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage>
   List<dynamic> _availableSlots = List<dynamic>();
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -87,7 +88,7 @@ class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : ListView.builder(
               itemCount: _availableSlots.length,
               itemBuilder: (BuildContext ctxt, int index) {
@@ -101,7 +102,7 @@ class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage>
   }
 
   Future<void> saveAvailability() async {
-    bool confirm = await Modal.showConfirmation(
+    bool confirm = await getIt<Modal>().showConfirmation(
       context: context,
       title: 'Submit Availability',
       text: _slotsToString(),
@@ -115,7 +116,7 @@ class SubmitAvailabilityTimePageState extends State<SubmitAvailabilityTimePage>
           {'id': docRef.documentID},
         );
       }
-      Modal.showAlert(
+      getIt<Modal>().showAlert(
           context: context, title: 'Success', message: 'Time submitted.');
       return;
     }

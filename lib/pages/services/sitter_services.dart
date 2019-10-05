@@ -8,8 +8,7 @@ class SitterServicesPage extends StatefulWidget {
   State createState() => SitterServicesPageState();
 }
 
-class SitterServicesPageState extends State<SitterServicesPage>
-    with SingleTickerProviderStateMixin {
+class SitterServicesPageState extends State<SitterServicesPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
 

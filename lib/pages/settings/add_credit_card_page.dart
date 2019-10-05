@@ -2,7 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
+import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
@@ -23,11 +27,8 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
   AddCreditCardPageState(this._customer);
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
   bool _isLoading = false;
   bool _autoValidate = false;
-  User _currentUser;
   final TextEditingController _cardNumberController = TextEditingController();
   final TextEditingController _expirationController = TextEditingController();
   final TextEditingController _cvcController = TextEditingController();
@@ -37,7 +38,6 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
   @override
   void initState() {
     super.initState();
-    _load();
   }
 
   void _addTestCardInfo() {
@@ -47,15 +47,21 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
     _autoValidate = true;
   }
 
+  void _clearForm() {
+    _cardNumberController.clear();
+    _expirationController.clear();
+    _cvcController.clear();
+  }
+
   void _submitCard() async {
     final FormState form = _formKey.currentState;
     if (!form.validate()) {
       _autoValidate = true;
     } else {
-      bool confirm = await Modal.showConfirmation(
+      bool confirm = await getIt<Modal>().showConfirmation(
           context: context,
           title: 'Add Card',
-          text: 'This will become your default card on file.');
+          text: 'This will become your default card on file. Proceed?');
       if (confirm) {
         setState(
           () {
@@ -75,7 +81,8 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
               exp_year: exp_year,
               cvc: cvc);
 
-          await getIt<StripeCustomer>().update(customerId: _customer.id, token: token);
+          await getIt<StripeCustomer>()
+              .update(customerId: _customer.id, token: token);
 
           print(token);
 
@@ -84,10 +91,10 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
               _isLoading = false;
             },
           );
-          Modal.showInSnackBar(
+          getIt<Modal>().showInSnackBar(
               scaffoldKey: _scaffoldKey, text: 'Card added successfully.');
         } catch (e) {
-          Modal.showAlert(
+          getIt<Modal>().showAlert(
               context: context,
               title: 'Error',
               message: 'Could not save card at this time.');
@@ -96,90 +103,148 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
     }
   }
 
-  _load() async {
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text('Add Credit Card Page'),
-          actions: <Widget>[],
-        ),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: _isLoading
-            ? Spinner(text: 'Loading...')
+            ? Spinner()
             : SingleChildScrollView(
                 child: Form(
                   key: _formKey,
                   autovalidate: _autoValidate,
                   child: Column(
                     children: <Widget>[
+                      SlantScaffold(
+              simpleNavbar: SimpleNavbar(
+                leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
+                leftTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              title: 'Add Credit Card',
+              subtitle: 'Just need some quick info.',
+            ),
                       Container(
-                        child: creditCard,
+                        child: creditCard2,
                         height: 250.0,
                       ),
                       //Card Number
-                      TextFormField(
-                        controller: _cardNumberController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        obscureText: false,
-                        onFieldSubmitted: (term) {},
-                        validator: Validater.validateCardNumber,
-                        onSaved: (value) {},
-                        decoration: InputDecoration(
-                          hintText: 'Card Number',
-                          icon: Icon(Icons.credit_card),
-                          fillColor: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Card(
+                          elevation: 3,
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: TextFormField(
+                              controller: _cardNumberController,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              obscureText: false,
+                              onFieldSubmitted: (term) {},
+                              validator: Validater.validateCardNumber,
+                              onSaved: (value) {},
+                              decoration: InputDecoration(
+                                hintText: 'Card Number',
+                                icon: Icon(Icons.credit_card,
+                                    color: Theme.of(context)
+                                        .primaryIconTheme
+                                        .color),
+                                fillColor: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       //Expiration
-                      TextFormField(
-                        controller: _expirationController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        obscureText: false,
-                        onFieldSubmitted: (term) {},
-                        validator: Validater.validateExpiration,
-                        onSaved: (value) {},
-                        decoration: InputDecoration(
-                          hintText: 'Expiration',
-                          icon: Icon(Icons.date_range),
-                          fillColor: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Card(
+                          elevation: 3,
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: TextFormField(
+                              controller: _expirationController,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              obscureText: false,
+                              onFieldSubmitted: (term) {},
+                              validator: Validater.validateExpiration,
+                              onSaved: (value) {},
+                              decoration: InputDecoration(
+                                hintText: 'Expiration',
+                                icon: Icon(Icons.date_range,
+                                    color: Theme.of(context)
+                                        .primaryIconTheme
+                                        .color),
+                                fillColor: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       //CVC
-                      TextFormField(
-                        controller: _cvcController,
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        obscureText: false,
-                        onFieldSubmitted: (term) {},
-                        validator: Validater.validateCVC,
-                        onSaved: (value) {},
-                        decoration: InputDecoration(
-                          hintText: 'CVC',
-                          icon: Icon(Icons.security),
-                          fillColor: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Card(
+                          elevation: 3,
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: TextFormField(
+                              controller: _cvcController,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.next,
+                              obscureText: false,
+                              onFieldSubmitted: (term) {},
+                              validator: Validater.validateCVC,
+                              onSaved: (value) {},
+                              decoration: InputDecoration(
+                                hintText: 'CVC',
+                                icon: Icon(Icons.security,
+                                    color: Theme.of(context)
+                                        .primaryIconTheme
+                                        .color),
+                                fillColor: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
-                      RaisedButton(
-                        child: Text('Add Test Card Info'),
-                        onPressed: () {
-                          _addTestCardInfo();
-                        },
-                      ),
-                      RaisedButton(
-                        child: Text('Add Card'),
-                        onPressed: () {
-                          _submitCard();
-                        },
+                      Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            RaisedButton(
+                              color: Theme.of(context).buttonColor,
+                              child: Text('Add Automatic',
+                                  style:
+                                      Theme.of(context).accentTextTheme.button),
+                              onPressed: () {
+                                _addTestCardInfo();
+                              },
+                            ),
+                            RaisedButton(
+                              color: Theme.of(context).buttonColor,
+                              child: Text('Add Card',
+                                  style:
+                                      Theme.of(context).accentTextTheme.button),
+                              onPressed: () {
+                                _submitCard();
+                              },
+                            ),
+                            RaisedButton(
+                              color: Theme.of(context).buttonColor,
+                              child: Text('Clear',
+                                  style:
+                                      Theme.of(context).accentTextTheme.button),
+                              onPressed: () {
+                                _clearForm();
+                              },
+                            )
+                          ],
+                        ),
                       )
                     ],
                   ),

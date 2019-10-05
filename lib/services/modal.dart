@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
-class Modal {
-  static void showInSnackBar(
+abstract class Modal {
+  void showInSnackBar(
+      {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text});
+  void showAlert(
+      {@required BuildContext context,
+      @required String title,
+      @required String message});
+  Future<String> showPasswordResetEmail({@required BuildContext context});
+  Future<String> showChangeEmail({@required BuildContext context});
+  Future<bool> showConfirmation(
+      {@required BuildContext context,
+      @required String title,
+      @required String text});
+}
+
+class ModalImplementation extends Modal {
+  @override
+  void showInSnackBar(
       {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(text),
     ));
   }
 
-  static showAlert(
+  @override
+  void showAlert(
       {@required BuildContext context,
       @required String title,
       @required String message}) {
@@ -32,7 +49,8 @@ class Modal {
     );
   }
 
-  static Future<String> showPasswordResetEmail(BuildContext context) {
+  @override
+  Future<String> showPasswordResetEmail({@required BuildContext context}) {
     final TextEditingController emailController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     bool _autovalidate = false;
@@ -45,15 +63,6 @@ class Modal {
         content: Form(
           key: _formKey,
           autovalidate: _autovalidate,
-          // child: InputField(
-          //     controller: emailController,
-          //     hintText: 'Email',
-          //     obscureText: false,
-          //     textInputType: TextInputType.emailAddress,
-          //     icon: Icons.mail_outline,
-          //     iconColor: Colors.black,
-          //     bottomMargin: 20.0,
-          //     validateFunction: Validater.email),
           child: TextFormField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
@@ -93,7 +102,8 @@ class Modal {
     );
   }
 
-  static Future<String> showChangeEmail(BuildContext context) {
+  @override
+  Future<String> showChangeEmail({@required BuildContext context}) {
     final TextEditingController emailController = TextEditingController();
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     bool _autovalidate = false;
@@ -145,61 +155,11 @@ class Modal {
     );
   }
 
-  static Future<String> showChangePassword(BuildContext context) {
-    final TextEditingController passwordController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    bool _autovalidate = false;
-
-    return showDialog<String>(
-      barrierDismissible: false,
-      context: context,
-      child: AlertDialog(
-        title: Text('Change Password'),
-        content: Form(
-          key: _formKey,
-          autovalidate: _autovalidate,
-          child: TextFormField(
-            controller: passwordController,
-            keyboardType: TextInputType.text,
-            textInputAction: TextInputAction.next,
-            maxLengthEnforced: true,
-
-            // maxLength: MyFormData.nameCharLimit,
-            onFieldSubmitted: (term) {},
-            validator: Validater.password,
-            onSaved: (value) {},
-            decoration: InputDecoration(
-              hintText: 'New Password',
-              icon: Icon(Icons.email),
-              fillColor: Colors.white,
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text('CANCEL'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: const Text('SUBMIT'),
-            onPressed: () {
-              final FormState form = _formKey.currentState;
-              if (!form.validate()) {
-                _autovalidate = true;
-              } else {
-                Navigator.of(context).pop(passwordController.text);
-              }
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  static Future<bool> showConfirmation(
-      {@required BuildContext context, @required String title, @required String text}) {
+  @override
+  Future<bool> showConfirmation(
+      {@required BuildContext context,
+      @required String title,
+      @required String text}) {
     return showDialog<bool>(
       barrierDismissible: false,
       context: context,

@@ -11,8 +11,7 @@ class ProfileAppointmentPage extends StatefulWidget {
   State createState() => ProfileAppointmentPageState();
 }
 
-class ProfileAppointmentPageState extends State<ProfileAppointmentPage>
-    with SingleTickerProviderStateMixin {
+class ProfileAppointmentPageState extends State<ProfileAppointmentPage> {
   bool _isLoading = true;
   final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -72,7 +71,7 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage>
   @override
   Widget build(BuildContext context) {
     return _isLoading
-        ? Spinner(text: 'Loading...')
+        ? Spinner()
         : _appointments.isEmpty
             ? Center(
                 child: Text('You have nothing booked at the moment.'),

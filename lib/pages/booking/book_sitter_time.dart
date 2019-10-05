@@ -19,8 +19,7 @@ class BookSitterTimePage extends StatefulWidget {
       BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 }
 
-class BookSitterTimePageState extends State<BookSitterTimePage>
-    with SingleTickerProviderStateMixin {
+class BookSitterTimePageState extends State<BookSitterTimePage> {
   BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   final List<dynamic> _slots;
@@ -52,7 +51,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage>
       key: _scaffoldKey,
       appBar: _buildAppBar(),
       body: _isLoading
-          ? Spinner(text: 'Loading')
+          ? Spinner()
           : ListView.builder(
               itemCount: _slots.length,
               itemBuilder: (BuildContext ctxt, int index) {

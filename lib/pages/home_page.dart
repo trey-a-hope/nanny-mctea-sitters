@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
@@ -26,8 +27,7 @@ class HomePage extends StatefulWidget {
   State createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
@@ -35,6 +35,7 @@ class HomePageState extends State<HomePage>
   final ScrollController _scrollController = ScrollController();
   List<User> _sitters = List<User>();
   bool _isLoading = true;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -97,7 +98,7 @@ class HomePageState extends State<HomePage>
     _fcm.configure(
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
-        Modal.showAlert(
+        getIt<Modal>().showAlert(
             context: context,
             title: message['notification']['title'],
             message: message['notification']['body']);
@@ -135,7 +136,7 @@ class HomePageState extends State<HomePage>
         },
       ),
       body: _isLoading
-          ? Spinner(text: 'Loading...')
+          ? Spinner()
           : SingleChildScrollView(
               controller: _scrollController,
               child: Column(
