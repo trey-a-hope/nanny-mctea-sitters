@@ -5,6 +5,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/home_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/subscriptions.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
 
 // This is our global ServiceLocator
@@ -19,15 +20,19 @@ final String _endpoint =
     'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
 
 void main() {
-  //Register dependencies.
+  //Register services.
   getIt.registerSingleton<StripeCard>(
       StripeCardImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
       signalsReady: true);
-        getIt.registerSingleton<StripeCharge>(
+  getIt.registerSingleton<StripeCharge>(
       StripeChargeImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
       signalsReady: true);
   getIt.registerSingleton<StripeCustomer>(
       StripeCustomerImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
+      signalsReady: true);
+  getIt.registerSingleton<StripeSubscription>(
+      StripeSubscriptionImplementation(
+          apiKey: _testSecretKey, endpoint: _endpoint),
       signalsReady: true);
   getIt.registerSingleton<StripeToken>(
       StripeTokenImplementation(apiKey: _testSecretKey, endpoint: _endpoint),

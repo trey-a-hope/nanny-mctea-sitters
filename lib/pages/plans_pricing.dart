@@ -1,6 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/subscriptions.dart';
 
 import '../asset_images.dart';
 
@@ -11,9 +19,98 @@ class PlansPricingPage extends StatefulWidget {
 
 class PlansPricingState extends State<PlansPricingPage>
     with SingleTickerProviderStateMixin {
+  bool _isLoading = true;
+  GetIt getIt = GetIt.I;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final Firestore _db = Firestore.instance;
+  Customer _customer;
+  User _currentUser;
+
   @override
   void initState() {
     super.initState();
+    _load();
+  }
+
+  Future<User> _getUser() async {
+    try {
+      FirebaseUser firebaseUser = await _auth.currentUser();
+
+      QuerySnapshot querySnapshot = await _db
+          .collection('Users')
+          .where('uid', isEqualTo: firebaseUser.uid)
+          .getDocuments();
+      DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
+      return User.extractDocument(documentSnapshot);
+    } catch (e) {
+      throw Exception('Could not fetch user at this time.');
+    }
+  }
+
+  Future<Customer> _getCustomer() async {
+    try {
+      return await getIt<StripeCustomer>()
+          .retrieve(customerId: _currentUser.customerId);
+    } catch (e) {
+      throw Exception('Could not fetch customer at this time.');
+    }
+  }
+
+  _load() async {
+    _currentUser = await _getUser();
+    _customer = await _getCustomer();
+
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
+  }
+
+  void _startSubscription() async {
+    if (_customer.isSubscribed) {
+      Modal.showConfirmation(
+          context: context,
+          title: 'Error',
+          text: 'You are already apart of the subscription.');
+      return;
+    }
+
+    bool confirm = await Modal.showConfirmation(
+        context: context,
+        title: 'Start Subscription',
+        text:
+            'You will start your monthly plan today, and will be billed every month for \$100. Continue with plan?');
+    if (confirm) {
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+
+        String subscriptionId = await getIt<StripeSubscription>().create(
+            customerId: _currentUser.customerId, plan: STRIPE_GOLD_PLAN_ID);
+        print(subscriptionId);
+
+        setState(() {
+          _isLoading = false;
+        });
+
+        Modal.showAlert(
+            context: context,
+            title: 'Success',
+            message: 'Your subscription has started.');
+      } catch (e) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        Modal.showAlert(
+          context: context,
+          title: 'Error',
+          message: e.toString(),
+        );
+      }
+    }
   }
 
   @override
@@ -120,8 +217,7 @@ class PlansPricingState extends State<PlansPricingPage>
                     color: Colors.white,
                     child: Text('SELECT'),
                     onPressed: () {
-                      Modal.showInSnackBar(
-                          scaffoldKey: _scaffoldKey, text: 'Do you have a credit card?');
+                      _startSubscription();
                     },
                   ),
                   Divider(color: Colors.white),

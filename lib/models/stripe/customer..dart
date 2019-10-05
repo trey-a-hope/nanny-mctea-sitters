@@ -6,11 +6,13 @@ class Customer {
   String email;
   String default_source;
   CreditCard card;
+  bool isSubscribed;
 
-  Customer({@required this.id, @required this.default_source, @required this.card}) {
+  Customer({@required this.id, @required this.default_source, @required this.card, @required this.isSubscribed}) {
     id = this.id;
     email = this.email;
     default_source = this.default_source;
     card = this.card;
+    isSubscribed = this.isSubscribed;
   }
 }

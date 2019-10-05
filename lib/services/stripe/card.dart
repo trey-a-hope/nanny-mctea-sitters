@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' show Encoding, json;
 
-abstract class StripeCard extends ChangeNotifier {
+abstract class StripeCard {
   Future<String> create({@required String customerId, @required String token});
   Future<bool> delete({@required String customerId, @required String cardId});
 }

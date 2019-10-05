@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
@@ -19,8 +18,6 @@ import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 import 'contact.dart';
 
@@ -47,9 +44,6 @@ class HomePageState extends State<HomePage>
   }
 
   void loadPage() async {
-    GetIt getIt = GetIt.I;
-    getIt<StripeCharge>().create(amount: 4000, description: 'Bought some timbs.', customerId: 'cus_CbNBP7m6KxZXLk');
-
     //Get sitters.
     QuerySnapshot querySnapshot = await _db
         .collection('Users')

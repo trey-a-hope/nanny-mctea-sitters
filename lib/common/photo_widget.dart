@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-
-import '../style/text.dart';
 
 class PhotoWidget extends StatelessWidget {
   final AssetImage image;

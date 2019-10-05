@@ -15,3 +15,5 @@ const String COMPANY_PHONE = '(859)905-0174';
 const List<String> ADMIN_UIDS = [
   'KFO2MAjsJNP1racr4Uivs8Zz3h32'
 ];
+
+const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';

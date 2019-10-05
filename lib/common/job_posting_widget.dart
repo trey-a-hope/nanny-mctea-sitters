@@ -1,10 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
-
-import '../style/text.dart';
 
 class JobPostingWidget extends StatelessWidget {
   final String imgUrl;

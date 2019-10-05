@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
-import '../style/text.dart';
-
 class SitterWidget extends StatelessWidget {
   final User sitter;
 

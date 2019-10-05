@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/paypal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
@@ -37,11 +37,10 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
   final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
-
   bool _isLoading = true;
   bool _autoValidate = false;
-
   User _currentUser;
+  GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -71,12 +70,16 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
           },
         );
 
-        Response result = await PayPalService.createPayment(
-          name: serviceOrder.serviceName,
-          description: serviceOrder.sitter.name,
-          price: 25.00,
-          sku: serviceOrder.serviceName + DateTime.now().toString()
-        );
+        //Make charge for booking fee.
+        bool charged = await getIt<StripeCharge>().create(
+            amount: 25.00,
+            description:
+                serviceOrder.sitter.name + ', ' + serviceOrder.serviceName,
+            customerId: _currentUser.customerId);
+
+        if (!charged) {
+          throw Exception('Could not charge card at this time.');
+        }
 
         //Create appointment.
         var appointmentData = {
@@ -113,7 +116,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage>
 
         setState(
           () {
-            Modal.showInSnackBar(scaffoldKey: _scaffoldKey, text: 'Appointment Created');
+            Modal.showInSnackBar(
+                scaffoldKey: _scaffoldKey, text: 'Appointment Created');
             _isLoading = false;
           },
         );

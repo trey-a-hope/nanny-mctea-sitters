@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:nanny_mctea_sitters_flutter/constants.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
@@ -35,7 +28,6 @@ class SignUpPageState extends State<SignUpPage>
   @override
   void initState() {
     super.initState();
-
     _load();
   }
 

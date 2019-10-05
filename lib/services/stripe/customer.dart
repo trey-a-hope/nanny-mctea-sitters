@@ -7,7 +7,7 @@ import 'dart:convert' show Encoding, json;
 
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 
-abstract class StripeCustomer extends ChangeNotifier {
+abstract class StripeCustomer {
   Future<String> create({@required String email, @required String description});
   Future<Customer> retrieve({@required String customerId});
   Future<void> update({@required String customerId, @required String token});
@@ -69,7 +69,8 @@ class StripeCustomerImplementation extends StripeCustomer {
       return Customer(
           id: customerMap['id'],
           default_source: customerMap['default_source'],
-          card: card);
+          card: card,
+          isSubscribed: customerMap['subscriptions'] != null);
     } catch (e) {
       throw Exception();
     }

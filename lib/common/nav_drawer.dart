@@ -210,25 +210,27 @@ class NavDrawerState extends State<NavDrawer>
   }
 
   Widget _buildPlansPricing() {
-    return ListTile(
-      leading: Icon(Icons.attach_money,
-          color: Theme.of(context).primaryIconTheme.color),
-      title: Text(
-        'Plans & Pricing',
-      ),
-      subtitle: Text(
-        'Get an idea of costs.',
-        style: TextStyle(color: Colors.grey),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlansPricingPage(),
-          ),
-        );
-      },
-    );
+    return user == null
+        ? Container()
+        : ListTile(
+            leading: Icon(Icons.attach_money,
+                color: Theme.of(context).primaryIconTheme.color),
+            title: Text(
+              'Plans & Pricing',
+            ),
+            subtitle: Text(
+              'Get an idea of costs.',
+              style: TextStyle(color: Colors.grey),
+            ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PlansPricingPage(),
+                ),
+              );
+            },
+          );
   }
 
   Widget _buildJoinTeam() {

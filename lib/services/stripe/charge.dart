@@ -4,7 +4,7 @@ import 'dart:convert' show Encoding, json;
 
 import 'package:nanny_mctea_sitters_flutter/models/stripe/charge.dart';
 
-abstract class StripeCharge extends ChangeNotifier {
+abstract class StripeCharge {
   Future<bool> create(
       {@required double amount,
       @required String description,
