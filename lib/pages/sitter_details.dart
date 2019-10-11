@@ -12,7 +12,10 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
 
 import 'messages/message_page.dart';
 
@@ -32,10 +35,11 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
-  final _db = Firestore.instance;
+  // final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GetIt getIt = GetIt.I;
   bool _isLoading = true;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
   void initState() {
@@ -171,49 +175,48 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
         IconButton(
           icon: Icon(Icons.message),
           onPressed: () async {
-            FirebaseUser user = await _auth.currentUser();
-            if (user == null) {
-              getIt<Modal>().showInSnackBar(
-                  scaffoldKey: _scaffoldKey, text: 'Must be logged in.');
-            } else {
-              QuerySnapshot querySnapshot = await _db
-                  .collection('Users')
-                  .where('uid', isEqualTo: user.uid)
-                  .getDocuments();
-              DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-              User u = User.extractDocument(documentSnapshot);
-              _openMessageThread(u.id, _sitter.id);
+            User currentUser = await getIt<Auth>().getCurrentUser();
+            if(currentUser == null){
+              getIt<Modal>().showAlert(context: context, title: 'Sorry', message: 'You must be logged in to use this feature.');
+            }else{
+              getIt<Message>().openMessageThread(context: context, sendee: currentUser, sender: _sitter, title: _sitter.name);
             }
+
+            // QuerySnapshot querySnapshot =
+            //     await _usersDB.where('uid', isEqualTo: user.uid).getDocuments();
+            // DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
+            // User u = User.extractDocument(documentSnapshot);
+            // getIt<Message>().openMessageThread(u.id, _sitter.id);
           },
         )
       ],
     );
   }
 
-  void _openMessageThread(String userAId, String userBId) async {
-    try {
-      final CollectionReference conversationRef =
-          _db.collection('Conversations');
-      Query query = conversationRef;
-      query = query.where(userAId, isEqualTo: true);
-      query = query.where(userBId, isEqualTo: true);
-      QuerySnapshot result = await query.snapshots().first;
-      String convoId = null;
-      if (!result.documents.isEmpty) {
-        DocumentSnapshot conversationDoc = result.documents.first;
-        convoId = conversationDoc.documentID;
-      }
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MessagePage(userAId, userBId, convoId),
-        ),
-      );
-    } catch (e) {
-      getIt<Modal>().showInSnackBar(
-        scaffoldKey: _scaffoldKey,
-        text: e.toString(),
-      );
-    }
-  }
+  // void _openMessageThread(String userAId, String userBId) async {
+  //   try {
+  //     final CollectionReference conversationRef =
+  //         _db.collection('Conversations');
+  //     Query query = conversationRef;
+  //     query = query.where(userAId, isEqualTo: true);
+  //     query = query.where(userBId, isEqualTo: true);
+  //     QuerySnapshot result = await query.snapshots().first;
+  //     String convoId = null;
+  //     if (!result.documents.isEmpty) {
+  //       DocumentSnapshot conversationDoc = result.documents.first;
+  //       convoId = conversationDoc.documentID;
+  //     }
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => MessagePage(userAId, userBId, convoId),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     getIt<Modal>().showInSnackBar(
+  //       scaffoldKey: _scaffoldKey,
+  //       text: e.toString(),
+  //     );
+  //   }
+  // }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
+import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 abstract class Modal {
   void showInSnackBar(
@@ -17,6 +18,9 @@ abstract class Modal {
 }
 
 class ModalImplementation extends Modal {
+
+  final GetIt getIt = GetIt.I;
+
   @override
   void showInSnackBar(
       {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
@@ -70,7 +74,7 @@ class ModalImplementation extends Modal {
             maxLengthEnforced: true,
             // maxLength: MyFormData.nameCharLimit,
             onFieldSubmitted: (term) {},
-            validator: Validater.email,
+            validator: getIt<Validator>().email,
             onSaved: (value) {},
             decoration: InputDecoration(
               hintText: 'Email',
@@ -123,7 +127,7 @@ class ModalImplementation extends Modal {
             maxLengthEnforced: true,
             // maxLength: MyFormData.nameCharLimit,
             onFieldSubmitted: (term) {},
-            validator: Validater.email,
+            validator: getIt<Validator>().email,
             onSaved: (value) {},
             decoration: InputDecoration(
               hintText: 'New Email',

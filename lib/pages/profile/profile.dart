@@ -91,7 +91,7 @@ class ProfilePageState extends State<ProfilePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MessagesPage(uid),
+                builder: (context) => MessagesPage(),
               ),
             );
           },

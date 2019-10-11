@@ -3,9 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -63,7 +63,7 @@ class LoginPageState extends State<LoginPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.email,
+      validator: getIt<Validator>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -80,7 +80,7 @@ class LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.next,
       obscureText: true,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Password',

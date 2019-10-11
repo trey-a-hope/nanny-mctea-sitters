@@ -11,7 +11,7 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
   final ServiceOrder serviceOrder;
@@ -236,7 +236,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
@@ -254,7 +254,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.email,
+      validator: getIt<Validator>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -290,7 +290,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Street',
@@ -326,7 +326,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'City',

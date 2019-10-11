@@ -1,35 +1,26 @@
-//Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
-//Flutter
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//INTL
-import 'package:intl/intl.dart';
-//Models
+import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/notification.dart';
+import 'package:nanny_mctea_sitters_flutter/services/message.dart';
+import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
 
-import '../../constants.dart';
-
-//Services
-// import 'package:campcentral_flutter/services/notification.dart';
-
-final CollectionReference _conversationsRef =
-    Firestore.instance.collection('Conversations');
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-final String timeFormat = 'h:mm a';
-DocumentReference _thisConversationDoc;
-CollectionReference _messageRef;
 
 class MessagePage extends StatelessWidget {
-  MessagePage(this.userAId, this.userBId, this._conversationId);
+  MessagePage(
+      {@required this.sender,
+      @required this.sendee,
+      @required this.conversationId,
+      @required this.title});
 
-  final String userAId;
-  final String userBId;
-  final String _conversationId;
+  final User sender;
+  final User sendee;
+  final String conversationId;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -37,134 +28,120 @@ class MessagePage extends StatelessWidget {
       key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Message'),
+        title: Text(title),
       ),
-      body: ChatScreen(userAId, userBId, _conversationId),
+      body: ChatScreen(
+          sender: sender, sendee: sendee, conversationId: conversationId),
     );
   }
 }
 
 class ChatScreen extends StatefulWidget {
-  ChatScreen(this._userAId, this._userBId, this._conversationId);
+  ChatScreen(
+      {@required this.sender,
+      @required this.sendee,
+      @required this.conversationId});
 
-  final String _userAId; //Myself
-  final String _userBId; //Person I'm talking to.
-  final String _conversationId;
+  final User sender; //Myself
+  final User sendee; //Person I'm talking to.
+  final String conversationId;
 
   @override
-  State createState() => ChatScreenState(_userAId, _userBId, _conversationId);
+  State createState() => ChatScreenState(
+      sender: sender, sendee: sendee, conversationId: conversationId);
 }
 
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
-  ChatScreenState(this._userAId, this._userBId, this._conversationId);
+  ChatScreenState(
+      {@required this.sender,
+      @required this.sendee,
+      @required this.conversationId});
 
-  final String _userAId;
-  User _userA;
-  final String _userBId;
-  User _userB;
-  String _conversationId;
-
+  final User sender;
+  final User sendee;
+  final CollectionReference _conversationsRef =
+      Firestore.instance.collection('Conversations');
   final List<ChatMessage> _messages = List<ChatMessage>();
   final TextEditingController _textController = TextEditingController();
+  final GetIt getIt = GetIt.I;
   bool _isComposing = false;
-  final _db = Firestore.instance;
+  DocumentReference _thisConversationDoc;
+  CollectionReference _messagesDB;
+  String conversationId;
 
   @override
   void initState() {
     super.initState();
 
+    //Mark conversation as read as soon as user opens it.
+    if (conversationId != null) {
+      _conversationsRef.document(conversationId).updateData(
+        {'${sender.id}_read': true},
+      );
+    }
     _load();
   }
 
-  Future<User> _getUser(String id) async {
-    DocumentSnapshot documentSnapshot =
-        await _db.collection('Users').document(id).get();
-    return User.extractDocument(documentSnapshot);
-  }
+  _load() {
+    if (conversationId != null) {
+      _thisConversationDoc = _conversationsRef.document(conversationId);
+      _messagesDB = _thisConversationDoc.collection('messages');
 
-  _load() async {
-    _userA = await _getUser(_userAId);
-    _userB = await _getUser(_userBId);
-
-    setState(
-      () {
-        if (_conversationId != null) {
-          print(_conversationId);
-
-          _thisConversationDoc = _conversationsRef.document(_conversationId);
-          _messageRef = _thisConversationDoc.collection('messages');
-
-          //List for incoming messages.
-          _messageRef.snapshots().listen(
-            (messageSnapshot) {
-              //Sort messages by timestamp.
-              messageSnapshot.documents.sort(
-                (a, b) => a['timestamp'].compareTo(
-                  b['timestamp'],
+      //Listen for incoming messages.
+      _messagesDB.snapshots().listen(
+        (messageSnapshot) {
+          //Sort messages by time.
+          messageSnapshot.documents.sort(
+            (a, b) => a['time'].compareTo(
+              b['time'],
+            ),
+          );
+          //
+          messageSnapshot.documents.forEach(
+            (messageDoc) {
+              //Build chat message.
+              ChatMessage message = ChatMessage(
+                id: messageDoc.documentID,
+                name: messageDoc['name'],
+                imageUrl: messageDoc['imageUrl'],
+                text: messageDoc['text'],
+                time: messageDoc['time'].toDate(),
+                userId: messageDoc['userId'],
+                myUserId: sender.id,
+                animationController: AnimationController(
+                  duration: Duration(milliseconds: 700),
+                  vsync: this,
                 ),
               );
-              //
-              messageSnapshot.documents.forEach(
-                (messageDoc) {
-                  //Build chat message.
-                  ChatMessage message = ChatMessage(
-                    id: messageDoc.documentID,
-                    name: messageDoc['name'],
-                    imageUrl: messageDoc['imageUrl'],
-                    text: messageDoc['text'],
-                    time: messageDoc['timestamp'].toDate(),
-                    userId: messageDoc['userId'],
-                    myUserId: _userA.id,
-                    animationController: AnimationController(
-                      duration: Duration(milliseconds: 700),
-                      vsync: this,
-                    ),
-                  );
 
-                  setState(
-                    () {
-                      //Add message if it is new.
-                      if (_isNewMessage(message)) {
-                        _messages.insert(0, message);
-                      }
-                    },
-                  );
-
-                  message.animationController.forward();
+              setState(
+                () {
+                  //Add message if it is new.
+                  if (getIt<Message>().isNewMessage(
+                      chatMessage: message, messages: _messages)) {
+                    _messages.insert(0, message);
+                  }
                 },
               );
+
+              message.animationController.forward();
             },
           );
-        } else {
-          print('This is a message.');
-        }
-      },
-    );
-  }
-
-  bool _isNewMessage(ChatMessage cm) {
-    for (ChatMessage chatMessage in _messages) {
-      if (chatMessage.id == cm.id) {
-        return false;
-      }
+        },
+      );
     }
-    return true;
   }
 
   void _handleSubmitted(String text) {
-    if (_userA == null) {
-      return;
-    }
-
     //If this is a new message...
-    if (_conversationId == null) {
+    if (conversationId == null) {
       //Create thread.
       _thisConversationDoc = _conversationsRef.document();
-      _conversationId = _thisConversationDoc.documentID;
+      conversationId = _thisConversationDoc.documentID;
       //Set collection reference for messages on this thread.
-      _messageRef = _thisConversationDoc.collection('messages');
+      _messagesDB = _thisConversationDoc.collection('messages');
       //List for incoming messages.
-      _messageRef.snapshots().listen(
+      _messagesDB.snapshots().listen(
         (messageSnapshot) {
           messageSnapshot.documents.forEach(
             (messageDoc) {
@@ -174,9 +151,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 name: messageDoc['name'],
                 imageUrl: messageDoc['imageUrl'],
                 text: messageDoc['text'],
-                time: messageDoc['timestamp'].toDate(),
+                time: messageDoc['time'].toDate(),
                 userId: messageDoc['userId'],
-                myUserId: _userA.id,
+                myUserId: sender.id,
                 animationController: AnimationController(
                   duration: Duration(milliseconds: 700),
                   vsync: this,
@@ -186,7 +163,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               setState(
                 () {
                   //Add message is it is new.
-                  if (_isNewMessage(message)) {
+                  if (getIt<Message>().isNewMessage(
+                      chatMessage: message, messages: _messages)) {
                     _messages.insert(0, message);
                   }
                 },
@@ -200,27 +178,18 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       //Set user id's to true for this thread for searching purposes.
       //Also save each user's username to display as thread title.
       Map<String, dynamic> convoData = Map<String, dynamic>();
-      Map<String, dynamic> usersData = Map<String, dynamic>();
+      // Map<String, dynamic> usersData = Map<String, dynamic>();
 
-      //For user A...
-      convoData[_userA.id] = true;
-      usersData[_userA.id] = _userA.name;
+      //For sender...
+      convoData[sender.id] = true;
+      // usersData[sender.id] = sender.name;
 
-      //For user B...
-      convoData[_userB.id] = true;
-      usersData[_userB.id] = _userB.name;
+      //For sendee...
+      convoData[sendee.id] = true;
+      // usersData[sendee.id] = sendee.name;
 
-      //Apply "array" of user emails to the convo data.
-      convoData['users'] = usersData;
-
-      //Apply the number of users to the convo data.
-      convoData['userCount'] = 2;
-
-      //Apply the last message to the convo data.
-      convoData['lastMessage'] = text;
-
-      //Apply the image url of the last person to message the group.
-      convoData['lastImageUrl'] = DUMMY_PROFILE_PHOTO_URL;
+      //Apply "array" of user ids to the convo data.
+      convoData['users'] = [sender.id, sendee.id];
 
       _thisConversationDoc.setData(convoData);
 
@@ -228,30 +197,42 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
 
     //Save messagea data.
-    String messageId = _messageRef.document().documentID;
-    createChatMessage(_messageRef, messageId, text, DUMMY_PROFILE_PHOTO_URL,
-        _userA.name, _userA.id);
+    String messageId = _messagesDB.document().documentID;
+    getIt<Message>().createChatMessage(
+        messageRef: _messagesDB,
+        messageId: messageId,
+        text: text,
+        imageUrl: sender.imgUrl,
+        userName: sender.name,
+        userId: sender.id);
 
     //Update message thread.
     _thisConversationDoc.updateData(
-        {'lastMessage': text, 'lastImageUrl': DUMMY_PROFILE_PHOTO_URL});
+      {
+        'lastMessage': text,
+        'imageUrl': sender.imgUrl,
+        'time': DateTime.now(),
+        '${sender.id}_read': true,
+        '${sendee.id}_read': false
+      },
+    );
 
     //Notifiy user of new message.
-    NotificationService.sendNotificationToUser(
-        fcmToken: _userB.fcmToken,
-        title: 'New Message From ${_userA.name}',
+    getIt<FCMNotification>().sendNotificationToUser(
+        fcmToken: sendee.fcmToken,
+        title: 'New Message From ${sender.name}',
         body: text.length > 25 ? text.substring(0, 25) + '...' : text);
 
     _textController.clear();
 
     ChatMessage message = ChatMessage(
       id: messageId,
-      name: _userA.name,
-      imageUrl: DUMMY_PROFILE_PHOTO_URL,
+      name: sender.name,
+      imageUrl: sender.imgUrl,
       text: text,
       time: DateTime.now(),
-      userId: _userB.id,
-      myUserId: _userA.id,
+      userId: sendee.id,
+      myUserId: sender.id,
       animationController: AnimationController(
         duration: Duration(milliseconds: 700),
         vsync: this,
@@ -272,48 +253,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     for (ChatMessage message in _messages)
       message.animationController.dispose();
     super.dispose();
-  }
-
-  Widget _buildTextComposer() {
-    return IconTheme(
-      data: IconThemeData(color: Theme.of(context).accentColor),
-      child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(children: <Widget>[
-            Flexible(
-              child: TextField(
-                controller: _textController,
-                onChanged: (String text) {
-                  setState(() {
-                    _isComposing = text.length > 0;
-                  });
-                },
-                onSubmitted: _handleSubmitted,
-                decoration:
-                    InputDecoration.collapsed(hintText: "Send a message"),
-              ),
-            ),
-            Container(
-                margin: EdgeInsets.symmetric(horizontal: 4.0),
-                child: Theme.of(context).platform == TargetPlatform.iOS
-                    ? CupertinoButton(
-                        child: Text("Send"),
-                        onPressed: _isComposing
-                            ? () => _handleSubmitted(_textController.text)
-                            : null,
-                      )
-                    : IconButton(
-                        icon: Icon(Icons.send),
-                        onPressed: _isComposing
-                            ? () => _handleSubmitted(_textController.text)
-                            : null,
-                      )),
-          ]),
-          decoration: Theme.of(context).platform == TargetPlatform.iOS
-              ? BoxDecoration(
-                  border: Border(top: BorderSide(color: Colors.grey[200])))
-              : null),
-    );
   }
 
   Widget build(BuildContext context) {
@@ -344,16 +283,53 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             : null); //new
   }
 
-  createChatMessage(CollectionReference messageRef, String messageId,
-      String text, String imageUrl, String userName, String userId) async {
-    var data = {
-      'text': text,
-      'imageUrl': imageUrl,
-      'name': userName,
-      'userId': userId,
-      'timestamp': DateTime.now()
-    };
-
-    await messageRef.document(messageId).setData(data);
+  Widget _buildTextComposer() {
+    return IconTheme(
+      data: IconThemeData(color: Theme.of(context).accentColor),
+      child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: <Widget>[
+              Flexible(
+                child: TextField(
+                  controller: _textController,
+                  onChanged: (String text) {
+                    setState(
+                      () {
+                        _isComposing = text.length > 0;
+                      },
+                    );
+                  },
+                  onSubmitted: _handleSubmitted,
+                  decoration:
+                      InputDecoration.collapsed(hintText: "Send a message"),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                child: Theme.of(context).platform == TargetPlatform.iOS
+                    ? CupertinoButton(
+                        child: Text("Send"),
+                        onPressed: _isComposing
+                            ? () => _handleSubmitted(_textController.text)
+                            : null,
+                      )
+                    : IconButton(
+                        icon: Icon(Icons.send),
+                        onPressed: _isComposing
+                            ? () => _handleSubmitted(_textController.text)
+                            : null,
+                      ),
+              ),
+            ],
+          ),
+          decoration: Theme.of(context).platform == TargetPlatform.iOS
+              ? BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.grey[200]),
+                  ),
+                )
+              : null),
+    );
   }
 }

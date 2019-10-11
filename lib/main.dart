@@ -3,21 +3,24 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/home_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
+import 'package:nanny_mctea_sitters_flutter/services/package_device_info.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/subscriptions.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 // This is our global ServiceLocator
 final GetIt getIt = GetIt.instance;
 
-final String _testSecretKey =
-    'sk_test_IM9ti8gurtw7BjCPCtm9hRar'; //THIS IS SCORBORDS!
-final String _testPublishableKey = '?';
-final String _liveSecretKey = '?';
-final String _livePublishableKey = '?';
+final String _testSecretKey = 'sk_test_5B3wICOi014K7omjGCUpMbAc';
+final String _testPublishableKey = 'pk_test_JZxKU5yXf6wdHXOJOWhDWeB8';
+final String _liveSecretKey = 'sk_live_78VVUPikPfBgHz1BxLh08zS9';
+final String _livePublishableKey = 'pk_live_t9mv71BpBrsCt6oZ8ulDFGfG';
 final String _endpoint =
     'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
 
@@ -45,8 +48,20 @@ void main() {
       signalsReady: true);
   //Auth
   getIt.registerSingleton<Auth>(AuthImplementation(), signalsReady: true);
+  //Message
+  getIt.registerSingleton<Message>(MessageImplementation(), signalsReady: true);
+
   //Modal
   getIt.registerSingleton<Modal>(ModalImplementation(), signalsReady: true);
+  //Notification
+  getIt.registerSingleton<FCMNotification>(FCMNotificationImplementation(),
+      signalsReady: true);
+  //Package Device Info
+  getIt.registerSingleton<PackageDeviceInfo>(PackageDeviceInfoImplementation(),
+      signalsReady: true);
+  //Validator
+  getIt.registerSingleton<Validator>(ValidatorImplementation(),
+      signalsReady: true);
 
   runApp(MyApp());
 }

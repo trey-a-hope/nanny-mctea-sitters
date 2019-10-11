@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
@@ -12,9 +13,9 @@ import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings_page.dart';
-import 'package:nanny_mctea_sitters_flutter/services/pd_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/package_device_info.dart';
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key key}) : super(key: key);
@@ -24,11 +25,11 @@ class NavDrawer extends StatefulWidget {
 }
 
 class NavDrawerState extends State<NavDrawer> {
-  final PDInfo _pdInfo = PDInfo();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String _projectVersion;
   String _projectCode;
   FirebaseUser user;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -48,8 +49,8 @@ class NavDrawerState extends State<NavDrawer> {
   }
 
   load() async {
-    _projectCode = await _pdInfo.getAppBuildNumber();
-    _projectVersion = await _pdInfo.getAppVersionNumber();
+    _projectCode = await getIt<PackageDeviceInfo>().getAppBuildNumber();
+    _projectVersion = await getIt<PackageDeviceInfo>().getAppVersionNumber();
 
     setState(
       () => {},
@@ -94,7 +95,6 @@ class NavDrawerState extends State<NavDrawer> {
           _buildLogin(),
           _buildSignUp(),
           _buildSettings(),
-          // _buildContact(),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,

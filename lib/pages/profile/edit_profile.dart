@@ -6,7 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class EditProfilePage extends StatefulWidget {
   @override
@@ -171,7 +171,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
@@ -189,7 +189,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.email,
+      validator: getIt<Validator>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -207,7 +207,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.mobile,
+      validator: getIt<Validator>().mobile,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Phone',

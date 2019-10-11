@@ -5,9 +5,9 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -198,7 +198,7 @@ class SignUpPageState extends State<SignUpPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: Validater.email,
+      validator: getIt<Validator>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -217,7 +217,7 @@ class SignUpPageState extends State<SignUpPage> {
       maxLengthEnforced: true,
       maxLength: 25,
       onFieldSubmitted: (term) {},
-      validator: Validater.password,
+      validator: getIt<Validator>().password,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Password',

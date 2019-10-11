@@ -1,20 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
-import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class AddCreditCardPage extends StatefulWidget {
   AddCreditCardPage({@required this.customer});
@@ -143,7 +138,7 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               onFieldSubmitted: (term) {},
-                              validator: Validater.validateCardNumber,
+                              validator: getIt<Validator>().cardNumber,
                               onSaved: (value) {},
                               decoration: InputDecoration(
                                 hintText: 'Card Number',
@@ -170,7 +165,7 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               onFieldSubmitted: (term) {},
-                              validator: Validater.validateExpiration,
+                              validator: getIt<Validator>().cardExpiration,
                               onSaved: (value) {},
                               decoration: InputDecoration(
                                 hintText: 'Expiration',
@@ -197,7 +192,7 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
                               textInputAction: TextInputAction.next,
                               obscureText: false,
                               onFieldSubmitted: (term) {},
-                              validator: Validater.validateCVC,
+                              validator: getIt<Validator>().cardCVC,
                               onSaved: (value) {},
                               decoration: InputDecoration(
                                 hintText: 'CVC',

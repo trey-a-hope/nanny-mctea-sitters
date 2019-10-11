@@ -5,7 +5,7 @@ import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validater.dart';
+import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../constants.dart';
@@ -156,7 +156,7 @@ class ContactPageState extends State<ContactPage> {
       textInputAction: TextInputAction.next,
       maxLengthEnforced: true,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
@@ -173,7 +173,7 @@ class ContactPageState extends State<ContactPage> {
       textInputAction: TextInputAction.next,
       maxLengthEnforced: true,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Subject',
@@ -192,7 +192,7 @@ class ContactPageState extends State<ContactPage> {
       maxLengthEnforced: true,
       maxLines: 5,
       onFieldSubmitted: (term) {},
-      validator: Validater.isEmpty,
+      validator: getIt<Validator>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Message',
