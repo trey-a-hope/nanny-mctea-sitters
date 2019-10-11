@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
@@ -44,23 +46,39 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
-          : ListView.builder(
-              itemCount: _availableSitters.length,
-              itemBuilder: (BuildContext ctx, int index) {
-                return _buildSitterWidget(_availableSitters[index]);
-              },
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      // rightWidget: Icon(Icons.refresh, color: Colors.white),
+                      // rightTap: () async {
+                      //   await _getSlotsAndCaledar();
+                      // },
+                    ),
+                    title: 'Book Sitter',
+                    subtitle: 'Select a sitter.',
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _availableSitters.length,
+                    itemBuilder: (BuildContext ctx, int index) {
+                      return _buildSitterWidget(_availableSitters[index]);
+                    },
+                  ),
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Text('PICK A SITTER'),
-      centerTitle: true,
     );
   }
 
@@ -80,7 +98,8 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
         title: Text(sitter.name),
         subtitle: Text(sitter.details),
         trailing: CircleAvatar(
-          backgroundColor: _selectedSitter == sitter ? Colors.green : Colors.red,
+          backgroundColor:
+              _selectedSitter == sitter ? Colors.green : Colors.red,
           child: _selectedSitter == sitter
               ? Icon(
                   Icons.check,
@@ -125,7 +144,6 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                
                 //Attach selected sitter to service order.
                 serviceOrder.sitter = _selectedSitter;
 

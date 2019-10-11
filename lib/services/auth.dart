@@ -25,14 +25,14 @@ class AuthImplementation extends Auth {
   AuthImplementation();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  // final Firestore _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
   Future<User> getCurrentUser() async {
     try {
       FirebaseUser firebaseUser = await _auth.currentUser();
-      QuerySnapshot querySnapshot = await _db
-          .collection('Users')
+      QuerySnapshot querySnapshot = await _usersDB
           .where('uid', isEqualTo: firebaseUser.uid)
           .getDocuments();
       DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
@@ -45,8 +45,7 @@ class AuthImplementation extends Auth {
   @override
   Future<User> getUser({@required String id}) async {
     try {
-      DocumentSnapshot documentSnapshot =
-          await _db.collection('Users').document(id).get();
+      DocumentSnapshot documentSnapshot = await _usersDB.document(id).get();
       return User.extractDocument(documentSnapshot);
     } catch (e) {
       throw Exception(
@@ -105,11 +104,8 @@ class AuthImplementation extends Auth {
   @override
   Future<List<String>> getGemLikes({@required String id}) async {
     try {
-      QuerySnapshot querySnapshot = await _db
-          .collection('Users')
-          .document(id)
-          .collection('likes')
-          .getDocuments();
+      QuerySnapshot querySnapshot =
+          await _usersDB.document(id).collection('likes').getDocuments();
       List<DocumentSnapshot> likeDocs = querySnapshot.documents;
 
       List<String> likes = List<String>();
@@ -128,14 +124,12 @@ class AuthImplementation extends Auth {
     try {
       QuerySnapshot querySnapshot;
       if (limit == null) {
-        querySnapshot = await _db
-            .collection('Users')
+        querySnapshot = await _usersDB
             .where('category', isEqualTo: category)
             .orderBy('time', descending: true)
             .getDocuments();
       } else {
-        querySnapshot = await _db
-            .collection('Users')
+        querySnapshot = await _usersDB
             .where('category', isEqualTo: category)
             .orderBy('time', descending: true)
             .limit(limit)

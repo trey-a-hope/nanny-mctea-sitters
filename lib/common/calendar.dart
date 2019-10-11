@@ -18,15 +18,15 @@ class Calendar extends StatelessWidget {
       formatButtonTextStyle:
           TextStyle().copyWith(color: Colors.white, fontSize: 15.0),
       formatButtonDecoration: BoxDecoration(
-        color: Colors.deepOrange[400],
+        color: Colors.red[400],
         borderRadius: BorderRadius.circular(16.0),
       ),
     );
 
     CalendarStyle calendarStyle = CalendarStyle(
-      selectedColor: Colors.deepOrange[400],
-      todayColor: Colors.deepOrange[200],
-      markersColor: Colors.brown[700],
+      selectedColor: Colors.red[400],
+      todayColor: Colors.red[200],
+      markersColor: Colors.black,
       outsideDaysVisible: false,
     );
 

@@ -6,8 +6,8 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/charge.dart';
@@ -47,6 +47,11 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
         },
       );
     } catch (e) {
+      setState(
+        () {
+          _isLoading = false;
+        },
+      );
       getIt<Modal>().showAlert(
         context: context,
         title: 'Error',
@@ -65,7 +70,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SlantScaffold(
+                  ScaffoldClipper(
                     simpleNavbar: SimpleNavbar(
                       leftWidget:
                           Icon(MdiIcons.chevronLeft, color: Colors.white),

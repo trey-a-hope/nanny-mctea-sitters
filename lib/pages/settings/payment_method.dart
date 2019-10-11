@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
@@ -17,12 +17,12 @@ import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 
 import '../../asset_images.dart';
 
-class CreditCardPage extends StatefulWidget {
+class PaymentMethodPage extends StatefulWidget {
   @override
-  State createState() => CreditCardPageState();
+  State createState() => PaymentMethodPageState();
 }
 
-class CreditCardPageState extends State<CreditCardPage> {
+class PaymentMethodPageState extends State<PaymentMethodPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final GetIt getIt = GetIt.instance;
   bool _isLoading = true;
@@ -62,6 +62,11 @@ class CreditCardPageState extends State<CreditCardPage> {
         },
       );
     } catch (e) {
+      setState(
+        () {
+          _isLoading = false;
+        },
+      );
       getIt<Modal>().showAlert(
         context: context,
         title: 'Error',
@@ -94,6 +99,11 @@ class CreditCardPageState extends State<CreditCardPage> {
         getIt<Modal>().showInSnackBar(
             scaffoldKey: _scaffoldKey, text: 'Card successfully removed.');
       } catch (e) {
+        setState(
+          () {
+            _isLoading = false;
+          },
+        );
         getIt<Modal>().showAlert(
           context: context,
           title: 'Error',
@@ -113,7 +123,7 @@ class CreditCardPageState extends State<CreditCardPage> {
           : SingleChildScrollView(
               child: Column(
                 children: <Widget>[
-                  SlantScaffold(
+                  ScaffoldClipper(
                     simpleNavbar: SimpleNavbar(
                       leftWidget:
                           Icon(MdiIcons.chevronLeft, color: Colors.white),

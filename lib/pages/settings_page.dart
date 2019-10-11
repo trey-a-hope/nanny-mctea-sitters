@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/common/slant_scaffold.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/settings/credit_card_page.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/settings/payment_method.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings/paymet_history_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -27,7 +26,7 @@ class SettingsPageState extends State<SettingsPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SlantScaffold(
+            ScaffoldClipper(
               simpleNavbar: SimpleNavbar(
                 leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
                 leftTap: () {
@@ -47,7 +46,7 @@ class SettingsPageState extends State<SettingsPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CreditCardPage(),
+                    builder: (context) => PaymentMethodPage(),
                   ),
                 );
               },

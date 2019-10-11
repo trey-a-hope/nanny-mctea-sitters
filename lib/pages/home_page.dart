@@ -174,8 +174,14 @@ class HomePageState extends State<HomePage> {
                             width: double.infinity,
                             height: 300,
                             decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 2.0,
+                                    blurRadius: 4.0,
+                                    color: Colors.grey)
+                              ],
                               border: Border.all(
-                                  color: Theme.of(context).accentColor,
+                                  color: Colors.white,
                                   style: BorderStyle.solid,
                                   width: 5.0),
                               borderRadius: BorderRadius.all(

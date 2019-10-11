@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 
-class SlantScaffold extends StatelessWidget {
-  SlantScaffold(
+class ScaffoldClipper extends StatelessWidget {
+  ScaffoldClipper(
       {@required this.simpleNavbar,
       @required this.title,
       @required this.subtitle});
@@ -16,15 +16,20 @@ class SlantScaffold extends StatelessWidget {
     return Stack(
       overflow: Overflow.visible,
       children: <Widget>[
-        ClipperSlant(
+        ClipPath(
+          clipper: WaveClipperOne(),
           child: Container(
-            height: 250,
+            height: 200,
+            width: double.infinity,
             color: Theme.of(context).primaryColor,
+            // child: Center(
+            //   child: Text("SideCutClipper()"),
+            // ),
           ),
         ),
         simpleNavbar,
         Positioned(
-          top: 100,
+          top: 90,
           left: 32,
           right: 0,
           child: RichText(
@@ -49,27 +54,3 @@ class SlantScaffold extends StatelessWidget {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// class Spinner extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           CircularProgressIndicator(
-//             backgroundColor: Colors.black,
-//             strokeWidth: 3.0,
-//           ),
-//           SizedBox(height: 20),
-//           Text(
-//             'Loading',
-//             style: TextStyle(fontSize: 15.0, color: Colors.grey),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

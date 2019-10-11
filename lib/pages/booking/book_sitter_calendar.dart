@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
@@ -192,35 +194,53 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      // appBar: _buildAppBar(),
       body: _isLoading
           ? Spinner()
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        serviceOrder.serviceName,
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20),
-                      ),
-                      SizedBox(height: 20),
-                      _buildSitterDropDown(),
-                    ],
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      rightWidget: Icon(Icons.refresh, color: Colors.white),
+                      rightTap: () async {
+                        await _getSlotsAndCaledar();
+                      },
+                    ),
+                    title: 'Book Sitter',
+                    subtitle: 'Select a date.',
                   ),
-                ),
-                Divider(),
-                Calendar(
-                    calendarController: _calendarController,
-                    events: _events,
-                    onDaySelected: _onDaySelected,
-                    onVisibleDaysChanged: _onVisibleDaysChanged),
-              ],
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          serviceOrder.serviceName,
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        Text('Pick a sitter from the drop down.'),
+                        SizedBox(height: 20),
+                        _buildSitterDropDown(),
+                      ],
+                    ),
+                  ),
+                  Calendar(
+                        calendarController: _calendarController,
+                        events: _events,
+                        onDaySelected: _onDaySelected,
+                        onVisibleDaysChanged: _onVisibleDaysChanged),
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );

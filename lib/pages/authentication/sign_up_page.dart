@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -17,7 +19,7 @@ class SignUpPage extends StatefulWidget {
 class SignUpPageState extends State<SignUpPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _db = Firestore.instance;
+  // final _db = Firestore.instance;
   final _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
   bool _isLoading = true;
@@ -26,6 +28,7 @@ class SignUpPageState extends State<SignUpPage> {
   TextEditingController _passwordController = TextEditingController();
 
   final GetIt getIt = GetIt.I;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
   void initState() {
@@ -45,8 +48,8 @@ class SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      bool confirm =
-          await getIt<Modal>().showConfirmation(context: context, title: 'Submit', text: 'Are you ready?');
+      bool confirm = await getIt<Modal>().showConfirmation(
+          context: context, title: 'Submit', text: 'Are you ready?');
       if (confirm) {
         try {
           setState(
@@ -62,22 +65,27 @@ class SignUpPageState extends State<SignUpPage> {
           );
           final FirebaseUser user = authResult.user;
 
-          var data = {
-            'email': user.email,
-            'imgUrl': DUMMY_PROFILE_PHOTO_URL,
-            'time': DateTime.now(),
-            'uid': user.uid,
-            'isSitter': false,
-            'bio': '',
-            'details': '',
-            'name': '',
-            'phone': '',
-            'fcmToken': ''
-          };
+          String customerId = await getIt<StripeCustomer>()
+              .create(email: user.email, description: '');
 
-          CollectionReference colRef = _db.collection('Users');
-          DocumentReference docRef = await colRef.add(data);
-          await colRef
+          User newUser = User(
+              id: '',
+              bio: '',
+              details: '',
+              name: '',
+              phone: '',
+              fcmToken: '',
+              email: user.email,
+              imgUrl: DUMMY_PROFILE_PHOTO_URL,
+              time: DateTime.now(),
+              uid: user.uid,
+              isSitter: false,
+              customerId: customerId);
+
+          DocumentReference docRef = await _usersDB.add(
+            newUser.toMap(),
+          );
+          await _usersDB
               .document(docRef.documentID)
               .updateData({'id': docRef.documentID});
 
@@ -85,7 +93,9 @@ class SignUpPageState extends State<SignUpPage> {
         } catch (e) {
           setState(
             () {
-              getIt<Modal>().showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
+              _isLoading = true;
+              getIt<Modal>()
+                  .showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
             },
           );
         }

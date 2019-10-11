@@ -121,14 +121,14 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
           },
         );
       } catch (e) {
+        setState(
+          () {
+            _isLoading = false;
+          },
+        );
         getIt<Modal>().showInSnackBar(
           scaffoldKey: _scaffoldKey,
           text: e.toString(),
-        );
-        setState(
-          () {
-            _autoValidate = true;
-          },
         );
       }
     } else {

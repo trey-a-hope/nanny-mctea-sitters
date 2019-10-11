@@ -58,9 +58,11 @@ class PlansPricingState extends State<PlansPricingPage> {
             'You will start your monthly plan today, and will be billed every month for \$100. Continue with plan?');
     if (confirm) {
       try {
-        setState(() {
-          _isLoading = true;
-        });
+        setState(
+          () {
+            _isLoading = true;
+          },
+        );
 
         String subscriptionId = await getIt<StripeSubscription>().create(
             customerId: _currentUser.customerId, plan: STRIPE_GOLD_PLAN_ID);
@@ -75,9 +77,11 @@ class PlansPricingState extends State<PlansPricingPage> {
             title: 'Success',
             message: 'Your subscription has started.');
       } catch (e) {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(
+          () {
+            _isLoading = false;
+          },
+        );
 
         getIt<Modal>().showAlert(
           context: context,

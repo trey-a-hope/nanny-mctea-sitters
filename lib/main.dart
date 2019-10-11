@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Montserrat',
         scaffoldBackgroundColor: Colors.white,
         brightness: Brightness.light,
-        accentColor: Colors.yellow[50],
+        accentColor: Colors.red,
         accentIconTheme: IconThemeData(color: Colors.white),
         accentTextTheme: TextTheme(
           body1: TextStyle(color: Colors.white, fontSize: 20),

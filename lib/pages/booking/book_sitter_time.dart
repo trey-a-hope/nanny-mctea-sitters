@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
@@ -15,8 +17,8 @@ class BookSitterTimePage extends StatefulWidget {
   BookSitterTimePage(this._slots, this._sitterSlotMap, this.serviceOrder);
 
   @override
-  State createState() =>
-      BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
+  State createState() => BookSitterTimePageState(
+      this._slots, this._sitterSlotMap, this.serviceOrder);
 }
 
 class BookSitterTimePageState extends State<BookSitterTimePage> {
@@ -38,6 +40,13 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
   }
 
   _load() async {
+    //Sort slots.
+    _slots.sort(
+          (a, b) => a.time.compareTo(
+            b.time,
+          ),
+        );
+
     setState(
       () {
         _isLoading = false;
@@ -49,16 +58,39 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
-          : ListView.builder(
-              itemCount: _slots.length,
-              itemBuilder: (BuildContext ctxt, int index) {
-                return _buildSlot(
-                  _slots[index],
-                );
-              },
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      // rightWidget: Icon(Icons.refresh, color: Colors.white),
+                      // rightTap: () async {
+                      //   await _getSlotsAndCaledar();
+                      // },
+                    ),
+                    title: 'Book Sitter',
+                    subtitle: 'Select a time.',
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: _slots.length,
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      return _buildSlot(
+                        _slots[index],
+                      );
+                    },
+                  )
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
@@ -70,8 +102,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
             width: MediaQuery.of(context).size.width,
             height: 50.0,
             child: RaisedButton(
-              onPressed: () {
-              },
+              onPressed: () {},
               color: Colors.grey.shade200,
               child: Center(
                 child: Row(
@@ -119,7 +150,8 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookSitterSitterPage(availableSitters, serviceOrder),
+                    builder: (context) =>
+                        BookSitterSitterPage(availableSitters, serviceOrder),
                   ),
                 );
               },
@@ -144,13 +176,6 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
               ),
             ),
           );
-  }
-
-  _buildAppBar() {
-    return AppBar(
-      title: Text('PICK A TIME'),
-      centerTitle: true,
-    );
   }
 
   Widget _buildSlot(Slot slot) {
