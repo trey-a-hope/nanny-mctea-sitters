@@ -130,7 +130,7 @@ class NavDrawerState extends State<NavDrawer> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfilePage(user.uid),
+                  builder: (context) => ProfilePage(),
                 ),
               );
             },

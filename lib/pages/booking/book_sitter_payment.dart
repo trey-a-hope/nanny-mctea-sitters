@@ -11,7 +11,7 @@ import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
-import 'package:nanny_mctea_sitters_flutter/pages/settings/payment_method.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/payments/payment_method.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';

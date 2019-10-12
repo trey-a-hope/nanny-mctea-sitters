@@ -10,25 +10,23 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final Appointment appointment;
 
-  AppointmentDetailsPage(this.appointment);
+  AppointmentDetailsPage({@required this.appointment});
 
   @override
-  State createState() => AppointmentDetailsPageState(this.appointment);
+  State createState() => AppointmentDetailsPageState(appointment: appointment);
 }
 
 class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
-  AppointmentDetailsPageState(this.appointment);
+  AppointmentDetailsPageState({@required this.appointment});
 
   final Appointment appointment;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
-  final CollectionReference _appointmentsDB =
-      Firestore.instance.collection('Appointments');
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
@@ -47,34 +45,11 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     _load();
   }
 
-  Future<User> _fetchSitter() async {
-    DocumentSnapshot documentSnapshot =
-        await _usersDB.document(appointment.sitterID).get();
-    User sitter = User.extractDocument(documentSnapshot);
-    return sitter;
-  }
-
-  Future<User> _fetchUser() async {
-    DocumentSnapshot documentSnapshot =
-        await _usersDB.document(appointment.userID).get();
-    User user = User.extractDocument(documentSnapshot);
-    return user;
-  }
-
-  Future<Slot> _fetchSlot() async {
-    DocumentSnapshot documentSnapshot = await _usersDB
-        .document(appointment.sitterID)
-        .collection('slots')
-        .document(appointment.slotID)
-        .get();
-    Slot slot = Slot.extractDocument(documentSnapshot);
-    return slot;
-  }
-
   _load() async {
-    _sitter = await _fetchSitter();
-    _user = await _fetchUser();
-    _slot = await _fetchSlot();
+    _sitter = await getIt<DB>().getUser(id: appointment.sitterID);
+    _user = await getIt<DB>().getUser(id: appointment.userID);
+    _slot = await getIt<DB>()
+        .getSlot(sitterId: appointment.sitterID, slotId: appointment.slotID);
 
     setState(
       () {
@@ -340,16 +315,15 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       );
 
       //Set sitter slot availability to free.
-      await _usersDB
-          .document(appointment.sitterID)
-          .collection('slots')
-          .document(appointment.slotID)
-          .updateData(
-        {'taken': false},
-      );
+      getIt<DB>().setSlotTaken(
+          sitterId: appointment.sitterID,
+          slotId: appointment.slotID,
+          taken: false);
 
       //Remove appointment.
-      await _appointmentsDB.document(appointment.id).delete();
+      getIt<DB>().deleteAppointment(appointmentId: appointment.id);
+
+      //Issue refund?
 
       setState(
         () {

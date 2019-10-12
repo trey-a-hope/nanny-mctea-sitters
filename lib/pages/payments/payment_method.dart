@@ -10,7 +10,7 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
-import 'package:nanny_mctea_sitters_flutter/pages/settings/add_credit_card_page.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/payments/add_credit_card_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/card.dart';

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/settings/payment_method.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/settings/paymet_history_page.dart';
-
+import 'package:nanny_mctea_sitters_flutter/pages/payments/payment_method.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/payments/paymet_history_page.dart';
 class SettingsPage extends StatefulWidget {
   @override
   State createState() => SettingsPageState();

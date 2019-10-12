@@ -22,7 +22,6 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
   List<dynamic> _avialableSlots;
   bool _isLoading = true;
@@ -79,26 +78,11 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   _getAvailability() async {
     _sitterSlotMap.clear();
 
-    //Find specific sitter and look for their availability, (slots).
     User filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
 
-    _slotsColRef = _usersDB.document(filteredSitter.id).collection('slots');
-
-    QuerySnapshot slotQuerySnapshot =
-        await _slotsColRef.where('taken', isEqualTo: false).getDocuments();
-
-    List<DocumentSnapshot> slotDocumentSnapshots = slotQuerySnapshot.documents;
-    List<Slot> slots = List<Slot>();
-
-    for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-      Slot slot = Slot(
-        id: slotDocumentSnapshots[j].data['id'],
-        taken: slotDocumentSnapshots[j].data['taken'],
-        time: slotDocumentSnapshots[j].data['time'].toDate(),
-      );
-      slots.add(slot);
-    }
+    List<Slot> slots =
+        await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
 
     _sitterSlotMap[filteredSitter] = slots;
   }

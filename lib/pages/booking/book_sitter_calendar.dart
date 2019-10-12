@@ -175,7 +175,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      // appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
           : SingleChildScrollView(

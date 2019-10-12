@@ -1,10 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
@@ -21,9 +24,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
-  User _user;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
+  User _currentUser;
   FirebaseUser _firebaseUser;
   final GetIt getIt = GetIt.I;
   @override
@@ -33,30 +34,16 @@ class EditProfilePageState extends State<EditProfilePage> {
   }
 
   _load() async {
-    await _fetchUserProfile();
-    await _setFields();
+    _currentUser = await getIt<Auth>().getCurrentUser();
+    _nameController.text = _currentUser.name;
+    _phoneController.text = _currentUser.phone;
+    _emailController.text = _currentUser.email;
 
     setState(
       () {
         _isLoading = false;
       },
     );
-  }
-
-  Future<void> _fetchUserProfile() async {
-    _firebaseUser = await _auth.currentUser();
-    QuerySnapshot qs = await _usersDB
-        .where('uid', isEqualTo: _firebaseUser.uid)
-        .getDocuments();
-    DocumentSnapshot ds = qs.documents[0];
-
-    _user = User.extractDocument(ds);
-  }
-
-  Future<void> _setFields() async {
-    _nameController.text = _user.name;
-    _phoneController.text = _user.phone;
-    _emailController.text = _user.email;
   }
 
   void _submit() async {
@@ -111,7 +98,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       'phone': _phoneController.text
     };
 
-    await _usersDB.document(_user.id).updateData(data);
+    getIt<DB>().updateUser(userId: _currentUser.id, data: data);
 
     return;
   }
@@ -120,37 +107,58 @@ class EditProfilePageState extends State<EditProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
           : SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Form(
-                  key: _formKey,
-                  autovalidate: _autoValidate,
-                  child: Column(
-                    children: <Widget>[
-                      _nameFormField(),
-                      SizedBox(height: 30),
-                      _emailFormField(),
-                      SizedBox(height: 30),
-                      _phoneFormField(),
-                      SizedBox(height: 30),
-                      MaterialButton(
-                        child: Text(
-                          'SUBMIT',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          _submit();
-                        },
-                        color: Colors.blue,
-                      ),
-                    ],
+              child: Column(
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    title: 'Edit Profile',
+                    subtitle: 'Update yourself.',
                   ),
-                ),
+                  Form(
+                    key: _formKey,
+                    autovalidate: _autoValidate,
+                    child: Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(height: 20),
+                          _nameFormField(),
+                          SizedBox(height: 30),
+                          _emailFormField(),
+                          SizedBox(height: 30),
+                          _phoneFormField(),
+                          SizedBox(height: 30),
+                          RaisedButton(
+                            child: Text('SUBMIT'),
+                            onPressed: () async {
+                              _submit();
+                            },
+                            color: Theme.of(context).buttonColor,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
               ),
+              // child: Padding(
+              //   padding: EdgeInsets.all(20),
+              //   child: Form(
+              //     key: _formKey,
+              //     autovalidate: _autoValidate,
+              //     child:
+              //   ),
+              // ),
             ),
     );
   }
@@ -174,7 +182,8 @@ class EditProfilePageState extends State<EditProfilePage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
-        icon: Icon(Icons.person),
+        icon:
+            Icon(Icons.person, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -192,7 +201,8 @@ class EditProfilePageState extends State<EditProfilePage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
-        icon: Icon(Icons.email),
+        icon:
+            Icon(Icons.email, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -210,7 +220,8 @@ class EditProfilePageState extends State<EditProfilePage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Phone',
-        icon: Icon(Icons.phone),
+        icon:
+            Icon(Icons.phone, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
