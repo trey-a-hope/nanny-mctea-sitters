@@ -7,19 +7,28 @@ import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
 abstract class DB {
+  //Users
   Future<User> getUser({@required String id});
   Future<List<User>> getSitters();
+  Future<void> updateUser(
+      {@required String userId, @required Map<String, dynamic> data});
+  Future<void> createUser({@required Map<String, dynamic> data});
+
+  //Appointments
+  Future<List<Appointment>> getAppointments({@required String userId});
+  Future<void> deleteAppointment({@required String appointmentId});
+  Future<void> createAppointment({@required Map<String, dynamic> data});
+
+  //Slots
   Future<List<Slot>> getSlots(
       {@required String sitterId, @required bool taken});
   Future<List<Slot>> setSlotTaken(
       {@required String sitterId,
       @required String slotId,
       @required bool taken});
-  Future<List<Appointment>> getAppointments({@required String userId});
   Future<Slot> getSlot({@required String sitterId, @required String slotId});
-  Future<void> deleteAppointment({@required String appointmentId});
-  Future<void> updateUser(
-      {@required String userId, @required Map<String, dynamic> data});
+  Future<void> addSlot({@required String sitterId, @required DateTime time});
+  Future<void> deleteSlot({@required String sitterId, @required String slotId});
 }
 
 class DBImplementation extends DB {
@@ -162,6 +171,71 @@ class DBImplementation extends DB {
       {@required String userId, @required Map<String, dynamic> data}) async {
     try {
       await _usersDB.document(userId).updateData(data);
+      return;
+    } catch (e) {
+      throw Exception(
+        e.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<void> addSlot({String sitterId, DateTime time}) async {
+    final CollectionReference slotsColRef =
+        _usersDB.document(sitterId).collection('slots');
+    try {
+      DocumentReference docRef = await slotsColRef.add(
+        {'taken': false, 'time': time},
+      );
+      slotsColRef.document(docRef.documentID).updateData(
+        {'id': docRef.documentID},
+      );
+      return;
+    } catch (e) {
+      throw Exception(
+        e.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<void> deleteSlot({String sitterId, String slotId}) async {
+    try {
+      await _usersDB
+          .document(sitterId)
+          .collection('slots')
+          .document(slotId)
+          .delete();
+      return;
+    } catch (e) {
+      throw Exception(
+        e.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<void> createUser({Map<String, dynamic> data}) async {
+    try {
+      DocumentReference docRef = await _usersDB.add(data);
+      await _usersDB
+          .document(docRef.documentID)
+          .updateData({'id': docRef.documentID});
+      return;
+    } catch (e) {
+      throw Exception(
+        e.toString(),
+      );
+    }
+  }
+
+  @override
+  Future<void> createAppointment({Map<String, dynamic> data}) async {
+    try {
+      DocumentReference aptDocRef = await _appointmentsDB.add(data);
+      await _appointmentsDB.document(aptDocRef.documentID).updateData(
+        {'id': aptDocRef.documentID},
+      );
       return;
     } catch (e) {
       throw Exception(

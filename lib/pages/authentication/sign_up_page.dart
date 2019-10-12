@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,8 +20,7 @@ class SignUpPage extends StatefulWidget {
 
 class SignUpPageState extends State<SignUpPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
   bool _isLoading = true;
 
@@ -27,7 +28,6 @@ class SignUpPageState extends State<SignUpPage> {
   TextEditingController _passwordController = TextEditingController();
 
   final GetIt getIt = GetIt.I;
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
   void initState() {
@@ -58,7 +58,8 @@ class SignUpPageState extends State<SignUpPage> {
           );
 
           //Create new user in auth.
-          AuthResult authResult = await _auth.createUserWithEmailAndPassword(
+          AuthResult authResult =
+              await getIt<Auth>().createUserWithEmailAndPassword(
             email: _emailController.text,
             password: _passwordController.text,
           );
@@ -81,12 +82,9 @@ class SignUpPageState extends State<SignUpPage> {
               isSitter: false,
               customerId: customerId);
 
-          DocumentReference docRef = await _usersDB.add(
-            newUser.toMap(),
+          getIt<DB>().createUser(
+            data: newUser.toMap(),
           );
-          await _usersDB
-              .document(docRef.documentID)
-              .updateData({'id': docRef.documentID});
 
           Navigator.of(context).pop();
         } catch (e) {
@@ -151,11 +149,19 @@ class SignUpPageState extends State<SignUpPage> {
                     ),
                   ),
                 ),
+                Positioned(
+                  left: (screenWidth * 0.1) / 2,
+                  top: 50,
+                  child: Text(
+                    'Sign Up',
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                ),
                 SingleChildScrollView(
                   child: Column(
                     children: <Widget>[
                       Container(
-                        height: 300,
+                        height: _autoValidate ? 290 : 260,
                         width: screenWidth * 0.9,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
@@ -273,7 +279,7 @@ class SignUpPageState extends State<SignUpPage> {
         MdiIcons.send,
         size: 18.0,
       ),
-      label: Text('Submit'),
+      label: Text('Sign Up'),
       onPressed: () {
         _signUp();
       },

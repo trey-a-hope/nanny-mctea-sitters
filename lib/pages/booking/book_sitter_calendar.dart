@@ -33,7 +33,6 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   bool _isLoading = true;
   String _sitterOption;
   List<User> _sitters = List<User>();
@@ -56,56 +55,19 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
 
   _getAvailability({@required bool all}) async {
     _sitterSlotMap.clear();
-
     if (all) {
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
-        QuerySnapshot slotQuerySnapshot = await _usersDB
-            .document(_sitters[i].id)
-            .collection('slots')
-            .where('taken', isEqualTo: false)
-            .getDocuments();
-        List<DocumentSnapshot> slotDocumentSnapshots =
-            slotQuerySnapshot.documents;
-
-        List<Slot> slots = List<Slot>();
-
-        for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-          Slot slot = Slot(
-            id: slotDocumentSnapshots[j].data['id'],
-            taken: slotDocumentSnapshots[j].data['taken'],
-            time: slotDocumentSnapshots[j].data['time'].toDate(),
-          );
-          slots.add(slot);
-        }
-
+        List<Slot> slots =
+            await getIt<DB>().getSlots(sitterId: _sitters[i].id, taken: false);
         _sitterSlotMap[_sitters[i]] = slots;
       }
     } else {
       //Find specific sitter and look for their availability, (slots).
       User filteredSitter =
           _sitters.where((sitter) => sitter.name == _sitterOption).first;
-
-      // for (var i = 0; i < _sitters.length; i++) {
-      QuerySnapshot slotQuerySnapshot = await _usersDB
-          .document(filteredSitter.id)
-          .collection('slots')
-          .where('taken', isEqualTo: false)
-          .getDocuments();
-      List<DocumentSnapshot> slotDocumentSnapshots =
-          slotQuerySnapshot.documents;
-
-      List<Slot> slots = List<Slot>();
-
-      for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-        Slot slot = Slot(
-            id: slotDocumentSnapshots[j].data['id'],
-            taken: slotDocumentSnapshots[j].data['taken'],
-            time: slotDocumentSnapshots[j].data['time'].toDate());
-
-        slots.add(slot);
-      }
-
+      List<Slot> slots =
+          await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
       _sitterSlotMap[filteredSitter] = slots;
     }
   }

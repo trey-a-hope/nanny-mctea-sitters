@@ -3,38 +3,41 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class DeleteAvailabilityTimePage extends StatefulWidget {
   final List<dynamic> takenSlots;
   final DateTime selectedDay;
-  final CollectionReference slotsColRef;
+  final String sitterId;
 
   DeleteAvailabilityTimePage(
       {@required this.takenSlots,
       @required this.selectedDay,
-      @required this.slotsColRef});
+      @required this.sitterId});
 
   @override
   State createState() => DeleteAvailabilityTimePageState(
-      this.takenSlots, this.selectedDay, this.slotsColRef);
+      this.takenSlots, this.selectedDay, this.sitterId);
 }
 
-class DeleteAvailabilityTimePageState extends State<DeleteAvailabilityTimePage> {
+class DeleteAvailabilityTimePageState
+    extends State<DeleteAvailabilityTimePage> {
   DeleteAvailabilityTimePageState(
-      this._takenSlots, this._selectedDay, this._slotsColRef);
+      this._takenSlots, this._selectedDay, this.sitterId);
 
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
+  final String sitterId;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DateTime _selectedDay;
   final List<dynamic> _takenSlots;
-  final CollectionReference _slotsColRef;
-final GetIt getIt = GetIt.I;
-  List<dynamic> _availableSlots = List<dynamic>();
+  final GetIt getIt = GetIt.I;
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
 
@@ -46,8 +49,6 @@ final GetIt getIt = GetIt.I;
   }
 
   _load() async {
-    _buildSlots();
-
     setState(
       () {
         _isLoading = false;
@@ -55,46 +56,39 @@ final GetIt getIt = GetIt.I;
     );
   }
 
-  _buildSlots() async {
-    //Create 24 hours time slots for available slots.
-    for (int i = 0; i < 24; i++) {
-      bool hit = false; //Slot is already active.
-
-      for (int j = 0; j < _takenSlots.length; j++) {
-        int takenHour = _takenSlots[j].time.hour;
-        if (takenHour == i) {
-          hit = true;
-          break;
-        }
-      }
-
-      if (!hit) {
-        Slot slot = Slot(
-          id: '',
-          taken: false,
-          time: DateTime(
-              _selectedDay.year, _selectedDay.month, _selectedDay.day, i),
-        );
-
-        _availableSlots.add(slot);
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
-          : ListView.builder(
-              itemCount: _availableSlots.length,
-              itemBuilder: (BuildContext ctxt, int index) {
-                return _buildSlot(
-                  _availableSlots[index],
-                );
-              },
+          : SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    title: 'Delete Sitter Hours',
+                    subtitle: 'Select time(s)',
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: _takenSlots.length,
+                    itemBuilder: (BuildContext ctxt, int index) {
+                      return _buildSlot(
+                        _takenSlots[index],
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
@@ -108,7 +102,8 @@ final GetIt getIt = GetIt.I;
     );
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {
-        await _slotsColRef.document(_selectedSlots[i].id).delete();
+        await getIt<DB>()
+            .deleteSlot(sitterId: sitterId, slotId: _selectedSlots[i].id);
       }
       getIt<Modal>().showAlert(
           context: context, title: 'Success', message: 'Time removed.');

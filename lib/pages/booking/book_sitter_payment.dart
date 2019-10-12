@@ -36,9 +36,6 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
   User _currentUser;
   Customer _customer;
   final GetIt getIt = GetIt.I;
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
-  final CollectionReference _appointmentsDB =
-      Firestore.instance.collection('Appointments');
 
   @override
   void initState() {
@@ -88,25 +85,22 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
           throw Exception('Could not charge card at this time.');
         }
 
-        //Create appointment.
-        var appointmentData = {
-          'aptNo': appointment.aptNo,
-          'city': appointment.city,
-          'email': appointment.email,
-          'message': appointment.message,
-          'name': appointment.name,
-          'phone': appointment.phone,
-          'service': appointment.service,
-          'street': appointment.street,
-          'sitterID': appointment.sitter.id,
-          'slotID': appointment.slot.id,
-          'userID': _currentUser.id
-        };
+        Appointment apt = Appointment(
+            id: '',
+            service: appointment.service,
+            slotID: appointment.slotID,
+            aptNo: appointment.aptNo,
+            city: appointment.city,
+            email: appointment.email,
+            message: appointment.message,
+            name: appointment.name,
+            phone: appointment.phone,
+            street: appointment.street,
+            sitterID: appointment.sitterID,
+            userID: appointment.userID);
 
-        DocumentReference aptDocRef =
-            await _appointmentsDB.add(appointmentData);
-        await _appointmentsDB.document(aptDocRef.documentID).updateData(
-          {'id': aptDocRef.documentID},
+        getIt<DB>().createAppointment(
+          data: apt.toMap(),
         );
 
         //Set sitters time slot to taken.
@@ -290,22 +284,6 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
                       ),
                       Text(
                           'Rest of payment will be due upon completion of service.')
-
-                      // _buildReviewCard(screen_width * 0.9),
-                      // SizedBox(height: 40),
-                      // _buildNameFormField(),
-                      // SizedBox(height: 40),
-                      // _buildEmailFormField(),
-                      // SizedBox(height: 40),
-                      // _buildPhoneFormField(),
-                      // SizedBox(height: 40),
-                      // _buildAptFloorFormField(),
-                      // SizedBox(height: 40),
-                      // _buildStreetFormField(),
-                      // SizedBox(height: 40),
-                      // _buildCityFormField(),
-                      // SizedBox(height: 40),
-                      // _buildMessageFormField()
                     ],
                   ),
                 ),

@@ -2,8 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/protocols.dart';
 
-class Appointment {
+class Appointment extends ObjectMethods {
   String id;
   String sitterID;
   String userID;
@@ -61,5 +62,23 @@ class Appointment {
         slotID: ds.data['slotID'],
         street: ds.data['street'],
         userID: ds.data['userID']);
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'aptNo': aptNo,
+      'city': city,
+      'email': email,
+      'message': message,
+      'name': name,
+      'phone': phone,
+      'service': service,
+      'sitterID': sitterID,
+      'slotID': slotID,
+      'street': street,
+      'userID': userID
+    };
   }
 }

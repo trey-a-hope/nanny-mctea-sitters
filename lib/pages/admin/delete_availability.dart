@@ -4,6 +4,8 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
@@ -34,7 +36,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
   final GetIt getIt = GetIt.I;
-
+  User filteredSitter;
   @override
   void initState() {
     super.initState();
@@ -44,7 +46,8 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
 
   _load() async {
     _sitters = await getIt<DB>().getSitters();
-    _setOptions();
+    _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
+    _sitterOption = _sitterOptions[0];
     await _getAvailability();
     _setCalendar();
 
@@ -56,7 +59,6 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   }
 
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
     setState(
       () {
         _selectedDay = day;
@@ -66,24 +68,14 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   }
 
   void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
-
-  void _setOptions() {
-    _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
-    _sitterOption = _sitterOptions[0];
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   _getAvailability() async {
     _sitterSlotMap.clear();
-
-    User filteredSitter =
+    filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
-
     List<Slot> slots =
         await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
-
     _sitterSlotMap[filteredSitter] = slots;
   }
 
@@ -122,28 +114,43 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: _isLoading
           ? Spinner()
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 20),
-                      _buildSitterDropDown(),
-                      Calendar(
-                          calendarController: _calendarController,
-                          events: _events,
-                          onDaySelected: _onDaySelected,
-                          onVisibleDaysChanged: _onVisibleDaysChanged)
-                    ],
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    title: 'Delete Sitter Hours',
+                    subtitle: 'Select a sitter and date.',
                   ),
-                ),
-              ],
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Pick a sitter from the drop down.'),
+                        SizedBox(height: 20),
+                        _buildSitterDropDown(),
+                      ],
+                    ),
+                  ),
+                  Calendar(
+                      calendarController: _calendarController,
+                      events: _events,
+                      onDaySelected: _onDaySelected,
+                      onVisibleDaysChanged: _onVisibleDaysChanged)
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
@@ -213,9 +220,10 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => DeleteAvailabilityTimePage(
-                        takenSlots: _avialableSlots,
-                        selectedDay: _selectedDay,
-                        slotsColRef: _slotsColRef),
+                      takenSlots: _avialableSlots,
+                      selectedDay: _selectedDay,
+                      sitterId: filteredSitter.id,
+                    ),
                   ),
                 );
               },

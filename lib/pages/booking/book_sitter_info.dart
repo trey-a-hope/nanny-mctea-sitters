@@ -27,7 +27,7 @@ class BookSitterInfoPage extends StatefulWidget {
 class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   BookSitterInfoPageState({@required this.appointment});
 
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final Appointment appointment;
   final TextEditingController _nameController = TextEditingController();
@@ -37,7 +37,6 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   final TextEditingController _aptFloorController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _messageController = TextEditingController();
-  final _db = Firestore.instance;
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
   bool _isLoading = true;
   bool _autoValidate = false;
@@ -53,7 +52,9 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
 
   _load() async {
     _currentUser = await getIt<Auth>().getCurrentUser();
-    _setTextFields();
+    _nameController.text = _currentUser.name;
+    _emailController.text = _currentUser.email;
+    _phoneController.text = _currentUser.phone;
     setState(
       () {
         _isLoading = false;
@@ -88,12 +89,6 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
         },
       );
     }
-  }
-
-  void _setTextFields() {
-    _nameController.text = _currentUser.name;
-    _emailController.text = _currentUser.email;
-    _phoneController.text = _currentUser.phone;
   }
 
   @override
@@ -228,7 +223,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
-        icon: Icon(Icons.email, color: Theme.of(context).primaryIconTheme.color),
+        icon:
+            Icon(Icons.email, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -246,7 +242,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Phone',
-        icon: Icon(Icons.phone, color: Theme.of(context).primaryIconTheme.color),
+        icon:
+            Icon(Icons.phone, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -264,7 +261,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Street',
-        icon: Icon(Icons.location_on, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(Icons.location_on,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -282,7 +280,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Apt. / Floor No.',
-        icon: Icon(MdiIcons.locationEnter, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(MdiIcons.locationEnter,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -300,7 +299,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'City',
-        icon: Icon(Icons.location_city, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(Icons.location_city,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -319,7 +319,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Message',
-        icon: Icon(Icons.message, color: Theme.of(context).primaryIconTheme.color),
+        icon: Icon(Icons.message,
+            color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );

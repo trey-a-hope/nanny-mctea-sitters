@@ -1,23 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
-
-import 'messages/message_page.dart';
 
 class SitterDetailsPage extends StatefulWidget {
   final User _sitter;
@@ -173,47 +162,21 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
           icon: Icon(Icons.message),
           onPressed: () async {
             User currentUser = await getIt<Auth>().getCurrentUser();
-            if(currentUser == null){
-              getIt<Modal>().showAlert(context: context, title: 'Sorry', message: 'You must be logged in to use this feature.');
-            }else{
-              getIt<Message>().openMessageThread(context: context, sendee: currentUser, sender: _sitter, title: _sitter.name);
+            if (currentUser == null) {
+              getIt<Modal>().showAlert(
+                  context: context,
+                  title: 'Sorry',
+                  message: 'You must be logged in to use this feature.');
+            } else {
+              getIt<Message>().openMessageThread(
+                  context: context,
+                  sendee: currentUser,
+                  sender: _sitter,
+                  title: _sitter.name);
             }
-
-            // QuerySnapshot querySnapshot =
-            //     await _usersDB.where('uid', isEqualTo: user.uid).getDocuments();
-            // DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-            // User u = User.extractDocument(documentSnapshot);
-            // getIt<Message>().openMessageThread(u.id, _sitter.id);
           },
         )
       ],
     );
   }
-
-  // void _openMessageThread(String userAId, String userBId) async {
-  //   try {
-  //     final CollectionReference conversationRef =
-  //         _db.collection('Conversations');
-  //     Query query = conversationRef;
-  //     query = query.where(userAId, isEqualTo: true);
-  //     query = query.where(userBId, isEqualTo: true);
-  //     QuerySnapshot result = await query.snapshots().first;
-  //     String convoId = null;
-  //     if (!result.documents.isEmpty) {
-  //       DocumentSnapshot conversationDoc = result.documents.first;
-  //       convoId = conversationDoc.documentID;
-  //     }
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => MessagePage(userAId, userBId, convoId),
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     getIt<Modal>().showInSnackBar(
-  //       scaffoldKey: _scaffoldKey,
-  //       text: e.toString(),
-  //     );
-  //   }
-  // }
 }

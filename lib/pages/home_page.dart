@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -21,7 +20,6 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 import 'contact.dart';
 
@@ -33,25 +31,24 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseMessaging _fcm = FirebaseMessaging();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final ScrollController _scrollController = ScrollController();
+  final GetIt getIt = GetIt.I;
   List<User> _sitters = List<User>();
   bool _isLoading = true;
-  final GetIt getIt = GetIt.I;
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
+
   @override
   void initState() {
     super.initState();
 
-    loadPage();
+    _load();
   }
 
-  void loadPage() async {
+  void _load() async {
     _sitters = await getIt<DB>().getSitters();
 
-    FirebaseUser firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      _setUpFirebaseMessaging(firebaseUser: firebaseUser);
+    User currentUser = await getIt<Auth>().getCurrentUser();
+    if (currentUser != null) {
+      _setUpFirebaseMessaging(currentUser: currentUser);
     }
 
     setState(
@@ -61,15 +58,9 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  void _setUpFirebaseMessaging({@required FirebaseUser firebaseUser}) async {
-    //Fetch the ID of the user document.
-    QuerySnapshot querySnapshot =
-        await _usersDB.where('uid', isEqualTo: firebaseUser.uid).getDocuments();
-    DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-    String id = documentSnapshot.data['id'];
-
+  void _setUpFirebaseMessaging({@required User currentUser}) async {
+    //Request permission on iOS device.
     if (Platform.isIOS) {
-      //Request permission on iOS device.
       _fcm.requestNotificationPermissions(
         IosNotificationSettings(),
       );
@@ -78,10 +69,8 @@ class HomePageState extends State<HomePage> {
     //Update user's fcm token.
     final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
-      print(fcmToken);
-      _usersDB.document(id).updateData(
-        {'fcmToken': fcmToken},
-      );
+      getIt<DB>()
+          .updateUser(userId: currentUser.id, data: {'fcmToken': fcmToken});
     }
 
     //Configure notifications for several action types.

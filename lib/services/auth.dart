@@ -12,10 +12,8 @@ abstract class Auth {
   Stream<FirebaseUser> onAuthStateChanged();
   Future<AuthResult> signInWithEmailAndPassword(
       {@required String email, @required String password});
-
   Future<AuthResult> createUserWithEmailAndPassword(
       {@required String email, @required String password});
-
   Future<FirebaseUser> getFirebaseUser();
 }
 

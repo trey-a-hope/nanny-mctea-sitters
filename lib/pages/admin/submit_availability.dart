@@ -4,39 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability_time.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SubmitAvailabilityPage extends StatefulWidget {
-  SubmitAvailabilityPage();
-
   @override
   State createState() => SubmitAvailabilityPageState();
 }
 
 class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
-  SubmitAvailabilityPageState();
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final CalendarController _calendarController = CalendarController();
+  final GetIt getIt = GetIt.I;
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   bool _isLoading = true;
   String _sitterOption;
   List<User> _sitters = List<User>();
   List<String> _sitterOptions;
   DateTime _selectedDay;
-  CollectionReference _slotsColRef;
-  final GetIt getIt = GetIt.I;
+  User filteredSitter;
 
   @override
   void initState() {
@@ -51,36 +47,27 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
     super.dispose();
   }
 
-  void _setOptions() {
+  _load() async {
+    _sitters = await getIt<DB>().getSitters();
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];
+    await _getAvailability();
+    _setCalendar();
+
+    setState(
+      () {
+        _isLoading = false;
+      },
+    );
   }
 
   _getAvailability() async {
     _sitterSlotMap.clear();
-
-    //Find specific sitter and look for their availability, (slots).
-    User filteredSitter =
+    filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
-
-    _slotsColRef = _usersDB.document(filteredSitter.id).collection('slots');
-
-    QuerySnapshot slotQuerySnapshot =
-        await _slotsColRef.where('taken', isEqualTo: false).getDocuments();
-
-    List<DocumentSnapshot> slotDocumentSnapshots = slotQuerySnapshot.documents;
-    List<Slot> slots = List<Slot>();
-
-    for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-      Slot slot = Slot(
-        id: slotDocumentSnapshots[j].data['id'],
-        taken: slotDocumentSnapshots[j].data['taken'],
-        time: slotDocumentSnapshots[j].data['time'].toDate(),
-      );
-      slots.add(slot);
-    }
-
+    List<Slot> slots =
+        await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
     _sitterSlotMap[filteredSitter] = slots;
   }
 
@@ -115,21 +102,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
     _avialableSlots = _events[_selectedDay] ?? [];
   }
 
-  _load() async {
-    _sitters = await getIt<DB>().getSitters();
-    _setOptions();
-    await _getAvailability();
-    _setCalendar();
-
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
-  }
-
   void _onDaySelected(DateTime day, List events) {
-    print('CALLBACK: _onDaySelected');
     setState(
       () {
         _selectedDay = day;
@@ -139,37 +112,49 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   }
 
   void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-    print('CALLBACK: _onVisibleDaysChanged');
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       key: _scaffoldKey,
       body: _isLoading
           ? Spinner()
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 20),
-                      _buildSitterDropDown(),
-                    ],
+          : SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    title: 'Add Sitter Hours',
+                    subtitle: 'Select a sitter and date.',
                   ),
-                ),
-                Divider(),
-                Calendar(
-                    calendarController: _calendarController,
-                    events: _events,
-                    onDaySelected: _onDaySelected,
-                    onVisibleDaysChanged: _onVisibleDaysChanged)
-              ],
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Pick a sitter from the drop down.'),
+                        SizedBox(height: 20),
+                        _buildSitterDropDown(),
+                      ],
+                    ),
+                  ),
+                  Calendar(
+                      calendarController: _calendarController,
+                      events: _events,
+                      onDaySelected: _onDaySelected,
+                      onVisibleDaysChanged: _onVisibleDaysChanged)
+                ],
+              ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
@@ -229,7 +214,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
                     builder: (context) => SubmitAvailabilityTimePage(
                         takenSlots: _avialableSlots,
                         selectedDay: _selectedDay,
-                        slotsColRef: _slotsColRef),
+                        sitterId: filteredSitter.id),
                   ),
                 );
               },
