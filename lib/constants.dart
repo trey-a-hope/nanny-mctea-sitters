@@ -12,8 +12,21 @@ const String DUMMY_PROFILE_PHOTO_URL =
 const String COMPANY_EMAIL = 'nannymctea@gmail.com';
 const String COMPANY_PHONE = '(859)905-0174';
 
-const List<String> ADMIN_UIDS = [
-  'KFO2MAjsJNP1racr4Uivs8Zz3h32'
-];
+const List<String> ADMIN_UIDS = ['KFO2MAjsJNP1racr4Uivs8Zz3h32'];
 
 const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';
+
+const List<String> MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+];

@@ -14,71 +14,55 @@ class BookSitterSitterPage extends StatefulWidget {
   final List<User> availableSitters;
   final Appointment appointment;
 
-  BookSitterSitterPage({@required this.availableSitters, @required this.appointment});
+  BookSitterSitterPage(
+      {@required this.availableSitters, @required this.appointment});
 
   @override
-  State createState() =>
-      BookSitterSitterPageState(availableSitters: availableSitters, appointment: appointment);
+  State createState() => BookSitterSitterPageState(
+      availableSitters: availableSitters, appointment: appointment);
 }
 
 class BookSitterSitterPageState extends State<BookSitterSitterPage> {
-  BookSitterSitterPageState({@required this.availableSitters, @required this.appointment});
+  BookSitterSitterPageState(
+      {@required this.availableSitters, @required this.appointment});
 
   final List<User> availableSitters;
   final Appointment appointment;
   User _selectedSitter;
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
-    _load();
-  }
-
-  _load() async {
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: _isLoading
-          ? Spinner()
-          : SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  ScaffoldClipper(
-                    simpleNavbar: SimpleNavbar(
-                      leftWidget:
-                          Icon(MdiIcons.chevronLeft, color: Colors.white),
-                      leftTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      // rightWidget: Icon(Icons.refresh, color: Colors.white),
-                      // rightTap: () async {
-                      //   await _getSlotsAndCaledar();
-                      // },
-                    ),
-                    title: 'Book Sitter',
-                    subtitle: 'Select a sitter.',
-                  ),
-                  ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: availableSitters.length,
-                    itemBuilder: (BuildContext ctx, int index) {
-                      return _buildSitterWidget(availableSitters[index]);
-                    },
-                  ),
-                ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            ScaffoldClipper(
+              simpleNavbar: SimpleNavbar(
+                leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
+                leftTap: () {
+                  Navigator.of(context).pop();
+                },
               ),
+              title: 'Book Sitter',
+              subtitle: 'Select a sitter.',
             ),
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: availableSitters.length,
+              itemBuilder: (BuildContext ctx, int index) {
+                return _buildSitterWidget(availableSitters[index]);
+              },
+            ),
+          ],
+        ),
+      ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
@@ -151,7 +135,9 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookSitterInfoPage(appointment: appointment,),
+                    builder: (context) => BookSitterInfoPage(
+                      appointment: appointment,
+                    ),
                   ),
                 );
               },

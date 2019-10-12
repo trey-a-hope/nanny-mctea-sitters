@@ -7,6 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings/add_credit_card_page.dart';
@@ -29,20 +30,7 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
   User _currentUser;
   Customer _customer;
 
-  final List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-  ];
+
 
   @override
   void initState() {
@@ -154,7 +142,7 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
                                     title: Text(
                                         '${_customer.card.brand} / ****-****-****-${_customer.card.last4}'),
                                     subtitle: Text('Expires ' +
-                                        _months[_customer.card.exp_month] +
+                                        MONTHS[_customer.card.exp_month] +
                                         ' ' +
                                         '${_customer.card.exp_year}'),
                                   ),
