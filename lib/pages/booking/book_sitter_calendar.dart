@@ -1,42 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_time.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarPage extends StatefulWidget {
-  final ServiceOrder serviceOrder;
+  final Appointment appointment;
 
-  BookSitterCalendarPage(this.serviceOrder);
+  BookSitterCalendarPage({@required this.appointment});
 
   @override
-  State createState() => BookSitterCalendarPageState(this.serviceOrder);
+  State createState() => BookSitterCalendarPageState(appointment: appointment);
 }
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
-  final ServiceOrder serviceOrder;
+  final Appointment appointment;
 
-  BookSitterCalendarPageState(this.serviceOrder);
+  BookSitterCalendarPageState({@required this.appointment});
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   CalendarController _calendarController;
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
-  final _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   bool _isLoading = true;
   String _sitterOption;
   List<User> _sitters = List<User>();
   List<String> _sitterOptions;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -52,32 +57,13 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
     super.dispose();
   }
 
-  Future<List<User>> _getSitters() async {
-    List<User> sitters = List<User>();
-
-    //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
-        .getDocuments();
-    querySnapshot.documents.forEach(
-      (document) {
-        User sitter = User.extractDocument(document);
-        sitters.add(sitter);
-      },
-    );
-
-    return sitters;
-  }
-
   _getAvailability({@required bool all}) async {
     _sitterSlotMap.clear();
 
     if (all) {
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
-        QuerySnapshot slotQuerySnapshot = await _db
-            .collection('Users')
+        QuerySnapshot slotQuerySnapshot = await _usersDB
             .document(_sitters[i].id)
             .collection('slots')
             .where('taken', isEqualTo: false)
@@ -88,12 +74,11 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
         List<Slot> slots = List<Slot>();
 
         for (var j = 0; j < slotDocumentSnapshots.length; j++) {
-          Slot slot = Slot();
-
-          slot.id = slotDocumentSnapshots[j].data['id'];
-          slot.taken = slotDocumentSnapshots[j].data['taken'];
-          slot.time = slotDocumentSnapshots[j].data['time'].toDate();
-
+          Slot slot = Slot(
+            id: slotDocumentSnapshots[j].data['id'],
+            taken: slotDocumentSnapshots[j].data['taken'],
+            time: slotDocumentSnapshots[j].data['time'].toDate(),
+          );
           slots.add(slot);
         }
 
@@ -105,8 +90,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
           _sitters.where((sitter) => sitter.name == _sitterOption).first;
 
       // for (var i = 0; i < _sitters.length; i++) {
-      QuerySnapshot slotQuerySnapshot = await _db
-          .collection('Users')
+      QuerySnapshot slotQuerySnapshot = await _usersDB
           .document(filteredSitter.id)
           .collection('slots')
           .where('taken', isEqualTo: false)
@@ -161,7 +145,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   }
 
   _load() async {
-    _sitters = await _getSitters();
+    _sitters = await getIt<DB>().getSitters();
     await _getAvailability(all: true);
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
@@ -223,8 +207,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Text(
-                          serviceOrder.serviceName,
-                          textAlign: TextAlign.start,
+                          appointment.service,
+                          textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
@@ -235,29 +219,14 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                     ),
                   ),
                   Calendar(
-                        calendarController: _calendarController,
-                        events: _events,
-                        onDaySelected: _onDaySelected,
-                        onVisibleDaysChanged: _onVisibleDaysChanged),
+                      calendarController: _calendarController,
+                      events: _events,
+                      onDaySelected: _onDaySelected,
+                      onVisibleDaysChanged: _onVisibleDaysChanged),
                 ],
               ),
             ),
       bottomNavigationBar: _buildBottomNavigationBar(),
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: Text('PICK A DATE'),
-      centerTitle: true,
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.refresh),
-          onPressed: () async {
-            await _getSlotsAndCaledar();
-          },
-        )
-      ],
     );
   }
 
@@ -298,7 +267,10 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => BookSitterTimePage(
-                        _avialableSlots, _sitterSlotMap, serviceOrder),
+                      slots: _avialableSlots,
+                      sitterSlotMap: _sitterSlotMap,
+                      appointment: appointment,
+                    ),
                   ),
                 );
               },

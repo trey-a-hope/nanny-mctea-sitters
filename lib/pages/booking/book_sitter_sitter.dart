@@ -4,27 +4,28 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_info.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookSitterSitterPage extends StatefulWidget {
-  final List<User> _availableSitters;
-  final ServiceOrder serviceOrder;
+  final List<User> availableSitters;
+  final Appointment appointment;
 
-  BookSitterSitterPage(this._availableSitters, this.serviceOrder);
+  BookSitterSitterPage({@required this.availableSitters, @required this.appointment});
 
   @override
   State createState() =>
-      BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
+      BookSitterSitterPageState(availableSitters: availableSitters, appointment: appointment);
 }
 
 class BookSitterSitterPageState extends State<BookSitterSitterPage> {
-  BookSitterSitterPageState(this._availableSitters, this.serviceOrder);
+  BookSitterSitterPageState({@required this.availableSitters, @required this.appointment});
 
-  final List<User> _availableSitters;
-  final ServiceOrder serviceOrder;
+  final List<User> availableSitters;
+  final Appointment appointment;
   User _selectedSitter;
   bool _isLoading = true;
 
@@ -70,9 +71,9 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
                   ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: _availableSitters.length,
+                    itemCount: availableSitters.length,
                     itemBuilder: (BuildContext ctx, int index) {
-                      return _buildSitterWidget(_availableSitters[index]);
+                      return _buildSitterWidget(availableSitters[index]);
                     },
                   ),
                 ],
@@ -145,12 +146,12 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
             child: RaisedButton(
               onPressed: () {
                 //Attach selected sitter to service order.
-                serviceOrder.sitter = _selectedSitter;
+                appointment.sitter = _selectedSitter;
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BookSitterInfoPage(serviceOrder),
+                    builder: (context) => BookSitterInfoPage(appointment: appointment,),
                   ),
                 );
               },

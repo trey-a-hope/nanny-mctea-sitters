@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/conversation.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -97,9 +98,9 @@ class _MessagesPageState extends State<MessagesPage> {
 
           User _oppositeUser;
           if (_currentUser.id == userIds[0]) {
-            _oppositeUser = await getIt<Auth>().getUser(id: userIds[1]);
+            _oppositeUser = await getIt<DB>().getUser(id: userIds[1]);
           } else {
-            _oppositeUser = await getIt<Auth>().getUser(id: userIds[0]);
+            _oppositeUser = await getIt<DB>().getUser(id: userIds[0]);
           }
 
           _conversations.add(

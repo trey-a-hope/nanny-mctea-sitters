@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
@@ -14,6 +15,8 @@ import 'package:nanny_mctea_sitters_flutter/pages/services/professional_nannies.
 import 'package:nanny_mctea_sitters_flutter/pages/services/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
@@ -29,14 +32,13 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final Firestore _db = Firestore.instance;
   final FirebaseMessaging _fcm = FirebaseMessaging();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ScrollController _scrollController = ScrollController();
   List<User> _sitters = List<User>();
   bool _isLoading = true;
   final GetIt getIt = GetIt.I;
-
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   @override
   void initState() {
     super.initState();
@@ -45,17 +47,7 @@ class HomePageState extends State<HomePage> {
   }
 
   void loadPage() async {
-    //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
-        .getDocuments();
-    querySnapshot.documents.forEach(
-      (document) {
-        User sitter = User.extractDocument(document);
-        _sitters.add(sitter);
-      },
-    );
+    _sitters = await getIt<DB>().getSitters();
 
     FirebaseUser firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
@@ -71,10 +63,8 @@ class HomePageState extends State<HomePage> {
 
   void _setUpFirebaseMessaging({@required FirebaseUser firebaseUser}) async {
     //Fetch the ID of the user document.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('uid', isEqualTo: firebaseUser.uid)
-        .getDocuments();
+    QuerySnapshot querySnapshot =
+        await _usersDB.where('uid', isEqualTo: firebaseUser.uid).getDocuments();
     DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
     String id = documentSnapshot.data['id'];
 
@@ -89,7 +79,7 @@ class HomePageState extends State<HomePage> {
     final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
       print(fcmToken);
-      _db.collection('Users').document(id).updateData(
+      _usersDB.document(id).updateData(
         {'fcmToken': fcmToken},
       );
     }
@@ -144,11 +134,10 @@ class HomePageState extends State<HomePage> {
                   Stack(
                     overflow: Overflow.visible,
                     children: <Widget>[
-                      ClipperWavy(
+                      ClipPath(
+                        clipper: DiagonalPathClipperTwo(),
                         child: Container(
-                          height: 400,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                            height: 400, color: Theme.of(context).primaryColor),
                       ),
                       SimpleNavbar(
                         leftWidget: Icon(MdiIcons.menu, color: Colors.white),
@@ -196,28 +185,27 @@ class HomePageState extends State<HomePage> {
                         ),
                       ),
                       Positioned(
-                          top: 100,
-                          left: 32,
-                          right: 0,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Nanny McTea Sitters',
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                TextSpan(text: '\n'),
-                                TextSpan(
-                                  text: 'Sitting made simple.',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.white),
-                                ),
-                              ],
+                        top: 100,
+                        left: 32,
+                        right: 0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              'Nanny McTea Sitters',
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
                             ),
-                          ))
+                            Text(
+                              'Sitting made simple.',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(

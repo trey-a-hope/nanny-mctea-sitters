@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_calendar.dart';
@@ -46,13 +47,13 @@ class BookSitterTileWidget extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: RaisedButton(
             onPressed: () {
-              ServiceOrder serviceOrder = ServiceOrder();
-              serviceOrder.serviceName = title;
+              Appointment appointment = Appointment();
+              appointment.service = title;
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookSitterCalendarPage(serviceOrder),
+                  builder: (context) => BookSitterCalendarPage(appointment: appointment),
                 ),
               );
             },

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
@@ -7,6 +8,8 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability_time.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -19,7 +22,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final Firestore _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
   List<dynamic> _avialableSlots;
   bool _isLoading = true;
@@ -31,6 +34,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final CalendarController _calendarController = CalendarController();
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   }
 
   _load() async {
-    _sitters = await _getSitters();
+    _sitters = await getIt<DB>().getSitters();
     _setOptions();
     await _getAvailability();
     _setCalendar();
@@ -67,24 +71,6 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
     print('CALLBACK: _onVisibleDaysChanged');
   }
 
-  Future<List<User>> _getSitters() async {
-    List<User> sitters = List<User>();
-
-    //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
-        .getDocuments();
-    querySnapshot.documents.forEach(
-      (document) {
-        User sitter = User.extractDocument(document);
-        sitters.add(sitter);
-      },
-    );
-
-    return sitters;
-  }
-
   void _setOptions() {
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];
@@ -97,8 +83,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
     User filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
 
-    _slotsColRef =
-        _db.collection('Users').document(filteredSitter.id).collection('slots');
+    _slotsColRef = _usersDB.document(filteredSitter.id).collection('slots');
 
     QuerySnapshot slotQuerySnapshot =
         await _slotsColRef.where('taken', isEqualTo: false).getDocuments();

@@ -23,7 +23,7 @@ class EditProfilePageState extends State<EditProfilePage> {
   TextEditingController _phoneController = TextEditingController();
   User _user;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   FirebaseUser _firebaseUser;
   final GetIt getIt = GetIt.I;
   @override
@@ -45,8 +45,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> _fetchUserProfile() async {
     _firebaseUser = await _auth.currentUser();
-    QuerySnapshot qs = await _db
-        .collection('Users')
+    QuerySnapshot qs = await _usersDB
         .where('uid', isEqualTo: _firebaseUser.uid)
         .getDocuments();
     DocumentSnapshot ds = qs.documents[0];
@@ -112,7 +111,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       'phone': _phoneController.text
     };
 
-    await _db.collection('Users').document(_user.id).updateData(data);
+    await _usersDB.document(_user.id).updateData(data);
 
     return;
   }

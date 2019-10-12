@@ -26,11 +26,13 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
   final Appointment appointment;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
+  final CollectionReference _appointmentsDB =
+      Firestore.instance.collection('Appointments');
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
-final GetIt getIt = GetIt.I;
+  final GetIt getIt = GetIt.I;
   DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
 
   bool _isLoading = true;
@@ -47,21 +49,20 @@ final GetIt getIt = GetIt.I;
 
   Future<User> _fetchSitter() async {
     DocumentSnapshot documentSnapshot =
-        await _db.collection('Users').document(appointment.sitterID).get();
+        await _usersDB.document(appointment.sitterID).get();
     User sitter = User.extractDocument(documentSnapshot);
     return sitter;
   }
 
   Future<User> _fetchUser() async {
     DocumentSnapshot documentSnapshot =
-        await _db.collection('Users').document(appointment.userID).get();
+        await _usersDB.document(appointment.userID).get();
     User user = User.extractDocument(documentSnapshot);
     return user;
   }
 
   Future<Slot> _fetchSlot() async {
-    DocumentSnapshot documentSnapshot = await _db
-        .collection('Users')
+    DocumentSnapshot documentSnapshot = await _usersDB
         .document(appointment.sitterID)
         .collection('slots')
         .document(appointment.slotID)
@@ -102,7 +103,7 @@ final GetIt getIt = GetIt.I;
       final Event eventToCreate = Event(calendarID);
       eventToCreate.title = 'Sitter - ' + _sitter.name;
       eventToCreate.start = _slot.time;
-      eventToCreate.description = appointment.formData.service;
+      eventToCreate.description = appointment.service;
       eventToCreate.end = _slot.time.add(
         Duration(hours: 1),
       );
@@ -203,7 +204,7 @@ final GetIt getIt = GetIt.I;
               style: TextStyle(fontSize: 15),
             ),
             Text(
-              appointment.formData.service,
+              appointment.service,
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
             SizedBox(
@@ -214,7 +215,7 @@ final GetIt getIt = GetIt.I;
               style: TextStyle(fontSize: 15),
             ),
             Text(
-              '${appointment.formData.street}, ${appointment.formData.city}',
+              '${appointment.street}, ${appointment.city}',
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
             SizedBox(
@@ -225,7 +226,7 @@ final GetIt getIt = GetIt.I;
               style: TextStyle(fontSize: 15),
             ),
             Text(
-              appointment.formData.message,
+              appointment.message,
               style: TextStyle(fontSize: 20, color: Colors.black),
               maxLines: 2,
             )
@@ -339,8 +340,7 @@ final GetIt getIt = GetIt.I;
       );
 
       //Set sitter slot availability to free.
-      await _db
-          .collection('Users')
+      await _usersDB
           .document(appointment.sitterID)
           .collection('slots')
           .document(appointment.slotID)
@@ -349,7 +349,7 @@ final GetIt getIt = GetIt.I;
       );
 
       //Remove appointment.
-      await _db.collection('Appointments').document(appointment.id).delete();
+      await _appointmentsDB.document(appointment.id).delete();
 
       setState(
         () {
@@ -367,7 +367,9 @@ final GetIt getIt = GetIt.I;
       child: RaisedButton(
         onPressed: () async {
           bool confirm = await getIt<Modal>().showConfirmation(
-              context: context, title: 'Add To Calendar', text: 'Are you sure?');
+              context: context,
+              title: 'Add To Calendar',
+              text: 'Are you sure?');
           if (confirm) {
             _addEventToCalendar();
           }

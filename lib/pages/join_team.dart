@@ -13,8 +13,9 @@ class JoinTeamPage extends StatefulWidget {
 class JoinTeamPageState extends State<JoinTeamPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
-  final _db = Firestore.instance;
   List<JobPosting> jobPostings = List<JobPosting>();
+  final CollectionReference _jobPostingsDB =
+      Firestore.instance.collection('JobPostings');
 
   @override
   void initState() {
@@ -24,8 +25,7 @@ class JoinTeamPageState extends State<JoinTeamPage> {
   }
 
   _load() async {
-    QuerySnapshot querySnapshot =
-        await _db.collection('JobPostings').getDocuments();
+    QuerySnapshot querySnapshot = await _jobPostingsDB.getDocuments();
     List<DocumentSnapshot> documentSnapshots = querySnapshot.documents;
     documentSnapshots.forEach(
       (documentSnapshot) {
@@ -49,24 +49,26 @@ class JoinTeamPageState extends State<JoinTeamPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? Spinner() : DefaultTabController(
-      length: jobPostings.length,
-      child: Scaffold(
-        key: _scaffoldKey,
-        appBar: _buildAppBar(),
-        body: TabBarView(
-          children: [
-            for (var i = 0; i < jobPostings.length; i++)
-              JobPostingWidget(
-                imgUrl: jobPostings[i].imgUrl,
-                title: jobPostings[i].title,
-                posted: jobPostings[i].posted,
-                description: jobPostings[i].description,
+    return _isLoading
+        ? Spinner()
+        : DefaultTabController(
+            length: jobPostings.length,
+            child: Scaffold(
+              key: _scaffoldKey,
+              appBar: _buildAppBar(),
+              body: TabBarView(
+                children: [
+                  for (var i = 0; i < jobPostings.length; i++)
+                    JobPostingWidget(
+                      imgUrl: jobPostings[i].imgUrl,
+                      title: jobPostings[i].title,
+                      posted: jobPostings[i].posted,
+                      description: jobPostings[i].description,
+                    ),
+                ],
               ),
-          ],
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   _buildAppBar() {

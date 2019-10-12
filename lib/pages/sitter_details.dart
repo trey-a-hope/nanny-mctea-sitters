@@ -35,11 +35,8 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
-  // final _db = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   final GetIt getIt = GetIt.I;
   bool _isLoading = true;
-  final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
   void initState() {

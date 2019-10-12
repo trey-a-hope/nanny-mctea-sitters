@@ -1,12 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability_time.dart';
+import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SubmitAvailabilityPage extends StatefulWidget {
@@ -26,13 +29,14 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
-  final Firestore _db = Firestore.instance;
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
   bool _isLoading = true;
   String _sitterOption;
   List<User> _sitters = List<User>();
   List<String> _sitterOptions;
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
+  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -45,24 +49,6 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   void dispose() {
     _calendarController.dispose();
     super.dispose();
-  }
-
-  Future<List<User>> _getSitters() async {
-    List<User> sitters = List<User>();
-
-    //Get sitters.
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('isSitter', isEqualTo: true)
-        .getDocuments();
-    querySnapshot.documents.forEach(
-      (document) {
-        User sitter = User.extractDocument(document);
-        sitters.add(sitter);
-      },
-    );
-
-    return sitters;
   }
 
   void _setOptions() {
@@ -78,8 +64,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
     User filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
 
-    _slotsColRef =
-        _db.collection('Users').document(filteredSitter.id).collection('slots');
+    _slotsColRef = _usersDB.document(filteredSitter.id).collection('slots');
 
     QuerySnapshot slotQuerySnapshot =
         await _slotsColRef.where('taken', isEqualTo: false).getDocuments();
@@ -131,7 +116,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   }
 
   _load() async {
-    _sitters = await _getSitters();
+    _sitters = await getIt<DB>().getSitters();
     _setOptions();
     await _getAvailability();
     _setCalendar();

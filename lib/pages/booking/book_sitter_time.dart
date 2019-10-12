@@ -4,33 +4,42 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_sitter.dart';
 
 class BookSitterTimePage extends StatefulWidget {
-  final List<dynamic> _slots;
-  final Map<User, List<Slot>> _sitterSlotMap;
-  final ServiceOrder serviceOrder;
+  final List<dynamic> slots;
+  final Map<User, List<Slot>> sitterSlotMap;
+  final Appointment appointment;
 
-  BookSitterTimePage(this._slots, this._sitterSlotMap, this.serviceOrder);
+  BookSitterTimePage(
+      {@required this.slots,
+      @required this.sitterSlotMap,
+      @required this.appointment});
 
   @override
   State createState() => BookSitterTimePageState(
-      this._slots, this._sitterSlotMap, this.serviceOrder);
+      slots: this.slots,
+      sitterSlotMap: this.sitterSlotMap,
+      appointment: this.appointment);
 }
 
 class BookSitterTimePageState extends State<BookSitterTimePage> {
-  BookSitterTimePageState(this._slots, this._sitterSlotMap, this.serviceOrder);
+  BookSitterTimePageState(
+      {@required this.slots,
+      @required this.sitterSlotMap,
+      @required this.appointment});
 
-  final List<dynamic> _slots;
-  final Map<User, List<Slot>> _sitterSlotMap;
-  final ServiceOrder serviceOrder;
+  final List<dynamic> slots;
+  final Map<User, List<Slot>> sitterSlotMap;
+  final Appointment appointment;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _isLoading = true;
-  Slot _selected;
+  Slot _selectedSlot;
 
   @override
   void initState() {
@@ -41,11 +50,11 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
 
   _load() async {
     //Sort slots.
-    _slots.sort(
-          (a, b) => a.time.compareTo(
-            b.time,
-          ),
-        );
+    slots.sort(
+      (a, b) => a.time.compareTo(
+        b.time,
+      ),
+    );
 
     setState(
       () {
@@ -71,10 +80,6 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                       leftTap: () {
                         Navigator.of(context).pop();
                       },
-                      // rightWidget: Icon(Icons.refresh, color: Colors.white),
-                      // rightTap: () async {
-                      //   await _getSlotsAndCaledar();
-                      // },
                     ),
                     title: 'Book Sitter',
                     subtitle: 'Select a time.',
@@ -82,11 +87,20 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                   ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: _slots.length,
+                    itemCount: slots.length,
                     itemBuilder: (BuildContext ctxt, int index) {
-                      return _buildSlot(
-                        _slots[index],
-                      );
+                      //Ensure times do not duplicate visually.
+                      if (index == 0) {
+                        return _buildSlot(
+                          slots[index],
+                        );
+                      } else if (slots[index - 1].time != slots[index].time) {
+                        return _buildSlot(
+                          slots[index],
+                        );
+                      } else {
+                        return Container();
+                      }
                     },
                   )
                 ],
@@ -97,7 +111,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
   }
 
   Container _buildBottomNavigationBar() {
-    return _selected == null
+    return _selectedSlot == null
         ? Container(
             width: MediaQuery.of(context).size.width,
             height: 50.0,
@@ -132,12 +146,15 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                 List<User> availableSitters = List<User>();
 
                 //Pick sitters for the slot selected.
-                _sitterSlotMap.forEach(
+                sitterSlotMap.forEach(
                   (sitter, slots) {
                     slots.forEach(
                       (slot) {
-                        if (_selected.time == slot.time) {
-                          availableSitters.add(sitter);
+                        if (_selectedSlot.time == slot.time) {
+                          //Ensure sitters arent duplicated on next page.
+                          if (!availableSitters.contains(sitter)) {
+                            availableSitters.add(sitter);
+                          }
                         }
                       },
                     );
@@ -145,13 +162,14 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                 );
 
                 //Attach slot to order.
-                serviceOrder.slot = _selected;
+                appointment.slot = _selectedSlot;
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        BookSitterSitterPage(availableSitters, serviceOrder),
+                    builder: (context) => BookSitterSitterPage(
+                        availableSitters: availableSitters,
+                        appointment: appointment),
                   ),
                 );
               },
@@ -185,8 +203,8 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
           DateFormat(timeFormat).format(slot.time),
         ),
         leading: CircleAvatar(
-          backgroundColor: _selected == slot ? Colors.green : Colors.red,
-          child: _selected == slot
+          backgroundColor: _selectedSlot == slot ? Colors.green : Colors.red,
+          child: _selectedSlot == slot
               ? Icon(
                   Icons.check,
                   color: Colors.white,
@@ -197,7 +215,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
       onTap: () {
         setState(
           () {
-            _selected = slot;
+            _selectedSlot = slot;
           },
         );
       },

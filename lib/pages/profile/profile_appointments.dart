@@ -13,10 +13,13 @@ class ProfileAppointmentPage extends StatefulWidget {
 
 class ProfileAppointmentPageState extends State<ProfileAppointmentPage> {
   bool _isLoading = true;
-  final _db = Firestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User _user;
   List<Appointment> _appointments = List<Appointment>();
+  final CollectionReference _usersDB = Firestore.instance.collection('Users');
+  final CollectionReference _appointmentsDB =
+      Firestore.instance.collection('Appointments');
+
   @override
   void initState() {
     super.initState();
@@ -35,19 +38,15 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage> {
 
   Future<void> _getAppointments() async {
     FirebaseUser user = await _auth.currentUser();
-    QuerySnapshot querySnapshot = await _db
-        .collection('Users')
-        .where('uid', isEqualTo: user.uid)
-        .getDocuments();
+    QuerySnapshot querySnapshot =
+        await _usersDB.where('uid', isEqualTo: user.uid).getDocuments();
 
     DocumentSnapshot ds = querySnapshot.documents.first;
 
     String userID = ds.data['id'];
 
-    Stream<QuerySnapshot> stream = _db
-        .collection('Appointments')
-        .where('userID', isEqualTo: userID)
-        .snapshots();
+    Stream<QuerySnapshot> stream =
+        _appointmentsDB.where('userID', isEqualTo: userID).snapshots();
 
     stream.listen(
       (data) {
@@ -102,7 +101,7 @@ class ProfileAppointmentPageState extends State<ProfileAppointmentPage> {
           ),
           backgroundColor: Colors.blue,
         ),
-        title: Text(appointment.formData.service),
+        title: Text(appointment.service),
         trailing: Icon(Icons.chevron_right),
       ),
     );

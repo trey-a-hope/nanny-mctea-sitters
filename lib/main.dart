@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/home_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
@@ -61,6 +62,9 @@ void main() {
       signalsReady: true);
   //Validator
   getIt.registerSingleton<Validator>(ValidatorImplementation(),
+      signalsReady: true);
+        //Database
+  getIt.registerSingleton<DB>(DBImplementation(),
       signalsReady: true);
 
   runApp(MyApp());

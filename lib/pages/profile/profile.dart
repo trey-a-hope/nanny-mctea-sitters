@@ -19,17 +19,12 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
+  ProfilePageState(this.uid);
+
   final String uid;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   bool _isLoading = true;
-  final _db = Firestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  User _user;
-  List<Appointment> _appointments = List<Appointment>();
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
-
-  ProfilePageState(this.uid);
 
   @override
   void initState() {

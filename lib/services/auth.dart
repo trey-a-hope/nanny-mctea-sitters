@@ -8,7 +8,6 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
 abstract class Auth {
   Future<User> getCurrentUser();
-  Future<User> getUser({@required String id});
   Future<void> signOut();
   Stream<FirebaseUser> onAuthStateChanged();
   Future<AuthResult> signInWithEmailAndPassword(
@@ -16,8 +15,7 @@ abstract class Auth {
 
   Future<AuthResult> createUserWithEmailAndPassword(
       {@required String email, @required String password});
-  Future<List<String>> getGemLikes({@required String id});
-  Future<List<User>> getGems({@required String category, @required int limit});
+
   Future<FirebaseUser> getFirebaseUser();
 }
 
@@ -25,7 +23,6 @@ class AuthImplementation extends Auth {
   AuthImplementation();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final Firestore _db = Firestore.instance;
   final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
@@ -39,18 +36,6 @@ class AuthImplementation extends Auth {
       return User.extractDocument(documentSnapshot);
     } catch (e) {
       return null;
-    }
-  }
-
-  @override
-  Future<User> getUser({@required String id}) async {
-    try {
-      DocumentSnapshot documentSnapshot = await _usersDB.document(id).get();
-      return User.extractDocument(documentSnapshot);
-    } catch (e) {
-      throw Exception(
-        e.toString(),
-      );
     }
   }
 
@@ -94,53 +79,6 @@ class AuthImplementation extends Auth {
     try {
       return _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-    } catch (e) {
-      throw Exception(
-        e.toString(),
-      );
-    }
-  }
-
-  @override
-  Future<List<String>> getGemLikes({@required String id}) async {
-    try {
-      QuerySnapshot querySnapshot =
-          await _usersDB.document(id).collection('likes').getDocuments();
-      List<DocumentSnapshot> likeDocs = querySnapshot.documents;
-
-      List<String> likes = List<String>();
-      for (int i = 0; i < likeDocs.length; i++) {
-        String userId = likeDocs[i].data['userId'];
-        likes.add(userId);
-      }
-      return likes;
-    } catch (e) {
-      throw Exception(e.toString());
-    }
-  }
-
-  @override
-  Future<List<User>> getGems({@required String category, int limit}) async {
-    try {
-      QuerySnapshot querySnapshot;
-      if (limit == null) {
-        querySnapshot = await _usersDB
-            .where('category', isEqualTo: category)
-            .orderBy('time', descending: true)
-            .getDocuments();
-      } else {
-        querySnapshot = await _usersDB
-            .where('category', isEqualTo: category)
-            .orderBy('time', descending: true)
-            .limit(limit)
-            .getDocuments();
-      }
-
-      List<User> gems = List<User>();
-      for (DocumentSnapshot docSnapshot in querySnapshot.documents) {
-        gems.add(User.extractDocument(docSnapshot));
-      }
-      return gems;
     } catch (e) {
       throw Exception(
         e.toString(),

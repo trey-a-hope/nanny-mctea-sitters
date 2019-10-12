@@ -1,32 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/local/service_order.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_payment.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
 import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
-  final ServiceOrder serviceOrder;
-  BookSitterInfoPage(this.serviceOrder);
+  final Appointment appointment;
+  BookSitterInfoPage({@required this.appointment});
 
   @override
-  State createState() => BookSitterInfoPageState(this.serviceOrder);
+  State createState() => BookSitterInfoPageState(appointment: appointment);
 }
 
 class BookSitterInfoPageState extends State<BookSitterInfoPage> {
-  BookSitterInfoPageState(this.serviceOrder);
+  BookSitterInfoPageState({@required this.appointment});
 
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final ServiceOrder serviceOrder;
+  final Appointment appointment;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -62,75 +65,22 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      try {
-        setState(
-          () {
-            _isLoading = true;
-          },
-        );
+      //Add form data to appointment information.
+      appointment.aptNo = _aptFloorController.text;
+      appointment.city = _cityController.text;
+      appointment.email = _emailController.text;
+      appointment.message = _messageController.text;
+      appointment.name = _nameController.text;
+      appointment.phone = _phoneController.text;
+      appointment.service = appointment.service;
+      appointment.street = _streetController.text;
 
-        //Make charge for booking fee.
-        bool charged = await getIt<StripeCharge>().create(
-            amount: 25.00,
-            description:
-                serviceOrder.sitter.name + ', ' + serviceOrder.serviceName,
-            customerId: _currentUser.customerId);
-
-        if (!charged) {
-          throw Exception('Could not charge card at this time.');
-        }
-
-        //Create appointment.
-        var appointmentData = {
-          'formData': {
-            'aptNo': _aptFloorController.text,
-            'city': _cityController.text,
-            'email': _emailController.text,
-            'message': _messageController.text,
-            'name': _nameController.text,
-            'phone': _phoneController.text,
-            'service': serviceOrder.serviceName,
-            'street': _streetController.text,
-          },
-          'sitterID': serviceOrder.sitter.id,
-          'slotID': serviceOrder.slot.id,
-          'userID': _currentUser.id
-        };
-
-        CollectionReference aptColRef = _db.collection('Appointments');
-        DocumentReference aptDocRef = await aptColRef.add(appointmentData);
-        await aptColRef.document(aptDocRef.documentID).updateData(
-          {'id': aptDocRef.documentID},
-        );
-
-        //Set sitters time slot to taken.
-        _db
-            .collection('Users')
-            .document(serviceOrder.sitter.id)
-            .collection('slots')
-            .document(serviceOrder.slot.id)
-            .updateData(
-          {'taken': true},
-        );
-
-        setState(
-          () {
-            getIt<Modal>().showInSnackBar(
-                scaffoldKey: _scaffoldKey, text: 'Appointment Created');
-            _isLoading = false;
-          },
-        );
-      } catch (e) {
-        setState(
-          () {
-            _isLoading = false;
-          },
-        );
-        getIt<Modal>().showInSnackBar(
-          scaffoldKey: _scaffoldKey,
-          text: e.toString(),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BookSitterPaymentPage(appointment: appointment),
+        ),
+      );
     } else {
       setState(
         () {
@@ -141,7 +91,9 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   }
 
   void _setTextFields() {
+    _nameController.text = _currentUser.name;
     _emailController.text = _currentUser.email;
+    _phoneController.text = _currentUser.phone;
   }
 
   @override
@@ -150,37 +102,55 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
 
     return Scaffold(
       key: _scaffoldKey,
-      appBar: _buildAppBar(),
       body: _isLoading
           ? Spinner()
           : SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Form(
-                  key: _formKey,
-                  autovalidate: _autoValidate,
-                  child: Column(
-                    children: <Widget>[
-                      _buildReviewCard(screen_width * 0.9),
-                      SizedBox(height: 40),
-                      _buildNameFormField(),
-                      SizedBox(height: 40),
-                      _buildEmailFormField(),
-                      SizedBox(height: 40),
-                      _buildPhoneFormField(),
-                      SizedBox(height: 40),
-                      _buildStreetFormField(),
-                      SizedBox(height: 40),
-                      _buildAptFloorFormField(),
-                      SizedBox(height: 40),
-                      _buildCityFormField(),
-                      SizedBox(height: 40),
-                      _buildMessageFormField()
-                    ],
+              child: Column(
+              children: <Widget>[
+                ScaffoldClipper(
+                  simpleNavbar: SimpleNavbar(
+                    leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
+                    leftTap: () {
+                      Navigator.of(context).pop();
+                    },
+                    // rightWidget: Icon(Icons.refresh, color: Colors.white),
+                    // rightTap: () async {
+                    //   await _getSlotsAndCaledar();
+                    // },
+                  ),
+                  title: 'Book Sitter',
+                  subtitle: 'Enter your information.',
+                ),
+                Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Form(
+                    key: _formKey,
+                    autovalidate: _autoValidate,
+                    child: ListView(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: <Widget>[
+                        // _buildReviewCard(screen_width * 0.9),
+                        // SizedBox(height: 40),
+                        _buildNameFormField(),
+                        SizedBox(height: 40),
+                        _buildEmailFormField(),
+                        SizedBox(height: 40),
+                        _buildPhoneFormField(),
+                        SizedBox(height: 40),
+                        _buildAptFloorFormField(),
+                        SizedBox(height: 40),
+                        _buildStreetFormField(),
+                        SizedBox(height: 40),
+                        _buildCityFormField(),
+                        SizedBox(height: 40),
+                        _buildMessageFormField()
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ),
+              ],
+            )),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
@@ -206,16 +176,16 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
         child: Column(
           children: <Widget>[
             Text(
-              serviceOrder.serviceName,
+              appointment.service,
               style: TextStyle(fontSize: 20, color: Colors.grey.shade700),
             ),
             Divider(),
             Text(
-              DateFormat(timeFormat).format(serviceOrder.slot.time),
+              DateFormat(timeFormat).format(appointment.slot.time),
               style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
             ),
             Text(
-              serviceOrder.sitter.name,
+              appointment.sitter.name,
               style: TextStyle(color: Colors.grey.shade700, fontSize: 20),
             ),
             Text(
@@ -240,7 +210,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
-        icon: Icon(Icons.face),
+        icon: Icon(Icons.face, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -258,7 +228,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
-        icon: Icon(Icons.email),
+        icon: Icon(Icons.email, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -272,11 +242,11 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      // validator: Validater.email,
+      validator: getIt<Validator>().mobile,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Phone',
-        icon: Icon(Icons.phone),
+        icon: Icon(Icons.phone, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -294,7 +264,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Street',
-        icon: Icon(Icons.location_on),
+        icon: Icon(Icons.location_on, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -312,7 +282,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Apt. / Floor No.',
-        icon: Icon(MdiIcons.locationEnter),
+        icon: Icon(MdiIcons.locationEnter, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -330,7 +300,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'City',
-        icon: Icon(Icons.location_city),
+        icon: Icon(Icons.location_city, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -349,7 +319,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Message',
-        icon: Icon(Icons.message),
+        icon: Icon(Icons.message, color: Theme.of(context).primaryIconTheme.color),
         fillColor: Colors.white,
       ),
     );
@@ -365,23 +335,22 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
         },
         color: Colors.blue,
         child: Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                MdiIcons.paypal,
-                color: Colors.white,
-              ),
-              SizedBox(
-                width: 4.0,
-              ),
-              Text(
-                'PAY WITH PAYPAL',
-                style: TextStyle(color: Colors.white),
-              ),
-            ],
-          ),
-        ),
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            // Icon(MdiIcons.cubeSend),
+            Icon(MdiIcons.send, color: Colors.white),
+
+            SizedBox(
+              width: 8,
+            ),
+            Text(
+              'REVIEW AND PAY',
+              style:
+                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ],
+        )),
       ),
     );
   }

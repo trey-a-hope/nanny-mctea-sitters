@@ -19,7 +19,6 @@ class SignUpPage extends StatefulWidget {
 class SignUpPageState extends State<SignUpPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final _db = Firestore.instance;
   final _formKey = GlobalKey<FormState>();
   bool _autoValidate = false;
   bool _isLoading = true;
