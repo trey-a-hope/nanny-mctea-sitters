@@ -52,8 +52,10 @@ class ChatMessage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(name + ' - ' + DateFormat(timeFormat).format(time),
-                      style: TextStyle(color: Colors.grey)),
+                  Text(
+                    name + ' - ' + DateFormat(timeFormat).format(time),
+                    style: TextStyle(color: Colors.grey),
+                  ),
                   Container(
                     margin: const EdgeInsets.only(top: 5.0),
                     child: Text(text),

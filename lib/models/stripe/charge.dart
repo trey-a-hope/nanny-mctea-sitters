@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/credit_card.dart';
 
 class Charge {
   String id;

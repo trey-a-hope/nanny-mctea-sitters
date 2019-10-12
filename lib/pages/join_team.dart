@@ -1,9 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/job_posting_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
+import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
+import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/job_posting.dart';
+import 'package:nanny_mctea_sitters_flutter/constants.dart';
 
 class JoinTeamPage extends StatefulWidget {
   @override
@@ -12,92 +15,61 @@ class JoinTeamPage extends StatefulWidget {
 
 class JoinTeamPageState extends State<JoinTeamPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  bool _isLoading = true;
-  List<JobPosting> jobPostings = List<JobPosting>();
-  final CollectionReference _jobPostingsDB =
-      Firestore.instance.collection('JobPostings');
+  int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-
-    _load();
-  }
-
-  _load() async {
-    QuerySnapshot querySnapshot = await _jobPostingsDB.getDocuments();
-    List<DocumentSnapshot> documentSnapshots = querySnapshot.documents;
-    documentSnapshots.forEach(
-      (documentSnapshot) {
-        JobPosting jobPosting = JobPosting();
-        jobPosting.description = documentSnapshot.data['description'];
-        jobPosting.imgUrl = documentSnapshot.data['imgUrl'];
-        jobPosting.posted = documentSnapshot.data['posted'].toDate();
-        jobPosting.url = documentSnapshot.data['url'];
-        jobPosting.title = documentSnapshot.data['title'];
-
-        jobPostings.add(jobPosting);
-      },
-    );
-
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? Spinner()
-        : DefaultTabController(
-            length: jobPostings.length,
-            child: Scaffold(
-              key: _scaffoldKey,
-              appBar: _buildAppBar(),
-              body: TabBarView(
-                children: [
-                  for (var i = 0; i < jobPostings.length; i++)
-                    JobPostingWidget(
-                      imgUrl: jobPostings[i].imgUrl,
-                      title: jobPostings[i].title,
-                      posted: jobPostings[i].posted,
-                      description: jobPostings[i].description,
+    return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            ScaffoldClipper(
+              simpleNavbar: SimpleNavbar(
+                leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
+                leftTap: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              title: 'Jobs',
+              subtitle: 'Join the team.',
+            ),
+            SizedBox(height: 20),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Padding(
+                padding: EdgeInsets.all(10),
+                child: Row(
+                  children: <Widget>[
+                    RaisedButton(
+                      child: Text('FULL TIME'),
+                      onPressed: () {
+                        setState(
+                          () {
+                            selectedIndex = 0;
+                          },
+                        );
+                      },
                     ),
-                ],
+                  ],
+                ),
               ),
             ),
-          );
-  }
-
-  _buildAppBar() {
-    return AppBar(
-      bottom: TabBar(
-        tabs: [
-          for (var i = 0; i < jobPostings.length; i++)
-            Tab(
-              child: Text(
-                'Full Time',
-                textAlign: TextAlign.center,
-              ),
-            ),
-          // Tab(
-          //   child: Text(
-          //     'Part Time',
-          //     textAlign: TextAlign.center,
-          //   ),
-          // ),
-          // Tab(
-          //   child: Text(
-          //     'Temporary Part Time',
-          //     textAlign: TextAlign.center,
-          //   ),
-          // ),
-        ],
+            JobPostingWidget(
+              title: JP_FULL_TIME.title,
+              description: JP_FULL_TIME.description,
+              posted: JP_FULL_TIME.posted,
+              imgUrl: JP_FULL_TIME.imgUrl,
+            )
+          ],
+        ),
       ),
-      title: Text('JOIN THE TEAM'),
-      centerTitle: true,
     );
   }
 }

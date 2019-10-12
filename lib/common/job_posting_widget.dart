@@ -21,50 +21,47 @@ class JobPostingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 200,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              image: DecorationImage(image: CachedNetworkImageProvider(imgUrl), fit: BoxFit.cover),
-            ),
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+                image: CachedNetworkImageProvider(imgUrl), fit: BoxFit.cover),
           ),
-          Padding(
-            padding: EdgeInsets.all(16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(title),
-                Text(
-                  DateFormat(timeFormat).format(posted),
-                )
-              ],
-            ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(title),
+              Text(
+                DateFormat(timeFormat).format(posted),
+              )
+            ],
           ),
-          Divider(),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              description,
-              style: TextStyle(fontSize: 18),
-            ),
+        ),
+        Divider(),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            description,
+            style: TextStyle(fontSize: 18),
           ),
-          SizedBox(height: 20),
-          MaterialButton(
-            color: Colors.blue,
-            child: Text(
-              'APPLY NOW',
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              URLLauncher.launchUrl(
-                  'https://docs.google.com/forms/d/e/1FAIpQLScLt5e0c-tGlMdFw9ALAMuDpYKKgKs0W_1DGVnxhZ351gDbwA/viewform?usp=sf_link');
-            },
-          )
-        ],
-      ),
+        ),
+        SizedBox(height: 20),
+        RaisedButton(
+          child: Text(
+            'APPLY NOW',
+          ),
+          onPressed: () {
+            URLLauncher.launchUrl(
+                'https://docs.google.com/forms/d/e/1FAIpQLScLt5e0c-tGlMdFw9ALAMuDpYKKgKs0W_1DGVnxhZ351gDbwA/viewform?usp=sf_link');
+          },
+        )
+      ],
     );
   }
 }
