@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
-import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'dart:collection';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/conversation.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
@@ -87,7 +85,6 @@ class _MessagesPageState extends State<MessagesPage> {
           var convoData = convoDocs[i].data;
           var userData = convoData['users'];
           List<String> userIds = List<String>();
-          
 
           //Build list of users ids and user names.
           userData.forEach(
@@ -108,10 +105,8 @@ class _MessagesPageState extends State<MessagesPage> {
                 title: _oppositeUser.name,
                 lastMessage: convoData['lastMessage'],
                 imageUrl: _oppositeUser.imgUrl,
-                // sendeeId: userIds[0],
-                // senderId: userIds[1],
-                sendeeId: _oppositeUser.id,
-                senderId: _currentUser.id,
+                sendeeId: userIds[0],
+                senderId: userIds[1],
                 time: convoData['time'].toDate(),
                 read: convoData['${_currentUser.id}_read'],
                 oppositeUser: _oppositeUser),
@@ -139,9 +134,14 @@ class _MessagesPageState extends State<MessagesPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         centerTitle: true,
         title: Text(
-            'Messages (${_conversations.where((c) => c.read == false).length})'),
+          'Messages (${_conversations.where((c) => c.read == false).length})',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: _isLoading
           ? Spinner()

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
-import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -27,8 +26,14 @@ class MessagePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.white, //change your color here
+        ),
         centerTitle: true,
-        title: Text(title),
+        title: Text(
+          title,
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: ChatScreen(
           sender: sender, sendee: sendee, conversationId: conversationId),
@@ -42,8 +47,8 @@ class ChatScreen extends StatefulWidget {
       @required this.sendee,
       @required this.conversationId});
 
-  final User sender; //Myself
-  final User sendee; //Person I'm talking to.
+  final User sender;
+  final User sendee;
   final String conversationId;
 
   @override
@@ -66,7 +71,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   final GetIt getIt = GetIt.I;
   bool _isComposing = false;
   DocumentReference _thisConversationDoc;
-  CollectionReference _messagesDB;
+  CollectionReference _messageRef;
   String conversationId;
 
   @override
@@ -85,10 +90,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   _load() {
     if (conversationId != null) {
       _thisConversationDoc = _conversationsRef.document(conversationId);
-      _messagesDB = _thisConversationDoc.collection('messages');
+      _messageRef = _thisConversationDoc.collection('messages');
 
       //Listen for incoming messages.
-      _messagesDB.snapshots().listen(
+      _messageRef.snapshots().listen(
         (messageSnapshot) {
           //Sort messages by time.
           messageSnapshot.documents.sort(
@@ -117,8 +122,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               setState(
                 () {
                   //Add message if it is new.
-                  if (getIt<Message>().isNewMessage(
-                      chatMessage: message, messages: _messages)) {
+                  if (_isNewMessage(message)) {
                     _messages.insert(0, message);
                   }
                 },
@@ -132,6 +136,15 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
+  bool _isNewMessage(ChatMessage cm) {
+    for (ChatMessage chatMessage in _messages) {
+      if (chatMessage.id == cm.id) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   void _handleSubmitted(String text) {
     //If this is a new message...
     if (conversationId == null) {
@@ -139,9 +152,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       _thisConversationDoc = _conversationsRef.document();
       conversationId = _thisConversationDoc.documentID;
       //Set collection reference for messages on this thread.
-      _messagesDB = _thisConversationDoc.collection('messages');
+      _messageRef = _thisConversationDoc.collection('messages');
       //List for incoming messages.
-      _messagesDB.snapshots().listen(
+      _messageRef.snapshots().listen(
         (messageSnapshot) {
           messageSnapshot.documents.forEach(
             (messageDoc) {
@@ -163,8 +176,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               setState(
                 () {
                   //Add message is it is new.
-                  if (getIt<Message>().isNewMessage(
-                      chatMessage: message, messages: _messages)) {
+                  if (_isNewMessage(message)) {
                     _messages.insert(0, message);
                   }
                 },
@@ -178,18 +190,18 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       //Set user id's to true for this thread for searching purposes.
       //Also save each user's username to display as thread title.
       Map<String, dynamic> convoData = Map<String, dynamic>();
-      // Map<String, dynamic> usersData = Map<String, dynamic>();
+      Map<String, dynamic> usersData = Map<String, dynamic>();
 
       //For sender...
       convoData[sender.id] = true;
-      // usersData[sender.id] = sender.name;
+      usersData[sender.id] = sender.name;
 
       //For sendee...
       convoData[sendee.id] = true;
-      // usersData[sendee.id] = sendee.name;
+      usersData[sendee.id] = sendee.name;
 
       //Apply "array" of user ids to the convo data.
-      convoData['users'] = [sender.id, sendee.id];
+      convoData['users'] = usersData;
 
       _thisConversationDoc.setData(convoData);
 
@@ -197,14 +209,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
 
     //Save messagea data.
-    String messageId = _messagesDB.document().documentID;
-    getIt<Message>().createChatMessage(
-        messageRef: _messagesDB,
-        messageId: messageId,
-        text: text,
-        imageUrl: sender.imgUrl,
-        userName: sender.name,
-        userId: sender.id);
+    String messageId = _messageRef.document().documentID;
+    createChatMessage(
+        _messageRef, messageId, text, sender.imgUrl, sender.name, sender.id);
 
     //Update message thread.
     _thisConversationDoc.updateData(
@@ -255,34 +262,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  Widget build(BuildContext context) {
-    return Container(
-        child: Column(
-          children: <Widget>[
-            Flexible(
-              child: ListView.builder(
-                padding: EdgeInsets.all(8.0),
-                reverse: true,
-                itemBuilder: (_, int index) => _messages[index],
-                itemCount: _messages.length,
-              ),
-            ),
-            Divider(height: 1.0),
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).cardColor),
-              child: _buildTextComposer(),
-            ),
-          ],
-        ),
-        decoration: Theme.of(context).platform == TargetPlatform.iOS
-            ? BoxDecoration(
-                border: Border(
-                  top: BorderSide(color: Colors.grey[200]),
-                ),
-              )
-            : null); //new
-  }
-
   Widget _buildTextComposer() {
     return IconTheme(
       data: IconThemeData(color: Theme.of(context).accentColor),
@@ -331,5 +310,46 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 )
               : null),
     );
+  }
+
+  Widget build(BuildContext context) {
+    return Container(
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: ListView.builder(
+                padding: EdgeInsets.all(8.0),
+                reverse: true,
+                itemBuilder: (_, int index) => _messages[index],
+                itemCount: _messages.length,
+              ),
+            ),
+            Divider(height: 1.0),
+            Container(
+              decoration: BoxDecoration(color: Theme.of(context).cardColor),
+              child: _buildTextComposer(),
+            ),
+          ],
+        ),
+        decoration: Theme.of(context).platform == TargetPlatform.iOS
+            ? BoxDecoration(
+                border: Border(
+                  top: BorderSide(color: Colors.grey[200]),
+                ),
+              )
+            : null); //new
+  }
+
+  createChatMessage(CollectionReference messageRef, String messageId,
+      String text, String imageUrl, String userName, String userId) async {
+    var data = {
+      'text': text,
+      'imageUrl': imageUrl,
+      'name': userName,
+      'userId': userId,
+      'time': DateTime.now()
+    };
+
+    await messageRef.document(messageId).setData(data);
   }
 }

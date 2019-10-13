@@ -361,7 +361,7 @@ class HomePageState extends State<HomePage> {
             color: Theme.of(context).buttonColor,
             child: Text(
               'Read More',
-              style: Theme.of(context).accentTextTheme.button,
+              // style: Theme.of(context).accentTextTheme.button,
             ),
             onPressed: () {
               Navigator.push(
@@ -391,7 +391,7 @@ class HomePageState extends State<HomePage> {
             color: Theme.of(context).buttonColor,
             child: Text(
               'Read More',
-              style: Theme.of(context).accentTextTheme.button,
+              // style: Theme.of(context).accentTextTheme.button,
             ),
             onPressed: () {
               Navigator.push(
@@ -419,8 +419,10 @@ class HomePageState extends State<HomePage> {
           ),
           RaisedButton(
             color: Theme.of(context).buttonColor,
-            child: Text('Read More',
-                style: Theme.of(context).accentTextTheme.button),
+            child: Text(
+              'Read More',
+              // style: Theme.of(context).accentTextTheme.button,
+            ),
             onPressed: () {
               Navigator.push(
                 context,
