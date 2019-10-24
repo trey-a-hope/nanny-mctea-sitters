@@ -187,7 +187,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - flutter_money_formatter (from `.symlinks/plugins/flutter_money_formatter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
@@ -240,7 +240,7 @@ EXTERNAL SOURCES:
   firebase_storage:
     :path: ".symlinks/plugins/firebase_storage/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-release"
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
   flutter_money_formatter:
@@ -302,4 +302,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 45b052ef7c69f2b1e6492370c2ff03f15eaff282
 
-COCOAPODS: 1.8.0.beta.2
+COCOAPODS: 1.8.4

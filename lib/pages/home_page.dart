@@ -116,233 +116,231 @@ class HomePageState extends State<HomePage> {
       ),
       body: _isLoading
           ? Spinner()
-          : SingleChildScrollView(
+          : ListView(
               controller: _scrollController,
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    overflow: Overflow.visible,
-                    children: <Widget>[
-                      ClipPath(
-                        clipper: DiagonalPathClipperTwo(),
+              padding: EdgeInsets.only(top: 0),
+              children: <Widget>[
+                Stack(
+                  overflow: Overflow.visible,
+                  children: <Widget>[
+                    ClipPath(
+                      clipper: DiagonalPathClipperTwo(),
+                      child: Container(
+                          height: 400, color: Theme.of(context).primaryColor),
+                    ),
+                    SimpleNavbar(
+                      leftWidget: Icon(MdiIcons.menu, color: Colors.white),
+                      leftTap: () {
+                        _scaffoldKey.currentState.openDrawer();
+                      },
+                      rightWidget: Icon(MdiIcons.phone, color: Colors.white),
+                      rightTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ContactPage()),
+                        );
+                      },
+                    ),
+                    Positioned(
+                      top: 200,
+                      left: 0,
+                      right: 0,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
                         child: Container(
-                            height: 400, color: Theme.of(context).primaryColor),
-                      ),
-                      SimpleNavbar(
-                        leftWidget: Icon(MdiIcons.menu, color: Colors.white),
-                        leftTap: () {
-                          _scaffoldKey.currentState.openDrawer();
-                        },
-                        rightWidget: Icon(MdiIcons.phone, color: Colors.white),
-                        rightTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ContactPage()),
-                          );
-                        },
-                      ),
-                      Positioned(
-                        top: 200,
-                        left: 0,
-                        right: 0,
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Container(
-                            width: double.infinity,
-                            height: 300,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                    spreadRadius: 2.0,
-                                    blurRadius: 4.0,
-                                    color: Colors.grey)
-                              ],
-                              border: Border.all(
-                                  color: Colors.white,
-                                  style: BorderStyle.solid,
-                                  width: 5.0),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(16),
-                              ),
-                              image: DecorationImage(
-                                image: asImgGroup_nannies,
-                                fit: BoxFit.cover,
-                              ),
+                          width: double.infinity,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                  spreadRadius: 2.0,
+                                  blurRadius: 4.0,
+                                  color: Colors.grey)
+                            ],
+                            border: Border.all(
+                                color: Colors.white,
+                                style: BorderStyle.solid,
+                                width: 5.0),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16),
+                            ),
+                            image: DecorationImage(
+                              image: asImgGroup_nannies,
+                              fit: BoxFit.cover,
                             ),
                           ),
                         ),
                       ),
-                      Positioned(
-                        top: 100,
-                        left: 32,
-                        right: 0,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'Nanny McTea Sitters',
-                              style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              'Sitting made simple.',
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      )
+                    ),
+                    Positioned(
+                      top: 100,
+                      left: 32,
+                      right: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            'Nanny McTea Sitters',
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            'Sitting made simple.',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                SizedBox(
+                  height: 100,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Row(
+                    children: <Widget>[
+                      Text('About',
+                          style: Theme.of(context).primaryTextTheme.headline)
                     ],
                   ),
-                  SizedBox(
-                    height: 100,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: Text(
+                    about,
+                    style: Theme.of(context).primaryTextTheme.body1,
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Row(
-                      children: <Widget>[
-                        Text('About',
-                            style: Theme.of(context).primaryTextTheme.headline)
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                ClipperWavy(
+                  child: imgPikeStreet,
+                ),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Services',
+                          style: Theme.of(context).primaryTextTheme.headline)
+                    ],
+                  ),
+                ),
+                _buildEventServicesButton(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildSitterServicesButton(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildProfessionalNanniesButton(),
+                SizedBox(height: 20),
+                ClipperWavy(child: imgGroup),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Meet The Team',
+                          style: Theme.of(context).primaryTextTheme.headline)
+                    ],
+                  ),
+                ),
+                _buildTeamWidget(),
+                SizedBox(height: 40),
+                ClipperWavy(child: imgDispicableMe),
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Reviews',
+                          style: Theme.of(context).primaryTextTheme.headline)
+                    ],
+                  ),
+                ),
+                //Review 1
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text:
+                              '\"I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.\"',
+                          style: Theme.of(context).primaryTextTheme.body1,
+                        ),
+                        TextSpan(text: '\n\n'),
+                        TextSpan(
+                            text: '~Morales Family',
+                            style: Theme.of(context).primaryTextTheme.body2),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25),
-                    child: Text(
-                      about,
-                      style: Theme.of(context).primaryTextTheme.body1,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  ClipperWavy(
-                    child: imgPikeStreet,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Services',
-                            style: Theme.of(context).primaryTextTheme.headline)
+                ),
+                SizedBox(height: 30),
+                Divider(),
+                SizedBox(height: 30),
+                //Review 2
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text:
+                              '\"We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!\"',
+                          style: Theme.of(context).primaryTextTheme.body1,
+                        ),
+                        TextSpan(text: '\n\n'),
+                        TextSpan(
+                            text: '~Cady  Family',
+                            style: Theme.of(context).primaryTextTheme.body2),
                       ],
                     ),
                   ),
-                  _buildEventServicesButton(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _buildSitterServicesButton(),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _buildProfessionalNanniesButton(),
-                  SizedBox(height: 20),
-                  ClipperWavy(child: imgGroup),
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Meet The Team',
-                            style: Theme.of(context).primaryTextTheme.headline)
-                      ],
-                    ),
-                  ),
-                  _buildTeamWidget(),
-                  SizedBox(height: 40),
-                  ClipperWavy(child: imgDispicableMe),
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Reviews',
-                            style: Theme.of(context).primaryTextTheme.headline)
-                      ],
-                    ),
-                  ),
-                  //Review 1
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text:
-                                '\"I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.\"',
-                            style: Theme.of(context).primaryTextTheme.body1,
-                          ),
-                          TextSpan(text: '\n\n'),
-                          TextSpan(
-                              text: '~Morales Family',
-                              style: Theme.of(context).primaryTextTheme.body2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Divider(),
-                  SizedBox(height: 30),
-                  //Review 2
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text:
-                                '\"We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!\"',
-                            style: Theme.of(context).primaryTextTheme.body1,
-                          ),
-                          TextSpan(text: '\n\n'),
-                          TextSpan(
-                              text: '~Cady  Family',
-                              style: Theme.of(context).primaryTextTheme.body2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Divider(),
-                  SizedBox(height: 30),
+                ),
+                SizedBox(height: 30),
+                Divider(),
+                SizedBox(height: 30),
 
-                  //Review 3
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24),
-                    child: RichText(
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          TextSpan(
-                            text:
-                                '\"Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!\"',
-                            style: Theme.of(context).primaryTextTheme.body1,
-                          ),
-                          TextSpan(text: '\n\n'),
-                          TextSpan(
-                              text: '~Eavenson Family',
-                              style: Theme.of(context).primaryTextTheme.body2),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 30),
-
-                  ClipperWavy(child: imgQueenCity),
-
-                  Padding(
-                    padding: EdgeInsets.all(30),
-                    child: Row(
-                      children: <Widget>[
-                        Text('Social Media',
-                            style: Theme.of(context).primaryTextTheme.headline)
+                //Review 3
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24),
+                  child: RichText(
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text:
+                              '\"Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!\"',
+                          style: Theme.of(context).primaryTextTheme.body1,
+                        ),
+                        TextSpan(text: '\n\n'),
+                        TextSpan(
+                            text: '~Eavenson Family',
+                            style: Theme.of(context).primaryTextTheme.body2),
                       ],
                     ),
                   ),
-                  _buildSocialMedias()
-                ],
-              ),
+                ),
+                SizedBox(height: 30),
+
+                ClipperWavy(child: imgQueenCity),
+
+                Padding(
+                  padding: EdgeInsets.all(30),
+                  child: Row(
+                    children: <Widget>[
+                      Text('Social Media',
+                          style: Theme.of(context).primaryTextTheme.headline)
+                    ],
+                  ),
+                ),
+                _buildSocialMedias()
+              ],
             ),
     );
   }
