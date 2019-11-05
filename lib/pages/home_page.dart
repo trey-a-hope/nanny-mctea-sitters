@@ -70,7 +70,7 @@ class HomePageState extends State<HomePage> {
     final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
       getIt<DB>()
-          .updateUser(userId: currentUser.id, data: {'fcmToken': fcmToken});
+          .updateUser(userID: currentUser.id, data: {'fcmToken': fcmToken});
     }
 
     //Configure notifications for several action types.

@@ -98,7 +98,7 @@ class EditProfilePageState extends State<EditProfilePage> {
       'phone': _phoneController.text
     };
 
-    getIt<DB>().updateUser(userId: _currentUser.id, data: data);
+    getIt<DB>().updateUser(userID: _currentUser.id, data: data);
 
     return;
   }

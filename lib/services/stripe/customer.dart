@@ -5,12 +5,12 @@ import 'package:http/http.dart' as http;
 import 'package:nanny_mctea_sitters_flutter/models/stripe/credit_card.dart';
 import 'dart:convert' show Encoding, json;
 
-import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer.dart';
 
 abstract class StripeCustomer {
   Future<String> create({@required String email, @required String description});
-  Future<Customer> retrieve({@required String customerId});
-  Future<void> update({@required String customerId, @required String token});
+  Future<Customer> retrieve({@required String customerID});
+  Future<void> update({@required String customerID, @required String token});
 }
 
 class StripeCustomerImplementation extends StripeCustomer {
@@ -40,8 +40,8 @@ class StripeCustomerImplementation extends StripeCustomer {
   }
 
   @override
-  Future<Customer> retrieve({@required String customerId}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId};
+  Future<Customer> retrieve({@required String customerID}) async {
+    Map data = {'apiKey': apiKey, 'customerID': customerID};
 
     http.Response response = await http.post(
       endpoint + 'StripeRetrieveCustomer',
@@ -78,8 +78,8 @@ class StripeCustomerImplementation extends StripeCustomer {
 
     @override
   Future<void> update(
-      {@required String customerId, @required String token}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId, 'token': token};
+      {@required String customerID, @required String token}) async {
+    Map data = {'apiKey': apiKey, 'customerID': customerID, 'token': token};
 
     http.Response response = await http.post(
       endpoint + 'StripeUpdateCustomer',

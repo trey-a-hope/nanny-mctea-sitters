@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class User {
   String bio;
-  String customerId;
+  String customerID;
   String details;
   String email;
   String fcmToken;
@@ -17,7 +17,7 @@ class User {
 
   User(
       {@required String bio,
-      @required String customerId,
+      @required String customerID,
       @required String details,
       @required String email,
       @required String fcmToken,
@@ -29,7 +29,7 @@ class User {
       @required DateTime time,
       @required String uid}) {
     this.bio = bio;
-    this.customerId = customerId;
+    this.customerID = customerID;
     this.details = details;
     this.email = email;
     this.fcmToken = fcmToken;
@@ -45,7 +45,7 @@ class User {
   Map<String, dynamic> toMap() {
     return {
       'bio': bio,
-      'customerId': customerId,
+      'customerID': customerID,
       'details': details,
       'email': email,
       'fcmToken': fcmToken,
@@ -62,7 +62,7 @@ class User {
   static User extractDocument(DocumentSnapshot ds) {
     return User(
         bio: ds.data['bio'],
-        customerId: ds.data['customerId'],
+        customerID: ds.data['customerID'],
         details: ds.data['details'],
         email: ds.data['email'],
         fcmToken: ds.data['fcmToken'],

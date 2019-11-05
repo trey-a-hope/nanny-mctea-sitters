@@ -10,7 +10,7 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/payments/payment_method.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/db.dart';
@@ -47,7 +47,7 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
   _load() async {
     _currentUser = await getIt<Auth>().getCurrentUser();
     _customer = await getIt<StripeCustomer>()
-        .retrieve(customerId: _currentUser.customerId);
+        .retrieve(customerID: _currentUser.customerID);
 
     setState(
       () {
@@ -79,7 +79,7 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
         bool charged = await getIt<StripeCharge>().create(
             amount: 25.00,
             description: appointment.sitter.name + ', ' + appointment.service,
-            customerId: _currentUser.customerId);
+            customerID: _currentUser.customerID);
 
         if (!charged) {
           throw Exception('Could not charge card at this time.');
@@ -105,8 +105,8 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
 
         //Set sitters time slot to taken.
         getIt<DB>().setSlotTaken(
-            sitterId: appointment.sitter.id,
-            slotId: appointment.slot.id,
+            sitterID: appointment.sitter.id,
+            slotID: appointment.slot.id,
             taken: true);
 
         setState(

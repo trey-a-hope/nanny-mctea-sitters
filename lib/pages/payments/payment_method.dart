@@ -9,7 +9,7 @@ import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/payments/add_credit_card_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
@@ -42,7 +42,7 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
     try {
       _currentUser = await getIt<Auth>().getCurrentUser();
       _customer = await getIt<StripeCustomer>()
-          .retrieve(customerId: _currentUser.customerId);
+          .retrieve(customerID: _currentUser.customerID);
 
       setState(
         () {
@@ -76,7 +76,7 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
         });
 
         await getIt<StripeCard>()
-            .delete(customerId: _customer.id, cardId: _customer.card.id);
+            .delete(customerID: _customer.id, cardID: _customer.card.id);
         setState(
           () {
             _isLoading = false;

@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show Encoding, json;
 
 abstract class StripeCard {
-  Future<String> create({@required String customerId, @required String token});
-  Future<bool> delete({@required String customerId, @required String cardId});
+  Future<String> create({@required String customerID, @required String token});
+  Future<bool> delete({@required String customerID, @required String cardID});
 }
 
 class StripeCardImplementation extends StripeCard {
@@ -15,8 +15,8 @@ class StripeCardImplementation extends StripeCard {
 
   @override
   Future<String> create(
-      {@required String customerId, @required String token}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId, 'token': token};
+      {@required String customerID, @required String token}) async {
+    Map data = {'apiKey': apiKey, 'customerID': customerID, 'token': token};
 
     http.Response response = await http.post(
       endpoint + 'StripeCreateCard',
@@ -34,8 +34,8 @@ class StripeCardImplementation extends StripeCard {
 
   @override
   Future<bool> delete(
-      {@required String customerId, @required String cardId}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId, 'cardId': cardId};
+      {@required String customerID, @required String cardID}) async {
+    Map data = {'apiKey': apiKey, 'customerID': customerID, 'cardID': cardID};
 
     http.Response response = await http.post(
       endpoint + 'StripeDeleteCard',

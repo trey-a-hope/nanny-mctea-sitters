@@ -12,11 +12,11 @@ abstract class Message {
       @required String title});
   Future<void> createChatMessage(
       {@required CollectionReference messageRef,
-      @required String messageId,
+      @required String messageID,
       @required String text,
       @required String imageUrl,
       @required String userName,
-      @required String userId});
+      @required String userID});
   bool isNewMessage(
       {@required ChatMessage chatMessage,
       @required List<ChatMessage> messages});
@@ -39,10 +39,10 @@ class MessageImplementation extends Message {
       //Grab first and only document.
       QuerySnapshot result = await query.snapshots().first;
       //If convo exits, change from null to the id. Otherwise, keep it null.
-      String conversationId;
+      String conversationID;
       if (result.documents.isNotEmpty) {
         DocumentSnapshot conversationDoc = result.documents.first;
-        conversationId = conversationDoc.documentID;
+        conversationID = conversationDoc.documentID;
       }
       Navigator.push(
         context,
@@ -50,7 +50,7 @@ class MessageImplementation extends Message {
           builder: (context) => MessagePage(
               sender: sender,
               sendee: sendee,
-              conversationId: conversationId,
+              conversationID: conversationID,
               title: title),
         ),
       );
@@ -61,20 +61,20 @@ class MessageImplementation extends Message {
 
   Future<void> createChatMessage(
       {@required CollectionReference messageRef,
-      @required String messageId,
+      @required String messageID,
       @required String text,
       @required String imageUrl,
       @required String userName,
-      @required String userId}) async {
+      @required String userID}) async {
     var data = {
       'text': text,
       'imageUrl': imageUrl,
       'name': userName,
-      'userId': userId,
+      'userID': userID,
       'time': DateTime.now()
     };
 
-    return await messageRef.document(messageId).setData(data);
+    return await messageRef.document(messageID).setData(data);
   }
 
   bool isNewMessage(

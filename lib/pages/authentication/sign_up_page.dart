@@ -65,7 +65,7 @@ class SignUpPageState extends State<SignUpPage> {
           );
           final FirebaseUser user = authResult.user;
 
-          String customerId = await getIt<StripeCustomer>()
+          String customerID = await getIt<StripeCustomer>()
               .create(email: user.email, description: '');
 
           User newUser = User(
@@ -80,7 +80,7 @@ class SignUpPageState extends State<SignUpPage> {
               time: DateTime.now(),
               uid: user.uid,
               isSitter: false,
-              customerId: customerId);
+              customerID: customerID);
 
           getIt<DB>().createUser(
             data: newUser.toMap(),

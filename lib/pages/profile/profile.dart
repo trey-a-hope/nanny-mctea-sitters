@@ -34,7 +34,7 @@ class ProfilePageState extends State<ProfilePage> {
 
   void _load() async {
     _currentUser = await getIt<Auth>().getCurrentUser();
-    _appointments = await getIt<DB>().getAppointments(userId: _currentUser.id);
+    _appointments = await getIt<DB>().getAppointments(userID: _currentUser.id);
     setState(
       () {
         _isLoading = false;

@@ -49,7 +49,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
     _sitter = await getIt<DB>().getUser(id: appointment.sitterID);
     _user = await getIt<DB>().getUser(id: appointment.userID);
     _slot = await getIt<DB>()
-        .getSlot(sitterId: appointment.sitterID, slotId: appointment.slotID);
+        .getSlot(sitterID: appointment.sitterID, slotID: appointment.slotID);
 
     setState(
       () {
@@ -316,12 +316,12 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
       //Set sitter slot availability to free.
       getIt<DB>().setSlotTaken(
-          sitterId: appointment.sitterID,
-          slotId: appointment.slotID,
+          sitterID: appointment.sitterID,
+          slotID: appointment.slotID,
           taken: false);
 
       //Remove appointment.
-      getIt<DB>().deleteAppointment(appointmentId: appointment.id);
+      getIt<DB>().deleteAppointment(appointmentID: appointment.id);
 
       //Issue refund?
 

@@ -7,8 +7,8 @@ class Conversation extends ObjectMethods {
   String title;
   String lastMessage;
   String imageUrl;
-  String senderId;
-  String sendeeId;
+  String senderID;
+  String sendeeID;
   DateTime time;
   bool read;
   User oppositeUser;
@@ -17,16 +17,16 @@ class Conversation extends ObjectMethods {
       {@required String title,
       @required String lastMessage,
       @required String imageUrl,
-      @required String senderId,
-      @required String sendeeId,
+      @required String senderID,
+      @required String sendeeID,
       @required DateTime time,
       bool read,
       User oppositeUser}) {
     this.title = title;
     this.lastMessage = lastMessage;
     this.imageUrl = imageUrl;
-    this.senderId = senderId;
-    this.sendeeId = sendeeId;
+    this.senderID = senderID;
+    this.sendeeID = sendeeID;
     this.time = time;
     this.read = read;
     this.oppositeUser = oppositeUser;
@@ -38,8 +38,8 @@ class Conversation extends ObjectMethods {
       title: data['title'],
       lastMessage: data['lastMessage'],
       imageUrl: data['imageUrl'],
-      senderId: data['senderId'],
-      sendeeId: data['sendeeId'],
+      senderID: data['senderID'],
+      sendeeID: data['sendeeID'],
       time: data['time'].toDate(),
     );
   }
@@ -50,8 +50,8 @@ class Conversation extends ObjectMethods {
       'title': title,
       'lastMessage': lastMessage,
       'imageUrl': imageUrl,
-      'senderId': senderId,
-      'sendeeId': sendeeId,
+      'senderID': senderID,
+      'sendeeID': sendeeID,
       'time': time
     };
   }

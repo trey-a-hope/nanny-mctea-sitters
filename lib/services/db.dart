@@ -11,24 +11,24 @@ abstract class DB {
   Future<User> getUser({@required String id});
   Future<List<User>> getSitters();
   Future<void> updateUser(
-      {@required String userId, @required Map<String, dynamic> data});
+      {@required String userID, @required Map<String, dynamic> data});
   Future<void> createUser({@required Map<String, dynamic> data});
 
   //Appointments
-  Future<List<Appointment>> getAppointments({@required String userId});
-  Future<void> deleteAppointment({@required String appointmentId});
+  Future<List<Appointment>> getAppointments({@required String userID});
+  Future<void> deleteAppointment({@required String appointmentID});
   Future<void> createAppointment({@required Map<String, dynamic> data});
 
   //Slots
   Future<List<Slot>> getSlots(
-      {@required String sitterId, @required bool taken});
+      {@required String sitterID, @required bool taken});
   Future<List<Slot>> setSlotTaken(
-      {@required String sitterId,
-      @required String slotId,
+      {@required String sitterID,
+      @required String slotID,
       @required bool taken});
-  Future<Slot> getSlot({@required String sitterId, @required String slotId});
-  Future<void> addSlot({@required String sitterId, @required DateTime time});
-  Future<void> deleteSlot({@required String sitterId, @required String slotId});
+  Future<Slot> getSlot({@required String sitterID, @required String slotID});
+  Future<void> addSlot({@required String sitterID, @required DateTime time});
+  Future<void> deleteSlot({@required String sitterID, @required String slotID});
 }
 
 class DBImplementation extends DB {
@@ -71,12 +71,12 @@ class DBImplementation extends DB {
 
   @override
   Future<List<Slot>> getSlots(
-      {@required String sitterId, @required bool taken}) async {
+      {@required String sitterID, @required bool taken}) async {
     try {
       List<Slot> slots = List<Slot>();
 
       QuerySnapshot querySnapshot = await _usersDB
-          .document(sitterId)
+          .document(sitterID)
           .collection('slots')
           .where('taken', isEqualTo: taken)
           .getDocuments();
@@ -100,14 +100,14 @@ class DBImplementation extends DB {
 
   @override
   Future<List<Slot>> setSlotTaken(
-      {@required String sitterId,
-      @required String slotId,
+      {@required String sitterID,
+      @required String slotID,
       @required bool taken}) {
     try {
       _usersDB
-          .document(sitterId)
+          .document(sitterID)
           .collection('slots')
-          .document(slotId)
+          .document(slotID)
           .updateData(
         {'taken': taken},
       );
@@ -119,12 +119,12 @@ class DBImplementation extends DB {
   }
 
   @override
-  Future<List<Appointment>> getAppointments({String userId}) async {
+  Future<List<Appointment>> getAppointments({String userID}) async {
     try {
       List<Appointment> appointments = List<Appointment>();
 
       QuerySnapshot querySnapshot = await _appointmentsDB
-          .where('userID', isEqualTo: userId)
+          .where('userID', isEqualTo: userID)
           .getDocuments();
 
       List<DocumentSnapshot> appointmentDocs = querySnapshot.documents;
@@ -140,12 +140,12 @@ class DBImplementation extends DB {
   }
 
   @override
-  Future<Slot> getSlot({String sitterId, String slotId}) async {
+  Future<Slot> getSlot({String sitterID, String slotID}) async {
     try {
       DocumentSnapshot slotDoc = await _usersDB
-          .document(sitterId)
+          .document(sitterID)
           .collection('slots')
-          .document(slotId)
+          .document(slotID)
           .get();
       Slot slot = Slot.extractDocument(slotDoc);
       return slot;
@@ -155,9 +155,9 @@ class DBImplementation extends DB {
   }
 
   @override
-  Future<void> deleteAppointment({String appointmentId}) async {
+  Future<void> deleteAppointment({String appointmentID}) async {
     try {
-      await _appointmentsDB.document(appointmentId).delete();
+      await _appointmentsDB.document(appointmentID).delete();
       return;
     } catch (e) {
       throw Exception(
@@ -168,9 +168,9 @@ class DBImplementation extends DB {
 
   @override
   Future<void> updateUser(
-      {@required String userId, @required Map<String, dynamic> data}) async {
+      {@required String userID, @required Map<String, dynamic> data}) async {
     try {
-      await _usersDB.document(userId).updateData(data);
+      await _usersDB.document(userID).updateData(data);
       return;
     } catch (e) {
       throw Exception(
@@ -180,9 +180,9 @@ class DBImplementation extends DB {
   }
 
   @override
-  Future<void> addSlot({String sitterId, DateTime time}) async {
+  Future<void> addSlot({String sitterID, DateTime time}) async {
     final CollectionReference slotsColRef =
-        _usersDB.document(sitterId).collection('slots');
+        _usersDB.document(sitterID).collection('slots');
     try {
       DocumentReference docRef = await slotsColRef.add(
         {'taken': false, 'time': time},
@@ -199,12 +199,12 @@ class DBImplementation extends DB {
   }
 
   @override
-  Future<void> deleteSlot({String sitterId, String slotId}) async {
+  Future<void> deleteSlot({String sitterID, String slotID}) async {
     try {
       await _usersDB
-          .document(sitterId)
+          .document(sitterID)
           .collection('slots')
-          .document(slotId)
+          .document(slotID)
           .delete();
       return;
     } catch (e) {

@@ -39,7 +39,7 @@ class PaymentHistoryPageState extends State<PaymentHistoryPage> {
     try {
       _currentUser = await getIt<Auth>().getCurrentUser();
       _charges = await getIt<StripeCharge>()
-          .listAll(customerId: _currentUser.customerId);
+          .listAll(customerID: _currentUser.customerID);
 
       setState(
         () {

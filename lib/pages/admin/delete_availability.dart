@@ -75,7 +75,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
     filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
     List<Slot> slots =
-        await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
+        await getIt<DB>().getSlots(sitterID: filteredSitter.id, taken: false);
     _sitterSlotMap[filteredSitter] = slots;
   }
 
@@ -222,7 +222,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
                     builder: (context) => DeleteAvailabilityTimePage(
                       takenSlots: _avialableSlots,
                       selectedDay: _selectedDay,
-                      sitterId: filteredSitter.id,
+                      sitterID: filteredSitter.id,
                     ),
                   ),
                 );

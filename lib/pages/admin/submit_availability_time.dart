@@ -13,22 +13,22 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 class SubmitAvailabilityTimePage extends StatefulWidget {
   final List<dynamic> takenSlots;
   final DateTime selectedDay;
-  final String sitterId;
+  final String sitterID;
 
   SubmitAvailabilityTimePage(
       {@required this.takenSlots,
       @required this.selectedDay,
-      @required this.sitterId});
+      @required this.sitterID});
 
   @override
   State createState() => SubmitAvailabilityTimePageState(
-      this.takenSlots, this.selectedDay, this.sitterId);
+      this.takenSlots, this.selectedDay, this.sitterID);
 }
 
 class SubmitAvailabilityTimePageState
     extends State<SubmitAvailabilityTimePage> {
   SubmitAvailabilityTimePageState(
-      this._takenSlots, this._selectedDay, this.sitterId);
+      this._takenSlots, this._selectedDay, this.sitterID);
 
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
@@ -36,7 +36,7 @@ class SubmitAvailabilityTimePageState
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DateTime _selectedDay;
   final List<dynamic> _takenSlots;
-  final String sitterId;
+  final String sitterID;
   List<dynamic> _availableSlots = List<dynamic>();
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
@@ -131,7 +131,7 @@ class SubmitAvailabilityTimePageState
     );
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {
-        getIt<DB>().addSlot(sitterId: sitterId, time: _selectedSlots[i].time);
+        getIt<DB>().addSlot(sitterID: sitterID, time: _selectedSlots[i].time);
       }
       getIt<Modal>().showAlert(
           context: context, title: 'Success', message: 'Time submitted.');

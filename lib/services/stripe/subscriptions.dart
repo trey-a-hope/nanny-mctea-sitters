@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' show Encoding, json;
 
 abstract class StripeSubscription extends ChangeNotifier {
-  Future<String> create({@required String customerId, @required String plan});
+  Future<String> create({@required String customerID, @required String plan});
 }
 
 class StripeSubscriptionImplementation extends StripeSubscription {
@@ -15,8 +15,8 @@ class StripeSubscriptionImplementation extends StripeSubscription {
 
   @override
   Future<String> create(
-      {@required String customerId, @required String plan}) async {
-    Map data = {'apiKey': apiKey, 'customerId': customerId, 'plan': plan};
+      {@required String customerID, @required String plan}) async {
+    Map data = {'apiKey': apiKey, 'customerID': customerID, 'plan': plan};
 
     http.Response response = await http.post(
       endpoint + 'StripeCreateSubscription',

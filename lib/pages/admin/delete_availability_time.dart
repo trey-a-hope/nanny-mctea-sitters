@@ -13,26 +13,26 @@ import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 class DeleteAvailabilityTimePage extends StatefulWidget {
   final List<dynamic> takenSlots;
   final DateTime selectedDay;
-  final String sitterId;
+  final String sitterID;
 
   DeleteAvailabilityTimePage(
       {@required this.takenSlots,
       @required this.selectedDay,
-      @required this.sitterId});
+      @required this.sitterID});
 
   @override
   State createState() => DeleteAvailabilityTimePageState(
-      this.takenSlots, this.selectedDay, this.sitterId);
+      this.takenSlots, this.selectedDay, this.sitterID);
 }
 
 class DeleteAvailabilityTimePageState
     extends State<DeleteAvailabilityTimePage> {
   DeleteAvailabilityTimePageState(
-      this._takenSlots, this._selectedDay, this.sitterId);
+      this._takenSlots, this._selectedDay, this.sitterID);
 
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
-  final String sitterId;
+  final String sitterID;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DateTime _selectedDay;
@@ -103,7 +103,7 @@ class DeleteAvailabilityTimePageState
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {
         await getIt<DB>()
-            .deleteSlot(sitterId: sitterId, slotId: _selectedSlots[i].id);
+            .deleteSlot(sitterID: sitterID, slotID: _selectedSlots[i].id);
       }
       getIt<Modal>().showAlert(
           context: context, title: 'Success', message: 'Time removed.');

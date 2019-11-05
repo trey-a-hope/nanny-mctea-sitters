@@ -13,12 +13,12 @@ class MessagePage extends StatelessWidget {
   MessagePage(
       {@required this.sender,
       @required this.sendee,
-      @required this.conversationId,
+      @required this.conversationID,
       @required this.title});
 
   final User sender;
   final User sendee;
-  final String conversationId;
+  final String conversationID;
   final String title;
 
   @override
@@ -36,7 +36,7 @@ class MessagePage extends StatelessWidget {
         ),
       ),
       body: ChatScreen(
-          sender: sender, sendee: sendee, conversationId: conversationId),
+          sender: sender, sendee: sendee, conversationID: conversationID),
     );
   }
 }
@@ -45,22 +45,22 @@ class ChatScreen extends StatefulWidget {
   ChatScreen(
       {@required this.sender,
       @required this.sendee,
-      @required this.conversationId});
+      @required this.conversationID});
 
   final User sender;
   final User sendee;
-  final String conversationId;
+  final String conversationID;
 
   @override
   State createState() => ChatScreenState(
-      sender: sender, sendee: sendee, conversationId: conversationId);
+      sender: sender, sendee: sendee, conversationID: conversationID);
 }
 
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   ChatScreenState(
       {@required this.sender,
       @required this.sendee,
-      @required this.conversationId});
+      @required this.conversationID});
 
   final User sender;
   final User sendee;
@@ -72,15 +72,15 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   bool _isComposing = false;
   DocumentReference _thisConversationDoc;
   CollectionReference _messageRef;
-  String conversationId;
+  String conversationID;
 
   @override
   void initState() {
     super.initState();
 
     //Mark conversation as read as soon as user opens it.
-    if (conversationId != null) {
-      _conversationsRef.document(conversationId).updateData(
+    if (conversationID != null) {
+      _conversationsRef.document(conversationID).updateData(
         {'${sender.id}_read': true},
       );
     }
@@ -88,8 +88,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   _load() {
-    if (conversationId != null) {
-      _thisConversationDoc = _conversationsRef.document(conversationId);
+    if (conversationID != null) {
+      _thisConversationDoc = _conversationsRef.document(conversationID);
       _messageRef = _thisConversationDoc.collection('messages');
 
       //Listen for incoming messages.
@@ -111,8 +111,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 imageUrl: messageDoc['imageUrl'],
                 text: messageDoc['text'],
                 time: messageDoc['time'].toDate(),
-                userId: messageDoc['userId'],
-                myUserId: sender.id,
+                userID: messageDoc['userID'],
+                myUserID: sender.id,
                 animationController: AnimationController(
                   duration: Duration(milliseconds: 700),
                   vsync: this,
@@ -147,10 +147,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   void _handleSubmitted(String text) {
     //If this is a new message...
-    if (conversationId == null) {
+    if (conversationID == null) {
       //Create thread.
       _thisConversationDoc = _conversationsRef.document();
-      conversationId = _thisConversationDoc.documentID;
+      conversationID = _thisConversationDoc.documentID;
       //Set collection reference for messages on this thread.
       _messageRef = _thisConversationDoc.collection('messages');
       //List for incoming messages.
@@ -165,8 +165,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 imageUrl: messageDoc['imageUrl'],
                 text: messageDoc['text'],
                 time: messageDoc['time'].toDate(),
-                userId: messageDoc['userId'],
-                myUserId: sender.id,
+                userID: messageDoc['userID'],
+                myUserID: sender.id,
                 animationController: AnimationController(
                   duration: Duration(milliseconds: 700),
                   vsync: this,
@@ -209,9 +209,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
 
     //Save messagea data.
-    String messageId = _messageRef.document().documentID;
+    String messageID = _messageRef.document().documentID;
     createChatMessage(
-        _messageRef, messageId, text, sender.imgUrl, sender.name, sender.id);
+        _messageRef, messageID, text, sender.imgUrl, sender.name, sender.id);
 
     //Update message thread.
     _thisConversationDoc.updateData(
@@ -233,13 +233,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _textController.clear();
 
     ChatMessage message = ChatMessage(
-      id: messageId,
+      id: messageID,
       name: sender.name,
       imageUrl: sender.imgUrl,
       text: text,
       time: DateTime.now(),
-      userId: sendee.id,
-      myUserId: sender.id,
+      userID: sendee.id,
+      myUserID: sender.id,
       animationController: AnimationController(
         duration: Duration(milliseconds: 700),
         vsync: this,
@@ -340,16 +340,16 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             : null); //new
   }
 
-  createChatMessage(CollectionReference messageRef, String messageId,
-      String text, String imageUrl, String userName, String userId) async {
+  createChatMessage(CollectionReference messageRef, String messageID,
+      String text, String imageUrl, String userName, String userID) async {
     var data = {
       'text': text,
       'imageUrl': imageUrl,
       'name': userName,
-      'userId': userId,
+      'userID': userID,
       'time': DateTime.now()
     };
 
-    await messageRef.document(messageId).setData(data);
+    await messageRef.document(messageID).setData(data);
   }
 }

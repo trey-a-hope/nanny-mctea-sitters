@@ -5,7 +5,7 @@ import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/token.dart';
@@ -77,7 +77,7 @@ class AddCreditCardPageState extends State<AddCreditCardPage> {
               cvc: cvc);
 
           await getIt<StripeCustomer>()
-              .update(customerId: _customer.id, token: token);
+              .update(customerID: _customer.id, token: token);
 
           print(token);
 

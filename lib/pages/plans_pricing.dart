@@ -9,7 +9,7 @@ import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/customer..dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/customer.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
@@ -39,7 +39,7 @@ class PlansPricingState extends State<PlansPricingPage> {
     try {
       _currentUser = await getIt<Auth>().getCurrentUser();
       _customer = await getIt<StripeCustomer>()
-          .retrieve(customerId: _currentUser.customerId);
+          .retrieve(customerID: _currentUser.customerID);
 
       setState(
         () {
@@ -82,9 +82,9 @@ class PlansPricingState extends State<PlansPricingPage> {
           },
         );
 
-        String subscriptionId = await getIt<StripeSubscription>().create(
-            customerId: _currentUser.customerId, plan: STRIPE_GOLD_PLAN_ID);
-        print(subscriptionId);
+        String subscriptionID = await getIt<StripeSubscription>().create(
+            customerID: _currentUser.customerID, plan: STRIPE_GOLD_PLAN_ID);
+        print(subscriptionID);
 
         setState(() {
           _isLoading = false;

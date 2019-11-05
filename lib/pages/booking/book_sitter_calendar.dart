@@ -59,7 +59,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
         List<Slot> slots =
-            await getIt<DB>().getSlots(sitterId: _sitters[i].id, taken: false);
+            await getIt<DB>().getSlots(sitterID: _sitters[i].id, taken: false);
         _sitterSlotMap[_sitters[i]] = slots;
       }
     } else {
@@ -67,7 +67,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       User filteredSitter =
           _sitters.where((sitter) => sitter.name == _sitterOption).first;
       List<Slot> slots =
-          await getIt<DB>().getSlots(sitterId: filteredSitter.id, taken: false);
+          await getIt<DB>().getSlots(sitterID: filteredSitter.id, taken: false);
       _sitterSlotMap[filteredSitter] = slots;
     }
   }
