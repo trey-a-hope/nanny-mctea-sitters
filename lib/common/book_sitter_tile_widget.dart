@@ -45,19 +45,30 @@ class BookSitterTileWidget extends StatelessWidget {
           padding: EdgeInsets.all(10),
           child: RaisedButton(
             onPressed: () {
-              Appointment appointment = Appointment();
-              appointment.service = title;
+              //Probably not the most efficient way lol.
+              Appointment appointment = Appointment(
+                  service: title,
+                  id: '',
+                  city: '',
+                  message: '',
+                  phone: '',
+                  aptNo: '',
+                  name: '',
+                  street: '',
+                  email: '',
+                  sitterID: '',
+                  userID: '',
+                  slotID: '');
 
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BookSitterCalendarPage(appointment: appointment),
+                  builder: (context) =>
+                      BookSitterCalendarPage(appointment: appointment),
                 ),
               );
             },
-            child: Text(
-              'Book It'
-            ),
+            child: Text('Book It'),
           ),
         )
       ],

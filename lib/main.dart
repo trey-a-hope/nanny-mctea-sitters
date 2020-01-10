@@ -26,6 +26,8 @@ final String _endpoint =
     'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   //Stripe Card
   getIt.registerSingleton<StripeCard>(
       StripeCardImplementation(apiKey: _testSecretKey, endpoint: _endpoint),
@@ -63,9 +65,8 @@ void main() {
   //Validator
   getIt.registerSingleton<Validator>(ValidatorImplementation(),
       signalsReady: true);
-        //Database
-  getIt.registerSingleton<DB>(DBImplementation(),
-      signalsReady: true);
+  //Database
+  getIt.registerSingleton<DB>(DBImplementation(), signalsReady: true);
 
   runApp(MyApp());
 }
