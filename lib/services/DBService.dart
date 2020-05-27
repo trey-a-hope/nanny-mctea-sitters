@@ -6,7 +6,7 @@ import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
-abstract class DB {
+abstract class IDBService {
   //Users
   Future<User> getUser({@required String id});
   Future<List<User>> getSitters();
@@ -31,7 +31,7 @@ abstract class DB {
   Future<void> deleteSlot({@required String sitterID, @required String slotID});
 }
 
-class DBImplementation extends DB {
+class DBService extends IDBService {
   final CollectionReference _usersDB = Firestore.instance.collection('Users');
   final CollectionReference _appointmentsDB =
       Firestore.instance.collection('Appointments');

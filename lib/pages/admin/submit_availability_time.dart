@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 
 class SubmitAvailabilityTimePage extends StatefulWidget {
   final List<dynamic> takenSlots;
@@ -40,7 +41,6 @@ class SubmitAvailabilityTimePageState
   List<dynamic> _availableSlots = List<dynamic>();
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
-  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -124,16 +124,17 @@ class SubmitAvailabilityTimePageState
   }
 
   Future<void> saveAvailability() async {
-    bool confirm = await getIt<Modal>().showConfirmation(
+    bool confirm = await locator<ModalService>().showConfirmation(
       context: context,
       title: 'Submit Availability',
       text: _slotsToString(),
     );
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {
-        getIt<DB>().addSlot(sitterID: sitterID, time: _selectedSlots[i].time);
+        locator<DBService>()
+            .addSlot(sitterID: sitterID, time: _selectedSlots[i].time);
       }
-      getIt<Modal>().showAlert(
+      locator<ModalService>().showAlert(
           context: context, title: 'Success', message: 'Time submitted.');
       return;
     }

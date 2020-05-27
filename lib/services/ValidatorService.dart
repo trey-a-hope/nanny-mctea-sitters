@@ -1,4 +1,4 @@
-abstract class Validator {
+abstract class IValidatorService {
   String isEmpty(String value);
   String mobile(String value);
   String email(String value);
@@ -10,7 +10,7 @@ abstract class Validator {
   String cardCVC(String value);
 }
 
-class ValidatorImplementation extends Validator {
+class ValidatorService extends IValidatorService {
   @override
   String isEmpty(String value) {
     if (value.length == 0) {
@@ -48,7 +48,7 @@ class ValidatorImplementation extends Validator {
     Pattern pattern = '.{6,}';
     RegExp regex = RegExp(pattern);
     if (!regex.hasMatch(value))
-      return '6 character minimum.';
+      return 'Enter 6 characters minimum.';
     else
       return null;
   }

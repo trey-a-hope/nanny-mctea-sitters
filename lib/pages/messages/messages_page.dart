@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/conversation.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/MessageService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/message.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MessagesPage extends StatefulWidget {
@@ -33,7 +34,7 @@ class _MessagesPageState extends State<MessagesPage> {
   }
 
   _load() async {
-    _currentUser = await getIt<Auth>().getCurrentUser();
+    _currentUser = await locator<AuthService>().getCurrentUser();
 
     //Call Once
     //Get conversations this user is apart of.
@@ -95,9 +96,9 @@ class _MessagesPageState extends State<MessagesPage> {
 
           User _oppositeUser;
           if (_currentUser.id == userIDs[0]) {
-            _oppositeUser = await getIt<DB>().getUser(id: userIDs[1]);
+            _oppositeUser = await locator<DBService>().getUser(id: userIDs[1]);
           } else {
-            _oppositeUser = await getIt<DB>().getUser(id: userIDs[0]);
+            _oppositeUser = await locator<DBService>().getUser(id: userIDs[0]);
           }
 
           _conversations.add(
@@ -164,7 +165,7 @@ class _MessagesPageState extends State<MessagesPage> {
       children: [
         ListTile(
           onTap: () {
-            getIt<Message>().openMessageThread(
+            locator<MessageService>().openMessageThread(
                 context: context,
                 sender: _currentUser,
                 sendee: conversation.oppositeUser,

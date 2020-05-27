@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/customer.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -26,8 +25,6 @@ class SignUpPageState extends State<SignUpPage> {
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-
-  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -47,7 +44,7 @@ class SignUpPageState extends State<SignUpPage> {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
 
-      bool confirm = await getIt<Modal>().showConfirmation(
+      bool confirm = await locator<ModalService>().showConfirmation(
           context: context, title: 'Submit', text: 'Are you ready?');
       if (confirm) {
         try {
@@ -59,14 +56,11 @@ class SignUpPageState extends State<SignUpPage> {
 
           //Create new user in auth.
           AuthResult authResult =
-              await getIt<Auth>().createUserWithEmailAndPassword(
+              await locator<AuthService>().createUserWithEmailAndPassword(
             email: _emailController.text,
             password: _passwordController.text,
           );
           final FirebaseUser user = authResult.user;
-
-          String customerID = await getIt<StripeCustomer>()
-              .create(email: user.email, description: '');
 
           User newUser = User(
               id: '',
@@ -80,9 +74,9 @@ class SignUpPageState extends State<SignUpPage> {
               time: DateTime.now(),
               uid: user.uid,
               isSitter: false,
-              customerID: customerID);
+              customerID: null);
 
-          getIt<DB>().createUser(
+          locator<DBService>().createUser(
             data: newUser.toMap(),
           );
 
@@ -91,7 +85,7 @@ class SignUpPageState extends State<SignUpPage> {
           setState(
             () {
               _isLoading = true;
-              getIt<Modal>()
+              locator<ModalService>()
                   .showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
             },
           );
@@ -213,7 +207,7 @@ class SignUpPageState extends State<SignUpPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().email,
+      validator: locator<ValidatorService>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -232,7 +226,7 @@ class SignUpPageState extends State<SignUpPage> {
       maxLengthEnforced: true,
       maxLength: 25,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().password,
+      validator: locator<ValidatorService>().password,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Password',

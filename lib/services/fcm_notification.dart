@@ -55,7 +55,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-abstract class FCMNotification {
+abstract class IFCMNotificationService {
   Future<void> sendNotificationToUser(
       {@required String fcmToken,
       @required String title,
@@ -66,7 +66,7 @@ abstract class FCMNotification {
   Future<void> subscribeToTopic({@required String topic});
 }
 
-class FCMNotificationImplementation extends FCMNotification {
+class FCMNotificationService extends IFCMNotificationService {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   final String _endpoint = 'https://fcm.googleapis.com/fcm/send';
   final String _contentType = 'application/json';

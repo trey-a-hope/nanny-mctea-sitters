@@ -6,7 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
-abstract class Auth {
+abstract class IAuthService {
   Future<User> getCurrentUser();
   Future<void> signOut();
   Stream<FirebaseUser> onAuthStateChanged();
@@ -17,8 +17,7 @@ abstract class Auth {
   Future<FirebaseUser> getFirebaseUser();
 }
 
-class AuthImplementation extends Auth {
-  AuthImplementation();
+class AuthService extends IAuthService {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _usersDB = Firestore.instance.collection('Users');

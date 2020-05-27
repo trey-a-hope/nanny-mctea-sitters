@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -11,10 +12,8 @@ import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_payment.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/charge.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class BookSitterInfoPage extends StatefulWidget {
   final Appointment appointment;
@@ -41,7 +40,6 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   bool _isLoading = true;
   bool _autoValidate = false;
   User _currentUser;
-  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -51,7 +49,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   }
 
   _load() async {
-    _currentUser = await getIt<Auth>().getCurrentUser();
+    _currentUser = await locator<AuthService>().getCurrentUser();
     _nameController.text = _currentUser.name;
     _emailController.text = _currentUser.email;
     _phoneController.text = _currentUser.phone;
@@ -76,12 +74,12 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       appointment.service = appointment.service;
       appointment.street = _streetController.text;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BookSitterPaymentPage(appointment: appointment),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => BookSitterPaymentPage(appointment: appointment),
+      //   ),
+      // );
     } else {
       setState(
         () {
@@ -201,7 +199,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().isEmpty,
+      validator: locator<ValidatorService>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Name',
@@ -219,7 +217,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().email,
+      validator: locator<ValidatorService>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -238,7 +236,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().mobile,
+      validator: locator<ValidatorService>().mobile,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Phone',
@@ -257,7 +255,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().isEmpty,
+      validator: locator<ValidatorService>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Street',
@@ -295,7 +293,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().isEmpty,
+      validator: locator<ValidatorService>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'City',

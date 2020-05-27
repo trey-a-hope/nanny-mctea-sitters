@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
@@ -10,9 +10,7 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability_time.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DeleteAvailabilityPage extends StatefulWidget {
@@ -35,7 +33,6 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final CalendarController _calendarController = CalendarController();
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
-  final GetIt getIt = GetIt.I;
   User filteredSitter;
   @override
   void initState() {
@@ -45,7 +42,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   }
 
   _load() async {
-    _sitters = await getIt<DB>().getSitters();
+    _sitters = await locator<DBService>().getSitters();
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];
     await _getAvailability();
@@ -74,8 +71,8 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
     _sitterSlotMap.clear();
     filteredSitter =
         _sitters.where((sitter) => sitter.name == _sitterOption).first;
-    List<Slot> slots =
-        await getIt<DB>().getSlots(sitterID: filteredSitter.id, taken: false);
+    List<Slot> slots = await locator<DBService>()
+        .getSlots(sitterID: filteredSitter.id, taken: false);
     _sitterSlotMap[filteredSitter] = slots;
   }
 

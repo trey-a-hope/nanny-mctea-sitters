@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
@@ -68,7 +69,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       Firestore.instance.collection('Conversations');
   final List<ChatMessage> _messages = List<ChatMessage>();
   final TextEditingController _textController = TextEditingController();
-  final GetIt getIt = GetIt.I;
   bool _isComposing = false;
   DocumentReference _thisConversationDoc;
   CollectionReference _messageRef;
@@ -225,7 +225,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
 
     //Notifiy user of new message.
-    getIt<FCMNotification>().sendNotificationToUser(
+    locator<FCMNotificationService>().sendNotificationToUser(
         fcmToken: sendee.fcmToken,
         title: 'New Message From ${sender.name}',
         body: text.length > 25 ? text.substring(0, 25) + '...' : text);

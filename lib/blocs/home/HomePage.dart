@@ -1,27 +1,25 @@
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/home/HomeBloc.dart';
 import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/constants_ui.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
-import 'contact.dart';
+
+import 'Bloc.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -30,69 +28,11 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final FirebaseMessaging _fcm = FirebaseMessaging();
   final ScrollController _scrollController = ScrollController();
-  final GetIt getIt = GetIt.I;
-  List<User> _sitters = List<User>();
-  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-
-    _load();
-  }
-
-  void _load() async {
-    _sitters = await getIt<DB>().getSitters();
-
-    User currentUser = await getIt<Auth>().getCurrentUser();
-    if (currentUser != null) {
-      _setUpFirebaseMessaging(currentUser: currentUser);
-    }
-
-    setState(
-      () {
-        _isLoading = false;
-      },
-    );
-  }
-
-  void _setUpFirebaseMessaging({@required User currentUser}) async {
-    //Request permission on iOS device.
-    if (Platform.isIOS) {
-      _fcm.requestNotificationPermissions(
-        IosNotificationSettings(),
-      );
-    }
-
-    //Update user's fcm token.
-    final String fcmToken = await _fcm.getToken();
-    if (fcmToken != null) {
-      getIt<DB>()
-          .updateUser(userID: currentUser.id, data: {'fcmToken': fcmToken});
-    }
-
-    //Configure notifications for several action types.
-    _fcm.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print("onMessage: $message");
-        getIt<Modal>().showAlert(
-            context: context,
-            title: message['notification']['title'],
-            message: message['notification']['body']);
-        //  _showItemDialog(message);
-      },
-      //  onBackgroundMessage: myBackgroundMessageHandler,
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch: $message");
-        //  _navigateToItemDetail(message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print("onResume: $message");
-        //  _navigateToItemDetail(message);
-      },
-    );
   }
 
   @override
@@ -114,9 +54,13 @@ class HomePageState extends State<HomePage> {
           );
         },
       ),
-      body: _isLoading
-          ? Spinner()
-          : ListView(
+      body: BlocConsumer<HomeBloc, HomeState>(
+        listener: (BuildContext context, HomeState state) {},
+        builder: (BuildContext context, HomeState state) {
+          if (state is LoadingState) {
+            return Spinner();
+          } else if (state is LoadedState) {
+            return ListView(
               controller: _scrollController,
               padding: EdgeInsets.only(top: 0),
               children: <Widget>[
@@ -135,11 +79,13 @@ class HomePageState extends State<HomePage> {
                       },
                       rightWidget: Icon(MdiIcons.phone, color: Colors.white),
                       rightTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ContactPage()),
-                        );
+                        // Route route = MaterialPageRoute(
+                        //     builder: (context) => ContactPage());
+
+                        // Navigator.push(
+                        //   context,
+                        //   route,
+                        // );
                       },
                     ),
                     Positioned(
@@ -211,7 +157,7 @@ class HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Text(
-                    about,
+                    'It shouldn’t be difficult to find capable, reliable and trustworthy childcare. That\'s what I said when I started Nanny McTea Sitters. Drawing on my own personal nanny experiences as well the other experiences of professional nannies within our team, we established a full child care agency that ensures rigorous screening and customized matching. With years of collective experience in childcare, We\'ve learned what families want and are proud to share this with you.',
                     style: Theme.of(context).primaryTextTheme.body1,
                   ),
                 ),
@@ -230,15 +176,93 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                _buildEventServicesButton(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Event Services',
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                      RaisedButton(
+                        color: Theme.of(context).buttonColor,
+                        child: Text(
+                          'Read More',
+                          // style: Theme.of(context).accentTextTheme.button,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EventServicesPage(),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 10,
                 ),
-                _buildSitterServicesButton(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Sitter Services',
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                      RaisedButton(
+                        color: Theme.of(context).buttonColor,
+                        child: Text(
+                          'Read More',
+                          // style: Theme.of(context).accentTextTheme.button,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SitterServicesPage(),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(
                   height: 10,
                 ),
-                _buildProfessionalNanniesButton(),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 25),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Professional Nannies',
+                        style: Theme.of(context).primaryTextTheme.body1,
+                      ),
+                      RaisedButton(
+                        color: Theme.of(context).buttonColor,
+                        child: Text(
+                          'Read More',
+                          // style: Theme.of(context).accentTextTheme.button,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfessionalNanniesPage(),
+                            ),
+                          );
+                        },
+                      )
+                    ],
+                  ),
+                ),
                 SizedBox(height: 20),
                 ClipperWavy(child: imgGroup),
                 Padding(
@@ -250,7 +274,30 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                _buildTeamWidget(),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: state.sitters.map(
+                      (sitter) {
+                        return InkWell(
+                          child: SitterWidget(
+                            sitter: sitter,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SitterDetailsPage(
+                                  sitter,
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
                 SizedBox(height: 40),
                 ClipperWavy(child: imgDispicableMe),
                 Padding(
@@ -339,155 +386,45 @@ class HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                _buildSocialMedias()
-              ],
-            ),
-    );
-  }
-
-  _buildEventServicesButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Event Services',
-            style: Theme.of(context).primaryTextTheme.body1,
-          ),
-          RaisedButton(
-            color: Theme.of(context).buttonColor,
-            child: Text(
-              'Read More',
-              // style: Theme.of(context).accentTextTheme.button,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => EventServicesPage(),
-                ),
-              );
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  _buildSitterServicesButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Sitter Services',
-            style: Theme.of(context).primaryTextTheme.body1,
-          ),
-          RaisedButton(
-            color: Theme.of(context).buttonColor,
-            child: Text(
-              'Read More',
-              // style: Theme.of(context).accentTextTheme.button,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SitterServicesPage(),
-                ),
-              );
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  _buildProfessionalNanniesButton() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            'Professional Nannies',
-            style: Theme.of(context).primaryTextTheme.body1,
-          ),
-          RaisedButton(
-            color: Theme.of(context).buttonColor,
-            child: Text(
-              'Read More',
-              // style: Theme.of(context).accentTextTheme.button,
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfessionalNanniesPage(),
-                ),
-              );
-            },
-          )
-        ],
-      ),
-    );
-  }
-
-  _buildTeamWidget() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: <Widget>[
-          for (var i = 0; i < _sitters.length; i++)
-            InkWell(
-              child: SitterWidget(
-                sitter: _sitters[i],
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SitterDetailsPage(
-                      _sitters[i],
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: InkWell(
+                        child: Icon(MdiIcons.facebook,
+                            color: Theme.of(context).primaryIconTheme.color,
+                            size: Theme.of(context).primaryIconTheme.size),
+                        onTap: () {
+                          URLLauncher.launchUrl(
+                              'https://www.facebook.com/nannymctea');
+                        },
+                      ),
                     ),
-                  ),
-                );
-              },
-            )
-        ],
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: InkWell(
+                        child: Icon(MdiIcons.instagram,
+                            color: Theme.of(context).primaryIconTheme.color,
+                            size: Theme.of(context).primaryIconTheme.size),
+                        onTap: () {
+                          URLLauncher.launchUrl(
+                              'https://www.instagram.com/nannymcteasitters');
+                        },
+                      ),
+                    )
+                  ],
+                )
+              ],
+            );
+          } else if (state is ErrorState) {
+            return Center(child: Text('Error: ${state.error.toString()}'));
+          } else {
+            return Center(
+              child: Text('You should NEVER see this.'),
+            );
+          }
+        },
       ),
-    );
-  }
-
-  _buildSocialMedias() {
-    return Row(
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: InkWell(
-            child: Icon(MdiIcons.facebook,
-                color: Theme.of(context).primaryIconTheme.color,
-                size: Theme.of(context).primaryIconTheme.size),
-            onTap: () {
-              URLLauncher.launchUrl('https://www.facebook.com/nannymctea');
-            },
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.all(20),
-          child: InkWell(
-            child: Icon(MdiIcons.instagram,
-                color: Theme.of(context).primaryIconTheme.color,
-                size: Theme.of(context).primaryIconTheme.size),
-            onTap: () {
-              URLLauncher.launchUrl(
-                  'https://www.instagram.com/nannymcteasitters');
-            },
-          ),
-        )
-      ],
     );
   }
 }

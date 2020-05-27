@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/main.dart';
@@ -10,12 +11,10 @@ import 'package:nanny_mctea_sitters_flutter/pages/authentication/login_page.dart
 import 'package:nanny_mctea_sitters_flutter/pages/authentication/sign_up_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/plans_pricing.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/join_team.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/settings_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:nanny_mctea_sitters_flutter/services/package_device_info.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key key}) : super(key: key);
@@ -26,10 +25,7 @@ class NavDrawer extends StatefulWidget {
 
 class NavDrawerState extends State<NavDrawer> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  String _projectVersion;
-  String _projectCode;
   FirebaseUser user;
-  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -49,9 +45,6 @@ class NavDrawerState extends State<NavDrawer> {
   }
 
   load() async {
-    _projectCode = await getIt<PackageDeviceInfo>().getAppBuildNumber();
-    _projectVersion = await getIt<PackageDeviceInfo>().getAppVersionNumber();
-
     setState(
       () => {},
     );
@@ -90,7 +83,6 @@ class NavDrawerState extends State<NavDrawer> {
           _buildProfile(),
           _buildAddAvailability(),
           _buildDeleteAvailability(),
-
           _buildLogout(),
           _buildLogin(),
           _buildSignUp(),
@@ -101,7 +93,7 @@ class NavDrawerState extends State<NavDrawer> {
               child: Padding(
                 padding: EdgeInsets.all(20),
                 child: Text(
-                  'Version $_projectVersion / Build $_projectCode.\n©2019 by Nanny McTea Sitters\nCreated by Tr3umphant.Designs, LLC.',
+                  'Version $version / Build $buildNumber.\n©2020 by Nanny McTea Sitters\n',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.grey),
                 ),
@@ -223,12 +215,12 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PlansPricingPage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => PlansPricingPage(),
+              //   ),
+              // );
             },
           );
   }
@@ -245,12 +237,12 @@ class NavDrawerState extends State<NavDrawer> {
         style: TextStyle(color: Colors.grey),
       ),
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => JoinTeamPage(),
-          ),
-        );
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => JoinTeamPage(),
+        //   ),
+        // );
       },
     );
   }
@@ -269,7 +261,7 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () async {
-              bool confirm = await getIt<Modal>().showConfirmation(
+              bool confirm = await locator<ModalService>().showConfirmation(
                   context: context, title: 'Sign Out', text: 'Are you sure?');
               if (confirm) {
                 _auth.signOut().then(
@@ -342,12 +334,12 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SettingsPage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => SettingsPage(),
+              //   ),
+              // );
             },
           );
   }

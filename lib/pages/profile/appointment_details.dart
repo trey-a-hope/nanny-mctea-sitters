@@ -1,17 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:device_calendar/device_calendar.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final Appointment appointment;
@@ -30,7 +29,6 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
   final double _fontSize = 20;
-  final GetIt getIt = GetIt.I;
   DeviceCalendarPlugin _deviceCalendarPlugin = DeviceCalendarPlugin();
 
   bool _isLoading = true;
@@ -46,9 +44,9 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   }
 
   _load() async {
-    _sitter = await getIt<DB>().getUser(id: appointment.sitterID);
-    _user = await getIt<DB>().getUser(id: appointment.userID);
-    _slot = await getIt<DB>()
+    _sitter = await locator<DBService>().getUser(id: appointment.sitterID);
+    _user = await locator<DBService>().getUser(id: appointment.userID);
+    _slot = await locator<DBService>()
         .getSlot(sitterID: appointment.sitterID, slotID: appointment.slotID);
 
     setState(
@@ -86,10 +84,10 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           await _deviceCalendarPlugin.createOrUpdateEvent(eventToCreate);
       print(createEventResult);
 
-      getIt<Modal>().showInSnackBar(
+      locator<ModalService>().showInSnackBar(
           scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
     } catch (e) {
-      getIt<Modal>().showInSnackBar(
+      locator<ModalService>().showInSnackBar(
         scaffoldKey: _scaffoldKey,
         text: e.toString(),
       );
@@ -305,7 +303,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   }
 
   _cancelAppoinment() async {
-    bool confirm = await getIt<Modal>().showConfirmation(
+    bool confirm = await locator<ModalService>().showConfirmation(
         context: context, title: 'Cancel Appointment', text: 'Are you sure?');
     if (confirm) {
       setState(
@@ -315,13 +313,13 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       );
 
       //Set sitter slot availability to free.
-      getIt<DB>().setSlotTaken(
+      locator<DBService>().setSlotTaken(
           sitterID: appointment.sitterID,
           slotID: appointment.slotID,
           taken: false);
 
       //Remove appointment.
-      getIt<DB>().deleteAppointment(appointmentID: appointment.id);
+      locator<DBService>().deleteAppointment(appointmentID: appointment.id);
 
       //Issue refund?
 
@@ -340,7 +338,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       height: 50.0,
       child: RaisedButton(
         onPressed: () async {
-          bool confirm = await getIt<Modal>().showConfirmation(
+          bool confirm = await locator<ModalService>().showConfirmation(
               context: context,
               title: 'Add To Calendar',
               text: 'Are you sure?');

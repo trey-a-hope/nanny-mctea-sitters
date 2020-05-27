@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/services/validator.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -14,13 +14,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  // final FirebaseAuth _auth = FirebaseAuth.instance;
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final GetIt getIt = GetIt.I;
   bool _autoValidate = false;
 
   @override
@@ -48,14 +46,14 @@ class LoginPageState extends State<LoginPage> {
             _isLoading = true;
           },
         );
-        await getIt<Auth>().signInWithEmailAndPassword(
+        await locator<AuthService>().signInWithEmailAndPassword(
             email: _emailController.text, password: _passwordController.text);
         Navigator.pop(context);
       } catch (e) {
         setState(
           () {
             _isLoading = false;
-            getIt<Modal>().showInSnackBar(
+            locator<ModalService>().showInSnackBar(
               scaffoldKey: _scaffoldKey,
               text: e.message,
             );
@@ -79,7 +77,7 @@ class LoginPageState extends State<LoginPage> {
       maxLengthEnforced: true,
       // maxLength: MyFormData.nameCharLimit,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().email,
+      validator: locator<ValidatorService>().email,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Email',
@@ -97,7 +95,7 @@ class LoginPageState extends State<LoginPage> {
       textInputAction: TextInputAction.next,
       obscureText: true,
       onFieldSubmitted: (term) {},
-      validator: getIt<Validator>().isEmpty,
+      validator: locator<ValidatorService>().isEmpty,
       onSaved: (value) {},
       decoration: InputDecoration(
         hintText: 'Password',

@@ -4,7 +4,7 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/message_page.dart';
 
-abstract class Message {
+abstract class IMessageService {
   void openMessageThread(
       {@required BuildContext context,
       @required User sender,
@@ -22,7 +22,7 @@ abstract class Message {
       @required List<ChatMessage> messages});
 }
 
-class MessageImplementation extends Message {
+class MessageService extends IMessageService {
   final CollectionReference _conversationsDB =
       Firestore.instance.collection('Conversations');
 

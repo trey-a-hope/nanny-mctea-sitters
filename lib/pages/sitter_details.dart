@@ -1,15 +1,15 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/services/MessageService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/message.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
 
 class SitterDetailsPage extends StatefulWidget {
   final User _sitter;
@@ -27,7 +27,6 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
-  final GetIt getIt = GetIt.I;
   bool _isLoading = true;
 
   @override
@@ -54,62 +53,62 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
           ? Spinner()
           : SingleChildScrollView(
               child: Column(
-              children: <Widget>[
-                ScaffoldClipper(
-                  simpleNavbar: SimpleNavbar(
-                    leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
-                    leftTap: () {
-                      Navigator.of(context).pop();
-                    },
-                    rightWidget: Icon(Icons.message, color: Colors.white),
-                    rightTap: () async {
-                      User currentUser = await getIt<Auth>().getCurrentUser();
-                      if (currentUser == null) {
-                        getIt<Modal>().showAlert(
-                            context: context,
-                            title: 'Sorry',
-                            message:
-                                'You must be logged in to use this feature.');
-                      } else {
-                        getIt<Message>().openMessageThread(
-                            context: context,
-                            sendee: _sitter,
-                            sender: currentUser,
-                            title: _sitter.name);
-                      }
-                    },
-                  ),
-                  title: _sitter.name,
-                  subtitle: _sitter.email,
-                ),
-                              Stack(
                 children: <Widget>[
-                  SizedBox(
-                    height: 400,
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                        fit: BoxFit.contain,
-                        fadeInCurve: Curves.easeIn,
-                        imageUrl: _sitter.imgUrl),
-                  ),
-                  Container(
-                    margin: EdgeInsets.fromLTRB(16.0, 320.0, 16.0, 16.0),
-                    child: Column(
-                      children: <Widget>[
-                        // _buildInfoBox(),
-                        SizedBox(height: 20.0),
-                        _buildBio(),
-                        SizedBox(height: 20.0),
-                      ],
+                  ScaffoldClipper(
+                    simpleNavbar: SimpleNavbar(
+                      leftWidget:
+                          Icon(MdiIcons.chevronLeft, color: Colors.white),
+                      leftTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      rightWidget: Icon(Icons.message, color: Colors.white),
+                      rightTap: () async {
+                        User currentUser =
+                            await locator<AuthService>().getCurrentUser();
+                        if (currentUser == null) {
+                          locator<ModalService>().showAlert(
+                              context: context,
+                              title: 'Sorry',
+                              message:
+                                  'You must be logged in to use this feature.');
+                        } else {
+                          locator<MessageService>().openMessageThread(
+                              context: context,
+                              sendee: _sitter,
+                              sender: currentUser,
+                              title: _sitter.name);
+                        }
+                      },
                     ),
+                    title: _sitter.name,
+                    subtitle: _sitter.email,
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 400,
+                        width: double.infinity,
+                        child: CachedNetworkImage(
+                            fit: BoxFit.contain,
+                            fadeInCurve: Curves.easeIn,
+                            imageUrl: _sitter.imgUrl),
+                      ),
+                      Container(
+                        margin: EdgeInsets.fromLTRB(16.0, 320.0, 16.0, 16.0),
+                        child: Column(
+                          children: <Widget>[
+                            // _buildInfoBox(),
+                            SizedBox(height: 20.0),
+                            _buildBio(),
+                            SizedBox(height: 20.0),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              ],
-            )
-
-
-              ),
+            ),
     );
   }
 

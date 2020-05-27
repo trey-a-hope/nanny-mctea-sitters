@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -10,8 +11,8 @@ import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/messages_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/appointment_details.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/edit_profile.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -21,7 +22,6 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
-  final GetIt getIt = GetIt.I;
   User _currentUser;
   bool _isLoading = true;
   List<Appointment> _appointments = List<Appointment>();
@@ -33,8 +33,9 @@ class ProfilePageState extends State<ProfilePage> {
   }
 
   void _load() async {
-    _currentUser = await getIt<Auth>().getCurrentUser();
-    _appointments = await getIt<DB>().getAppointments(userID: _currentUser.id);
+    _currentUser = await locator<AuthService>().getCurrentUser();
+    _appointments =
+        await locator<DBService>().getAppointments(userID: _currentUser.id);
     setState(
       () {
         _isLoading = false;
@@ -114,12 +115,12 @@ class ProfilePageState extends State<ProfilePage> {
                   RaisedButton(
                     child: Text('EDIT PROFILE'),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditProfilePage(),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => EditProfilePage(),
+                      //   ),
+                      // );
                     },
                   ),
                   Divider(),

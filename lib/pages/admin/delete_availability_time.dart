@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
-import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 
 class DeleteAvailabilityTimePage extends StatefulWidget {
   final List<dynamic> takenSlots;
@@ -37,7 +38,6 @@ class DeleteAvailabilityTimePageState
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final DateTime _selectedDay;
   final List<dynamic> _takenSlots;
-  final GetIt getIt = GetIt.I;
   List<Slot> _selectedSlots = List<Slot>();
   bool _isLoading = true;
 
@@ -95,17 +95,17 @@ class DeleteAvailabilityTimePageState
   }
 
   Future<void> deleteAvailability() async {
-    bool confirm = await getIt<Modal>().showConfirmation(
+    bool confirm = await locator<ModalService>().showConfirmation(
       context: context,
       title: 'Delete Availability',
       text: _slotsToString(),
     );
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {
-        await getIt<DB>()
+        await locator<DBService>()
             .deleteSlot(sitterID: sitterID, slotID: _selectedSlots[i].id);
       }
-      getIt<Modal>().showAlert(
+      locator<ModalService>().showAlert(
           context: context, title: 'Success', message: 'Time removed.');
       return;
     }

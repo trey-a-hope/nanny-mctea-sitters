@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
@@ -11,7 +12,7 @@ import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_time.dart';
-import 'package:nanny_mctea_sitters_flutter/services/db.dart';
+import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarPage extends StatefulWidget {
@@ -37,7 +38,6 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   String _sitterOption;
   List<User> _sitters = List<User>();
   List<String> _sitterOptions;
-  final GetIt getIt = GetIt.I;
 
   @override
   void initState() {
@@ -58,16 +58,16 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
     if (all) {
       //Iterate through each sitter and look for their availability, (slots).
       for (var i = 0; i < _sitters.length; i++) {
-        List<Slot> slots =
-            await getIt<DB>().getSlots(sitterID: _sitters[i].id, taken: false);
+        List<Slot> slots = await locator<DBService>()
+            .getSlots(sitterID: _sitters[i].id, taken: false);
         _sitterSlotMap[_sitters[i]] = slots;
       }
     } else {
       //Find specific sitter and look for their availability, (slots).
       User filteredSitter =
           _sitters.where((sitter) => sitter.name == _sitterOption).first;
-      List<Slot> slots =
-          await getIt<DB>().getSlots(sitterID: filteredSitter.id, taken: false);
+      List<Slot> slots = await locator<DBService>()
+          .getSlots(sitterID: filteredSitter.id, taken: false);
       _sitterSlotMap[filteredSitter] = slots;
     }
   }
@@ -104,7 +104,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   }
 
   _load() async {
-    _sitters = await getIt<DB>().getSitters();
+    _sitters = await locator<DBService>().getSitters();
     await _getAvailability(all: true);
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
@@ -128,8 +128,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   }
 
   void _onVisibleDaysChanged(
-      DateTime first, DateTime last, CalendarFormat format) {
-  }
+      DateTime first, DateTime last, CalendarFormat format) {}
 
   @override
   Widget build(BuildContext context) {
