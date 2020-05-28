@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
-import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
+import 'package:nanny_mctea_sitters_flutter/services/FCMNotificationService.dart';
 
 final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 

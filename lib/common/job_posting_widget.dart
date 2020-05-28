@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class JobPostingWidget extends StatelessWidget {
   final String imgUrl;
@@ -56,9 +56,13 @@ class JobPostingWidget extends StatelessWidget {
           child: Text(
             'APPLY NOW',
           ),
-          onPressed: () {
-            URLLauncher.launchUrl(
-                'https://docs.google.com/forms/d/e/1FAIpQLScLt5e0c-tGlMdFw9ALAMuDpYKKgKs0W_1DGVnxhZ351gDbwA/viewform?usp=sf_link');
+          onPressed: () async {
+            String url = 'https://www.facebook.com/nannymctea';
+            if (await canLaunch(url)) {
+              await launch(url);
+            } else {
+              throw 'Could not launch $url';
+            }
           },
         )
       ],

@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/FCMNotificationService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/MessageService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCardService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeChargeService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCouponService.dart';
@@ -14,7 +14,6 @@ import 'package:nanny_mctea_sitters_flutter/services/stripe/StripePlanService.da
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeSkuService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeSubscriptionService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeTokenService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
 
 GetIt locator = GetIt.I;
 
@@ -23,7 +22,6 @@ void setUpLocater() {
   locator.registerLazySingleton(() => ValidatorService());
   locator.registerLazySingleton(() => ModalService());
   locator.registerLazySingleton(() => FCMNotificationService());
-  locator.registerLazySingleton(() => URLLauncher());
   locator.registerLazySingleton(() => DBService());
   locator.registerLazySingleton(() => MessageService());
   //Stripe Services

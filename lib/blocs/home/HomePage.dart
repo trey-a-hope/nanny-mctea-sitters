@@ -14,7 +14,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart'
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Bloc.dart';
 
 class HomePage extends StatefulWidget {
@@ -390,9 +390,13 @@ class HomePageState extends State<HomePage> {
                         child: Icon(MdiIcons.facebook,
                             color: Theme.of(context).primaryIconTheme.color,
                             size: Theme.of(context).primaryIconTheme.size),
-                        onTap: () {
-                          URLLauncher.launchUrl(
-                              'https://www.facebook.com/nannymctea');
+                        onTap: () async {
+                          String url = 'https://www.facebook.com/nannymctea';
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
                         },
                       ),
                     ),
@@ -402,9 +406,14 @@ class HomePageState extends State<HomePage> {
                         child: Icon(MdiIcons.instagram,
                             color: Theme.of(context).primaryIconTheme.color,
                             size: Theme.of(context).primaryIconTheme.size),
-                        onTap: () {
-                          URLLauncher.launchUrl(
-                              'https://www.instagram.com/nannymcteasitters');
+                        onTap: () async {
+                          String url =
+                              'https://www.instagram.com/nannymcteasitters';
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          } else {
+                            throw 'Could not launch $url';
+                          }
                         },
                       ),
                     )

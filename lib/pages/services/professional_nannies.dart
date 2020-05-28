@@ -4,7 +4,7 @@ import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfessionalNanniesPage extends StatefulWidget {
   @override
@@ -119,9 +119,14 @@ class ProfessionalNanniesPageState extends State<ProfessionalNanniesPage> {
       width: MediaQuery.of(context).size.width,
       height: 50.0,
       child: RaisedButton(
-        onPressed: () {
-          URLLauncher.launchUrl(
-              'https://docs.google.com/forms/d/e/1FAIpQLSc1BoEVUcebGSTZaGRMvMfebVC-G7YX2EVBhxPs8niHv4HYkA/viewform');
+        onPressed: () async {
+          String url =
+              'https://docs.google.com/forms/d/e/1FAIpQLSc1BoEVUcebGSTZaGRMvMfebVC-G7YX2EVBhxPs8niHv4HYkA/viewform';
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            throw 'Could not launch $url';
+          }
         },
         color: Theme.of(context).buttonColor,
         child: Center(

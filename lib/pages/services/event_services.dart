@@ -4,7 +4,7 @@ import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EventServicesPage extends StatefulWidget {
   @override
@@ -112,9 +112,14 @@ class EventServicesPageState extends State<EventServicesPage> {
       width: MediaQuery.of(context).size.width,
       height: 50.0,
       child: RaisedButton(
-        onPressed: () {
-          URLLauncher.launchUrl(
-              'https://docs.google.com/forms/d/e/1FAIpQLSdAMrVxgoEDLzcfy-hC9X3h_HNsGVYzXCPubTB-5sssB4BAjA/viewform');
+        onPressed: () async {
+          String url =
+              'https://docs.google.com/forms/d/e/1FAIpQLSdAMrVxgoEDLzcfy-hC9X3h_HNsGVYzXCPubTB-5sssB4BAjA/viewform';
+          if (await canLaunch(url)) {
+            await launch(url);
+          } else {
+            throw 'Could not launch $url';
+          }
         },
         color: Theme.of(context).buttonColor,
         child: Center(
