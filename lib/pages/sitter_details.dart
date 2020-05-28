@@ -72,11 +72,12 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
                               message:
                                   'You must be logged in to use this feature.');
                         } else {
-                          locator<MessageService>().openMessageThread(
-                              context: context,
-                              sendee: _sitter,
-                              sender: currentUser,
-                              title: _sitter.name);
+                          //todo: Open message thread.
+                          // locator<MessageService>().openMessageThread(
+                          //     context: context,
+                          //     sendee: _sitter,
+                          //     sender: currentUser,
+                          //     title: _sitter.name);
                         }
                       },
                     ),

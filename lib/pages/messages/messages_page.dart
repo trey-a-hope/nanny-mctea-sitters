@@ -166,11 +166,12 @@ class _MessagesPageState extends State<MessagesPage> {
       children: [
         ListTile(
           onTap: () {
-            locator<MessageService>().openMessageThread(
-                context: context,
-                sender: _currentUser,
-                sendee: conversation.oppositeUser,
-                title: conversation.title);
+            //todo: Open message thread.
+            // locator<MessageService>().openMessageThread(
+            //     context: context,
+            //     sender: _currentUser,
+            //     sendee: conversation.oppositeUser,
+            //     title: conversation.title);
           },
           leading: CircleAvatar(
             backgroundColor: Colors.purple,
