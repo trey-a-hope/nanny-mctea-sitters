@@ -10,9 +10,6 @@ import 'package:nanny_mctea_sitters_flutter/themeData.dart';
 import 'package:package_info/package_info.dart';
 import 'constants.dart';
 
-// This is our global ServiceLocator
-final GetIt getIt = GetIt.instance;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

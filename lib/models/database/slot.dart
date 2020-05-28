@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+//PROBABLY WONT NEED THESE WITH SUPER SAAS
 
 class Slot {
   String id;

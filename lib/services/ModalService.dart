@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 
 import 'ValidatorService.dart';
 
@@ -19,8 +20,6 @@ abstract class IModalService {
 }
 
 class ModalService extends IModalService {
-  final GetIt getIt = GetIt.I;
-
   @override
   void showInSnackBar(
       {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
@@ -74,7 +73,7 @@ class ModalService extends IModalService {
             maxLengthEnforced: true,
             // maxLength: MyFormData.nameCharLimit,
             onFieldSubmitted: (term) {},
-            validator: getIt<ValidatorService>().email,
+            validator: locator<ValidatorService>().email,
             onSaved: (value) {},
             decoration: InputDecoration(
               hintText: 'Email',
@@ -127,7 +126,7 @@ class ModalService extends IModalService {
             maxLengthEnforced: true,
             // maxLength: MyFormData.nameCharLimit,
             onFieldSubmitted: (term) {},
-            validator: getIt<ValidatorService>().email,
+            validator: locator<ValidatorService>().email,
             onSaved: (value) {},
             decoration: InputDecoration(
               hintText: 'New Email',

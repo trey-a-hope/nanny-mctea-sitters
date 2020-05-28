@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/protocols.dart';
 
-class Appointment extends ObjectMethods {
+import 'UserModel.dart';
+//PROBABLY WONT NEED THESE WITH SUPER SAAS
+class Appointment  {
   String id;
   String sitterID;
   String userID;
@@ -18,7 +18,7 @@ class Appointment extends ObjectMethods {
   String service;
   String street;
 
-  User sitter;
+  UserModel sitter;
   Slot slot;
 
   Appointment(
@@ -64,7 +64,6 @@ class Appointment extends ObjectMethods {
         userID: ds.data['userID']);
   }
 
-  @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,

@@ -5,16 +5,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 
 import 'Bloc.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
-  List<User> _sitters;
-  User currentUser;
+  List<UserModel> _sitters;
+  UserModel currentUser;
 
   @override
   HomeState get initialState => HomeState();
@@ -31,7 +32,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     //Update user's fcm token.
     final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
-      locator<DBService>()
+      locator<UserService>()
           .updateUser(userID: currentUser.id, data: {'fcmToken': fcmToken});
     }
 
@@ -63,17 +64,22 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (event is LoadPageEvent) {
       yield LoadingState();
 
-      //Fetch sitters.
-      _sitters = await locator<DBService>().getSitters();
+      try {
+        //Fetch sitters.
+        _sitters = await locator<UserService>().retrieveUsers(isSitter: true);
 
-      //Setup firebase messaging.
-      currentUser = await locator<AuthService>().getCurrentUser();
-      if (currentUser != null) {
-        _setUpFirebaseMessaging();
+        //Fetch user.
+        currentUser = await locator<AuthService>().getCurrentUser();
+
+        //If user is logged in, setup firebase messaging.
+        if (currentUser != null) {
+          _setUpFirebaseMessaging();
+        }
+
+        yield LoadedState(sitters: _sitters);
+      } catch (error) {
+        yield ErrorState(error: error);
       }
-
-      //Fetch page data.
-      yield LoadedState(sitters: _sitters);
     }
   }
 }

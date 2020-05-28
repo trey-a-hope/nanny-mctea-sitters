@@ -4,14 +4,14 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_sitter.dart';
 
 class BookSitterTimePage extends StatefulWidget {
   final List<dynamic> slots;
-  final Map<User, List<Slot>> sitterSlotMap;
+  final Map<UserModel, List<Slot>> sitterSlotMap;
   final Appointment appointment;
 
   BookSitterTimePage(
@@ -33,7 +33,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
       @required this.appointment});
 
   final List<dynamic> slots;
-  final Map<User, List<Slot>> sitterSlotMap;
+  final Map<UserModel, List<Slot>> sitterSlotMap;
   final Appointment appointment;
   final String timeFormat = 'hh:mm a';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -142,7 +142,7 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
             height: 50.0,
             child: RaisedButton(
               onPressed: () {
-                List<User> availableSitters = List<User>();
+                List<UserModel> availableSitters = List<UserModel>();
 
                 //Pick sitters for the slot selected.
                 sitterSlotMap.forEach(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
@@ -62,23 +62,22 @@ class SignUpPageState extends State<SignUpPage> {
           );
           final FirebaseUser user = authResult.user;
 
-          User newUser = User(
-              id: '',
-              bio: '',
-              details: '',
-              name: '',
-              phone: '',
-              fcmToken: '',
-              email: user.email,
-              imgUrl: DUMMY_PROFILE_PHOTO_URL,
-              time: DateTime.now(),
-              uid: user.uid,
-              isSitter: false,
-              customerID: null);
-
-          locator<DBService>().createUser(
-            data: newUser.toMap(),
+          UserModel newUser = UserModel(
+            id: null,
+            bio: null,
+            details: null,
+            name: null,
+            phone: null,
+            fcmToken: null,
+            email: user.email,
+            imgUrl: DUMMY_PROFILE_PHOTO_URL,
+            time: DateTime.now(),
+            uid: user.uid,
+            isSitter: false,
+            customerID: null,
           );
+
+          locator<UserService>().createUser(user: newUser);
 
           Navigator.of(context).pop();
         } catch (e) {

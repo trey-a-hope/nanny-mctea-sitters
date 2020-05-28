@@ -8,10 +8,11 @@ import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class SubmitAvailabilityPage extends StatefulWidget {
@@ -26,13 +27,13 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   final CalendarController _calendarController = CalendarController();
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
-  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
+  Map<UserModel, List<Slot>> _sitterSlotMap = Map<UserModel, List<Slot>>();
   bool _isLoading = true;
   String _sitterOption;
-  List<User> _sitters = List<User>();
+  List<UserModel> _sitters = List<UserModel>();
   List<String> _sitterOptions;
   DateTime _selectedDay;
-  User filteredSitter;
+  UserModel filteredSitter;
 
   @override
   void initState() {
@@ -48,7 +49,7 @@ class SubmitAvailabilityPageState extends State<SubmitAvailabilityPage> {
   }
 
   _load() async {
-    _sitters = await locator<DBService>().getSitters();
+    _sitters = await locator<UserService>().retrieveUsers(isSitter: true);
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];

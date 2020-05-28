@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 
 class SitterWidgetX extends StatelessWidget {
-  final User sitter;
+  final UserModel sitter;
 
   const SitterWidgetX({Key key, @required this.sitter}) : super(key: key);
 

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_info.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class BookSitterSitterPage extends StatefulWidget {
-  final List<User> availableSitters;
+  final List<UserModel> availableSitters;
   final Appointment appointment;
 
   BookSitterSitterPage(
@@ -24,9 +24,9 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
   BookSitterSitterPageState(
       {@required this.availableSitters, @required this.appointment});
 
-  final List<User> availableSitters;
+  final List<UserModel> availableSitters;
   final Appointment appointment;
-  User _selectedSitter;
+  UserModel _selectedSitter;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class BookSitterSitterPageState extends State<BookSitterSitterPage> {
     );
   }
 
-  Widget _buildSitterWidget(User sitter) {
+  Widget _buildSitterWidget(UserModel sitter) {
     return InkWell(
       onTap: () {
         setState(

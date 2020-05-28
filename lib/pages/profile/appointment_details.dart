@@ -6,11 +6,12 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget_x.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   final Appointment appointment;
@@ -33,8 +34,8 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
   bool _isLoading = true;
   Slot _slot;
-  User _sitter;
-  User _user;
+  UserModel _sitter;
+  UserModel _user;
 
   @override
   void initState() {
@@ -44,8 +45,9 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
   }
 
   _load() async {
-    _sitter = await locator<DBService>().getUser(id: appointment.sitterID);
-    _user = await locator<DBService>().getUser(id: appointment.userID);
+    _sitter =
+        await locator<UserService>().retrieveUser(id: appointment.sitterID);
+    _user = await locator<UserService>().retrieveUser(id: appointment.userID);
     _slot = await locator<DBService>()
         .getSlot(sitterID: appointment.sitterID, slotID: appointment.slotID);
 

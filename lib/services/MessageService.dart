@@ -1,14 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/message_page.dart';
 
 abstract class IMessageService {
   void openMessageThread(
       {@required BuildContext context,
-      @required User sender,
-      @required User sendee,
+      @required UserModel sender,
+      @required UserModel sendee,
       @required String title});
   Future<void> createChatMessage(
       {@required CollectionReference messageRef,
@@ -28,8 +28,8 @@ class MessageService extends IMessageService {
 
   void openMessageThread(
       {@required BuildContext context,
-      @required User sender,
-      @required User sendee,
+      @required UserModel sender,
+      @required UserModel sendee,
       @required String title}) async {
     try {
       //Return conversation documents that have both user ids set to true.

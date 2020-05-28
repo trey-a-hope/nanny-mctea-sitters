@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class User {
+class UserModel {
   String bio;
   String customerID;
   String details;
@@ -15,7 +15,7 @@ class User {
   DateTime time;
   String uid;
 
-  User(
+  UserModel(
       {@required String bio,
       @required String customerID,
       @required String details,
@@ -59,19 +59,20 @@ class User {
     };
   }
 
-  static User extractDocument(DocumentSnapshot ds) {
-    return User(
-        bio: ds.data['bio'],
-        customerID: ds.data['customerID'],
-        details: ds.data['details'],
-        email: ds.data['email'],
-        fcmToken: ds.data['fcmToken'],
-        id: ds.data['id'],
-        imgUrl: ds.data['imgUrl'],
-        isSitter: ds.data['isSitter'],
-        name: ds.data['name'],
-        phone: ds.data['phone'],
-        time: ds.data['time'].toDate(),
-        uid: ds.data['uid']);
+  factory UserModel.fromDoc({@required DocumentSnapshot ds}) {
+    return UserModel(
+      bio: ds.data['bio'],
+      customerID: ds.data['customerID'],
+      details: ds.data['details'],
+      email: ds.data['email'],
+      fcmToken: ds.data['fcmToken'],
+      id: ds.data['id'],
+      imgUrl: ds.data['imgUrl'],
+      isSitter: ds.data['isSitter'],
+      name: ds.data['name'],
+      phone: ds.data['phone'],
+      time: ds.data['time'].toDate(),
+      uid: ds.data['uid'],
+    );
   }
 }

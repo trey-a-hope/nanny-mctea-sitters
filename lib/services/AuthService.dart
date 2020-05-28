@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 
 abstract class IAuthService {
-  Future<User> getCurrentUser();
+  Future<UserModel> getCurrentUser();
   Future<void> signOut();
   Stream<FirebaseUser> onAuthStateChanged();
   Future<AuthResult> signInWithEmailAndPassword(
@@ -18,19 +15,18 @@ abstract class IAuthService {
 }
 
 class AuthService extends IAuthService {
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final CollectionReference _usersDB = Firestore.instance.collection('Users');
 
   @override
-  Future<User> getCurrentUser() async {
+  Future<UserModel> getCurrentUser() async {
     try {
       FirebaseUser firebaseUser = await _auth.currentUser();
       QuerySnapshot querySnapshot = await _usersDB
           .where('uid', isEqualTo: firebaseUser.uid)
           .getDocuments();
       DocumentSnapshot documentSnapshot = querySnapshot.documents.first;
-      return User.extractDocument(documentSnapshot);
+      return UserModel.fromDoc(ds: documentSnapshot);
     } catch (e) {
       return null;
     }

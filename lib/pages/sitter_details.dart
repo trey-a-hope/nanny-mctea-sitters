@@ -6,13 +6,13 @@ import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/MessageService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
 
 class SitterDetailsPage extends StatefulWidget {
-  final User _sitter;
+  final UserModel _sitter;
 
   SitterDetailsPage(this._sitter);
 
@@ -23,7 +23,7 @@ class SitterDetailsPage extends StatefulWidget {
 class SitterDetailsPageState extends State<SitterDetailsPage> {
   SitterDetailsPageState(this._sitter);
 
-  final User _sitter;
+  final UserModel _sitter;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
@@ -63,7 +63,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage> {
                       },
                       rightWidget: Icon(Icons.message, color: Colors.white),
                       rightTap: () async {
-                        User currentUser =
+                        UserModel currentUser =
                             await locator<AuthService>().getCurrentUser();
                         if (currentUser == null) {
                           locator<ModalService>().showAlert(

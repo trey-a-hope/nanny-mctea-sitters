@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+//PROBABLY WONT NEED THESE WITH UPDATES
 class JobPosting {
   String title;
   String description;

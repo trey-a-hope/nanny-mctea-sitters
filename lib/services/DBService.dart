@@ -2,18 +2,11 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 
 abstract class IDBService {
-  //Users
-  Future<User> getUser({@required String id});
-  Future<List<User>> getSitters();
-  Future<void> updateUser(
-      {@required String userID, @required Map<String, dynamic> data});
-  Future<void> createUser({@required Map<String, dynamic> data});
-
   //Appointments
   Future<List<Appointment>> getAppointments({@required String userID});
   Future<void> deleteAppointment({@required String appointmentID});
@@ -22,7 +15,7 @@ abstract class IDBService {
   //Slots
   Future<List<Slot>> getSlots(
       {@required String sitterID, @required bool taken});
-  Future<List<Slot>> setSlotTaken(
+  Future<void> setSlotTaken(
       {@required String sitterID,
       @required String slotID,
       @required bool taken});
@@ -35,39 +28,6 @@ class DBService extends IDBService {
   final CollectionReference _usersDB = Firestore.instance.collection('Users');
   final CollectionReference _appointmentsDB =
       Firestore.instance.collection('Appointments');
-
-  @override
-  Future<User> getUser({@required String id}) async {
-    try {
-      DocumentSnapshot documentSnapshot = await _usersDB.document(id).get();
-      return User.extractDocument(documentSnapshot);
-    } catch (e) {
-      throw Exception(
-        e.toString(),
-      );
-    }
-  }
-
-  @override
-  Future<List<User>> getSitters() async {
-    try {
-      List<User> sitters = List<User>();
-
-      //Get sitters.
-      QuerySnapshot querySnapshot =
-          await _usersDB.where('isSitter', isEqualTo: true).getDocuments();
-      querySnapshot.documents.forEach(
-        (document) {
-          User sitter = User.extractDocument(document);
-          sitters.add(sitter);
-        },
-      );
-
-      return sitters;
-    } catch (e) {
-      return null;
-    }
-  }
 
   @override
   Future<List<Slot>> getSlots(
@@ -99,12 +59,12 @@ class DBService extends IDBService {
   }
 
   @override
-  Future<List<Slot>> setSlotTaken(
+  Future<void> setSlotTaken(
       {@required String sitterID,
       @required String slotID,
       @required bool taken}) {
     try {
-      _usersDB
+      return _usersDB
           .document(sitterID)
           .collection('slots')
           .document(slotID)
@@ -167,19 +127,6 @@ class DBService extends IDBService {
   }
 
   @override
-  Future<void> updateUser(
-      {@required String userID, @required Map<String, dynamic> data}) async {
-    try {
-      await _usersDB.document(userID).updateData(data);
-      return;
-    } catch (e) {
-      throw Exception(
-        e.toString(),
-      );
-    }
-  }
-
-  @override
   Future<void> addSlot({String sitterID, DateTime time}) async {
     final CollectionReference slotsColRef =
         _usersDB.document(sitterID).collection('slots');
@@ -206,21 +153,6 @@ class DBService extends IDBService {
           .collection('slots')
           .document(slotID)
           .delete();
-      return;
-    } catch (e) {
-      throw Exception(
-        e.toString(),
-      );
-    }
-  }
-
-  @override
-  Future<void> createUser({Map<String, dynamic> data}) async {
-    try {
-      DocumentReference docRef = await _usersDB.add(data);
-      await _usersDB
-          .document(docRef.documentID)
-          .updateData({'id': docRef.documentID});
       return;
     } catch (e) {
       throw Exception(

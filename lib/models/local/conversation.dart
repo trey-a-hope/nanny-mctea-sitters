@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
-import 'package:nanny_mctea_sitters_flutter/protocols.dart';
-
-class Conversation extends ObjectMethods {
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+//PROBABLY WONT NEED THESE WITH UPDATED CHAT FLOW
+class Conversation  {
   String title;
   String lastMessage;
   String imageUrl;
@@ -11,7 +10,7 @@ class Conversation extends ObjectMethods {
   String sendeeID;
   DateTime time;
   bool read;
-  User oppositeUser;
+  UserModel oppositeUser;
 
   Conversation(
       {@required String title,
@@ -21,7 +20,7 @@ class Conversation extends ObjectMethods {
       @required String sendeeID,
       @required DateTime time,
       bool read,
-      User oppositeUser}) {
+      UserModel oppositeUser}) {
     this.title = title;
     this.lastMessage = lastMessage;
     this.imageUrl = imageUrl;

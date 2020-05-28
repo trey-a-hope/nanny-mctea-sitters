@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/conversation.dart';
+import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/MessageService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/auth.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class MessagesPage extends StatefulWidget {
@@ -20,10 +20,9 @@ class _MessagesPageState extends State<MessagesPage> {
   List<Conversation> _conversations = List<Conversation>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final int convoCharLimit = 25;
-  final GetIt getIt = GetIt.I;
   final CollectionReference _conversationsDB =
       Firestore.instance.collection('Conversations');
-  User _currentUser;
+  UserModel _currentUser;
   bool _isLoading = true;
 
   @override
@@ -94,11 +93,13 @@ class _MessagesPageState extends State<MessagesPage> {
             },
           );
 
-          User _oppositeUser;
+          UserModel _oppositeUser;
           if (_currentUser.id == userIDs[0]) {
-            _oppositeUser = await locator<DBService>().getUser(id: userIDs[1]);
+            _oppositeUser =
+                await locator<UserService>().retrieveUser(id: userIDs[1]);
           } else {
-            _oppositeUser = await locator<DBService>().getUser(id: userIDs[0]);
+            _oppositeUser =
+                await locator<UserService>().retrieveUser(id: userIDs[0]);
           }
 
           _conversations.add(

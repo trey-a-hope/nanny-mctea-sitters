@@ -1,16 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class DeleteAvailabilityPage extends StatefulWidget {
@@ -22,18 +22,18 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   final String timeFormat = 'hh:mm a';
   final String dateFormat = 'MMM, dd yyyy';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
+  Map<UserModel, List<Slot>> _sitterSlotMap = Map<UserModel, List<Slot>>();
   List<dynamic> _avialableSlots;
   bool _isLoading = true;
   String _sitterOption;
-  List<User> _sitters = List<User>();
+  List<UserModel> _sitters = List<UserModel>();
   List<String> _sitterOptions;
   List<Slot> _slots = List<Slot>();
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
   final CalendarController _calendarController = CalendarController();
   DateTime _selectedDay;
   CollectionReference _slotsColRef;
-  User filteredSitter;
+  UserModel filteredSitter;
   @override
   void initState() {
     super.initState();
@@ -42,7 +42,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
   }
 
   _load() async {
-    _sitters = await locator<DBService>().getSitters();
+    _sitters = await locator<UserService>().retrieveUsers(isSitter: true);
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();
     _sitterOption = _sitterOptions[0];
     await _getAvailability();

@@ -2,9 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/chat_message.dart';
 import 'package:nanny_mctea_sitters_flutter/services/fcm_notification.dart';
 
@@ -17,8 +16,8 @@ class MessagePage extends StatelessWidget {
       @required this.conversationID,
       @required this.title});
 
-  final User sender;
-  final User sendee;
+  final UserModel sender;
+  final UserModel sendee;
   final String conversationID;
   final String title;
 
@@ -48,8 +47,8 @@ class ChatScreen extends StatefulWidget {
       @required this.sendee,
       @required this.conversationID});
 
-  final User sender;
-  final User sendee;
+  final UserModel sender;
+  final UserModel sendee;
   final String conversationID;
 
   @override
@@ -63,8 +62,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       @required this.sendee,
       @required this.conversationID});
 
-  final User sender;
-  final User sendee;
+  final UserModel sender;
+  final UserModel sendee;
   final CollectionReference _conversationsRef =
       Firestore.instance.collection('Conversations');
   final List<ChatMessage> _messages = List<ChatMessage>();

@@ -1,18 +1,17 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/slot.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_time.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarPage extends StatefulWidget {
@@ -33,10 +32,10 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   CalendarController _calendarController;
   List<dynamic> _avialableSlots;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
-  Map<User, List<Slot>> _sitterSlotMap = Map<User, List<Slot>>();
+  Map<UserModel, List<Slot>> _sitterSlotMap = Map<UserModel, List<Slot>>();
   bool _isLoading = true;
   String _sitterOption;
-  List<User> _sitters = List<User>();
+  List<UserModel> _sitters = List<UserModel>();
   List<String> _sitterOptions;
 
   @override
@@ -64,7 +63,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       }
     } else {
       //Find specific sitter and look for their availability, (slots).
-      User filteredSitter =
+      UserModel filteredSitter =
           _sitters.where((sitter) => sitter.name == _sitterOption).first;
       List<Slot> slots = await locator<DBService>()
           .getSlots(sitterID: filteredSitter.id, taken: false);
@@ -104,7 +103,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   }
 
   _load() async {
-    _sitters = await locator<DBService>().getSitters();
+    _sitters = await locator<UserService>().retrieveUsers(isSitter: true);
     await _getAvailability(all: true);
     //Create options for dropdown.
     _sitterOptions = _sitters.map((sitter) => sitter.name).toList();

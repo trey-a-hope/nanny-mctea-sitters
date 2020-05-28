@@ -8,17 +8,13 @@ import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/constants_ui.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/contact.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
-import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/services/url_launcher.dart';
-
 import 'Bloc.dart';
 
 class HomePage extends StatefulWidget {

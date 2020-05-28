@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+//PROBABLY WONT NEED THESE WITH UPDATED CHAT FLOW
 class ChatMessage extends StatelessWidget {
   ChatMessage(
       {this.id,

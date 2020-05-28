@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/user.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 
 class HomeState extends Equatable {
   @override
@@ -10,7 +10,7 @@ class HomeState extends Equatable {
 class LoadingState extends HomeState {}
 
 class LoadedState extends HomeState {
-  final List<User> sitters;
+  final List<UserModel> sitters;
 
   LoadedState({@required this.sitters});
 
