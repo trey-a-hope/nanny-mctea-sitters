@@ -8,6 +8,7 @@ import 'package:nanny_mctea_sitters_flutter/common/NavDrawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/ServicePage.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/professional_nannies.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/event_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart';
@@ -40,16 +41,6 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-
-      // drawer: BlocConsumer<MenuBP.MenuBloc, MenuBP.MenuState>(
-      //   listener: (BuildContext context, MenuBP.MenuState state) {},
-      //   builder: (BuildContext context, MenuBP.MenuState state) {
-      //     if (state is MenuBP.LoadingState) {
-      //       return Spinner();
-      //     }
-      //   },
-      // ),
-
       drawer: NavDrawer(),
       floatingActionButton: FloatingActionButton(
         elevation: Theme.of(context).floatingActionButtonTheme.elevation,
@@ -203,12 +194,23 @@ class HomePageState extends State<HomePage> {
                           // style: Theme.of(context).accentTextTheme.button,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => EventServicesPage(),
+                          Route route = MaterialPageRoute(
+                            builder: (BuildContext context) => ServicePage(
+                              serviceTitle: 'Event Services',
+                              serviceUrl:
+                                  'https://docs.google.com/forms/d/e/1FAIpQLSdAMrVxgoEDLzcfy-hC9X3h_HNsGVYzXCPubTB-5sssB4BAjA/viewform',
+                              buttonTitle: 'KIDS PARTY REQUEST FORM',
+                              paragraphTexts: [
+                                'Everyone doesn\'t need a nanny, sometimes you just need a break to breath, relax, go to the store, go on a date, even take a nap. Whatever the reason we are prepared. Nanny McTea Sitters offers a variety of sitter services, all available for your family.',
+                                '1. Planned Sitter Service -- This service you can book directly on our website under the book us tab! This service is for planned events like your cousins wedding or your anniversary, anything that you know the date prior to. A  non refundable \$25 booking fee is required to secure your date in advance. The day of your sit you are required to pay your sitter \$13 per hour. We have a 4 hour minimum.',
+                                '2. Last Minute Sitter Service -- A last minute is a sit scheduled within 36 hours of its start time. For this service you must fill out the Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                                '3. Sick Care Service  --  For this service you must fill out the  Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                                '4. Monthly Sitter Membership --  This awesome service helps eliminate the booking fee for the above mentioned planned sitter service. If you know you are consistently going to be receiving care you\'ll want to book the membership. This membership guarantee you unlimited week nights after 5 and unlimited weekend sits. You\'ll pay a monthly fee of \$100 and pay your sitter their hourly rate of \$13 whenever you use them. '
+                              ],
                             ),
                           );
+
+                          Navigator.push(context, route);
                         },
                       )
                     ],

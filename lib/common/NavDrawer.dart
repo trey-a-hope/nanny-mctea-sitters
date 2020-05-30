@@ -81,10 +81,10 @@ class NavDrawerState extends State<NavDrawer> {
               children: <Widget>[
                 _buildBookSitter(),
                 _buildPlansPricing(),
-                _buildJoinTeam(),
+                // _buildJoinTeam(),
                 _buildProfile(),
-                _buildAddAvailability(),
-                _buildDeleteAvailability(),
+                // _buildAddAvailability(),
+                // _buildDeleteAvailability(),
                 _buildLogout(),
                 _buildLogin(),
                 _buildSignUp(),
