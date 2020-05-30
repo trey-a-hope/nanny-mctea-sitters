@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/home/HomeBloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/contact/ContactPage.dart';
 import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
@@ -15,7 +15,9 @@ import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'Bloc.dart';
+import 'Bloc.dart' as homeBloc;
+import 'package:nanny_mctea_sitters_flutter/blocs/contact/Bloc.dart'
+    as contactBloc;
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,6 +28,9 @@ class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final ScrollController _scrollController = ScrollController();
 
+  final TextStyle _headLineStyle =
+      TextStyle(color: Colors.black, fontSize: 30, fontWeight: FontWeight.bold);
+  final TextStyle _bodyStyle = TextStyle(color: Colors.black, fontSize: 20);
   @override
   void initState() {
     super.initState();
@@ -35,12 +40,10 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       drawer: NavDrawer(),
       floatingActionButton: FloatingActionButton(
         elevation: Theme.of(context).floatingActionButtonTheme.elevation,
-        backgroundColor:
-            Theme.of(context).floatingActionButtonTheme.backgroundColor,
+        backgroundColor: Colors.blue,
         child: Icon(Icons.arrow_upward, color: Colors.white),
         onPressed: () {
           _scrollController.animateTo(
@@ -50,12 +53,12 @@ class HomePageState extends State<HomePage> {
           );
         },
       ),
-      body: BlocConsumer<HomeBloc, HomeState>(
-        listener: (BuildContext context, HomeState state) {},
-        builder: (BuildContext context, HomeState state) {
-          if (state is LoadingState) {
+      body: BlocConsumer<homeBloc.HomeBloc, homeBloc.HomeState>(
+        listener: (BuildContext context, homeBloc.HomeState state) {},
+        builder: (BuildContext context, homeBloc.HomeState state) {
+          if (state is homeBloc.LoadingState) {
             return Spinner();
-          } else if (state is LoadedState) {
+          } else if (state is homeBloc.LoadedState) {
             return ListView(
               controller: _scrollController,
               padding: EdgeInsets.only(top: 0),
@@ -66,7 +69,9 @@ class HomePageState extends State<HomePage> {
                     ClipPath(
                       clipper: DiagonalPathClipperTwo(),
                       child: Container(
-                          height: 400, color: Theme.of(context).primaryColor),
+                        height: 400,
+                        color: Colors.blue,
+                      ),
                     ),
                     SimpleNavbar(
                       leftWidget: Icon(MdiIcons.menu, color: Colors.white),
@@ -75,13 +80,14 @@ class HomePageState extends State<HomePage> {
                       },
                       rightWidget: Icon(MdiIcons.phone, color: Colors.white),
                       rightTap: () {
-                        // Route route = MaterialPageRoute(
-                        //     builder: (context) => ContactPage());
-
-                        // Navigator.push(
-                        //   context,
-                        //   route,
-                        // );
+                        Route route = MaterialPageRoute(
+                          builder: (BuildContext context) => BlocProvider(
+                            create: (BuildContext context) =>
+                                contactBloc.ContactBloc(),
+                            child: ContactPage(),
+                          ),
+                        );
+                        Navigator.push(context, route);
                       },
                     ),
                     Positioned(
@@ -145,8 +151,10 @@ class HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30),
                   child: Row(
                     children: <Widget>[
-                      Text('About',
-                          style: Theme.of(context).primaryTextTheme.headline)
+                      Text(
+                        'About',
+                        style: _headLineStyle,
+                      )
                     ],
                   ),
                 ),
@@ -154,7 +162,7 @@ class HomePageState extends State<HomePage> {
                   padding: EdgeInsets.symmetric(horizontal: 25),
                   child: Text(
                     'It shouldn’t be difficult to find capable, reliable and trustworthy childcare. That\'s what I said when I started Nanny McTea Sitters. Drawing on my own personal nanny experiences as well the other experiences of professional nannies within our team, we established a full child care agency that ensures rigorous screening and customized matching. With years of collective experience in childcare, We\'ve learned what families want and are proud to share this with you.',
-                    style: Theme.of(context).primaryTextTheme.body1,
+                    style: _bodyStyle,
                   ),
                 ),
                 SizedBox(
@@ -166,10 +174,7 @@ class HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(30),
                   child: Row(
-                    children: <Widget>[
-                      Text('Services',
-                          style: Theme.of(context).primaryTextTheme.headline)
-                    ],
+                    children: <Widget>[Text('Services', style: _headLineStyle)],
                   ),
                 ),
                 Padding(
@@ -179,7 +184,7 @@ class HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Text(
                         'Event Services',
-                        style: Theme.of(context).primaryTextTheme.body1,
+                        style: _bodyStyle,
                       ),
                       RaisedButton(
                         color: Theme.of(context).buttonColor,
@@ -209,7 +214,7 @@ class HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Text(
                         'Sitter Services',
-                        style: Theme.of(context).primaryTextTheme.body1,
+                        style: _bodyStyle,
                       ),
                       RaisedButton(
                         color: Theme.of(context).buttonColor,
@@ -239,7 +244,7 @@ class HomePageState extends State<HomePage> {
                     children: <Widget>[
                       Text(
                         'Professional Nannies',
-                        style: Theme.of(context).primaryTextTheme.body1,
+                        style: _bodyStyle,
                       ),
                       RaisedButton(
                         color: Theme.of(context).buttonColor,
@@ -265,8 +270,7 @@ class HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30),
                   child: Row(
                     children: <Widget>[
-                      Text('Meet The Team',
-                          style: Theme.of(context).primaryTextTheme.headline)
+                      Text('Meet The Team', style: _headLineStyle)
                     ],
                   ),
                 ),
@@ -299,10 +303,7 @@ class HomePageState extends State<HomePage> {
                 Padding(
                   padding: EdgeInsets.all(30),
                   child: Row(
-                    children: <Widget>[
-                      Text('Reviews',
-                          style: Theme.of(context).primaryTextTheme.headline)
-                    ],
+                    children: <Widget>[Text('Reviews', style: _headLineStyle)],
                   ),
                 ),
                 //Review 1
@@ -314,12 +315,10 @@ class HomePageState extends State<HomePage> {
                         TextSpan(
                           text:
                               '\"I cannot say enough about Nanny McTea and the fantastic caregivers here! We have someone that we trust who loves our kiddo, takes care in planning fun activities, provides guidance for listening skills, and is available on date nights as well.\"',
-                          style: Theme.of(context).primaryTextTheme.body1,
+                          style: _bodyStyle,
                         ),
                         TextSpan(text: '\n\n'),
-                        TextSpan(
-                            text: '~Morales Family',
-                            style: Theme.of(context).primaryTextTheme.body2),
+                        TextSpan(text: '~Morales Family', style: _bodyStyle),
                       ],
                     ),
                   ),
@@ -336,12 +335,10 @@ class HomePageState extends State<HomePage> {
                         TextSpan(
                           text:
                               '\"We loved Nanny McTea! We had just moved to the area and were in a pinch. She came prepared! She had felt books for my 1 year old and made slime with my 3.5 year old! I love how she focuses on learning and activities rather than screen time! That was only my 2nd time my kids have had a sitter other than family and and they loved her even my emotional 1 year old! Would recommend to anyone!\"',
-                          style: Theme.of(context).primaryTextTheme.body1,
+                          style: _bodyStyle,
                         ),
                         TextSpan(text: '\n\n'),
-                        TextSpan(
-                            text: '~Cady  Family',
-                            style: Theme.of(context).primaryTextTheme.body2),
+                        TextSpan(text: '~Cady  Family', style: _bodyStyle),
                       ],
                     ),
                   ),
@@ -359,12 +356,10 @@ class HomePageState extends State<HomePage> {
                         TextSpan(
                           text:
                               '\"Love how easy it is to book and set up a caregiver with set prices for a set time.  Very Easy to work with, great caregivers!\"',
-                          style: Theme.of(context).primaryTextTheme.body1,
+                          style: _bodyStyle,
                         ),
                         TextSpan(text: '\n\n'),
-                        TextSpan(
-                            text: '~Eavenson Family',
-                            style: Theme.of(context).primaryTextTheme.body2),
+                        TextSpan(text: '~Eavenson Family', style: _bodyStyle),
                       ],
                     ),
                   ),
@@ -377,8 +372,7 @@ class HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(30),
                   child: Row(
                     children: <Widget>[
-                      Text('Social Media',
-                          style: Theme.of(context).primaryTextTheme.headline)
+                      Text('Social Media', style: _headLineStyle)
                     ],
                   ),
                 ),
@@ -387,9 +381,10 @@ class HomePageState extends State<HomePage> {
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: InkWell(
-                        child: Icon(MdiIcons.facebook,
-                            color: Theme.of(context).primaryIconTheme.color,
-                            size: Theme.of(context).primaryIconTheme.size),
+                        child: Icon(
+                          MdiIcons.facebook,
+                          color: Colors.red,
+                        ),
                         onTap: () async {
                           String url = 'https://www.facebook.com/nannymctea';
                           if (await canLaunch(url)) {
@@ -403,9 +398,10 @@ class HomePageState extends State<HomePage> {
                     Padding(
                       padding: EdgeInsets.all(20),
                       child: InkWell(
-                        child: Icon(MdiIcons.instagram,
-                            color: Theme.of(context).primaryIconTheme.color,
-                            size: Theme.of(context).primaryIconTheme.size),
+                        child: Icon(
+                          MdiIcons.instagram,
+                          color: Colors.red,
+                        ),
                         onTap: () async {
                           String url =
                               'https://www.instagram.com/nannymcteasitters';
@@ -421,7 +417,7 @@ class HomePageState extends State<HomePage> {
                 )
               ],
             );
-          } else if (state is ErrorState) {
+          } else if (state is homeBloc.ErrorState) {
             return Center(child: Text('Error: ${state.error.toString()}'));
           } else {
             return Center(

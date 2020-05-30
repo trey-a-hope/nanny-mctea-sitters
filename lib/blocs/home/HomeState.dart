@@ -15,7 +15,7 @@ class LoadedState extends HomeState {
   LoadedState({@required this.sitters});
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [sitters];
 }
 
 class ErrorState extends HomeState {

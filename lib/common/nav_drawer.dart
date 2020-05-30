@@ -109,8 +109,7 @@ class NavDrawerState extends State<NavDrawer> {
     return user == null
         ? Container()
         : ListTile(
-            leading: Icon(MdiIcons.faceProfile,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.faceProfile, color: Colors.red),
             title: Text(
               'My Profile',
             ),
@@ -132,8 +131,7 @@ class NavDrawerState extends State<NavDrawer> {
   Widget _buildAddAvailability() {
     return user != null && ADMIN_UIDS.contains(user.uid)
         ? ListTile(
-            leading: Icon(MdiIcons.plus,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.plus, color: Colors.red),
             title: Text(
               'Add Sitter Hours',
             ),
@@ -156,8 +154,7 @@ class NavDrawerState extends State<NavDrawer> {
   Widget _buildDeleteAvailability() {
     return user != null && ADMIN_UIDS.contains(user.uid)
         ? ListTile(
-            leading: Icon(MdiIcons.delete,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.delete, color: Colors.red),
             title: Text(
               'Delete Sitter Hours',
             ),
@@ -181,8 +178,7 @@ class NavDrawerState extends State<NavDrawer> {
     return user == null
         ? Container()
         : ListTile(
-            leading: Icon(MdiIcons.faceAgent,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.faceAgent, color: Colors.red),
             title: Text(
               'Book A Sitter',
             ),
@@ -205,8 +201,7 @@ class NavDrawerState extends State<NavDrawer> {
     return user == null
         ? Container()
         : ListTile(
-            leading: Icon(Icons.attach_money,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(Icons.attach_money, color: Colors.red),
             title: Text(
               'Plans & Pricing',
             ),
@@ -227,8 +222,7 @@ class NavDrawerState extends State<NavDrawer> {
 
   Widget _buildJoinTeam() {
     return ListTile(
-      leading:
-          Icon(MdiIcons.group, color: Theme.of(context).primaryIconTheme.color),
+      leading: Icon(MdiIcons.group, color: Colors.red),
       title: Text(
         'Join The Team',
       ),
@@ -251,8 +245,7 @@ class NavDrawerState extends State<NavDrawer> {
     return user == null
         ? Container()
         : ListTile(
-            leading: Icon(MdiIcons.login,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.login, color: Colors.red),
             title: Text(
               'Logout',
             ),
@@ -275,8 +268,7 @@ class NavDrawerState extends State<NavDrawer> {
   Widget _buildLogin() {
     return user == null
         ? ListTile(
-            leading: Icon(MdiIcons.login,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.login, color: Colors.red),
             title: Text(
               'Login',
             ),
@@ -299,8 +291,7 @@ class NavDrawerState extends State<NavDrawer> {
   Widget _buildSignUp() {
     return user == null
         ? ListTile(
-            leading: Icon(MdiIcons.signText,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.signText, color: Colors.red),
             title: Text(
               'Sign Up',
             ),
@@ -324,8 +315,7 @@ class NavDrawerState extends State<NavDrawer> {
     return user == null
         ? Container()
         : ListTile(
-            leading: Icon(MdiIcons.settings,
-                color: Theme.of(context).primaryIconTheme.color),
+            leading: Icon(MdiIcons.settings, color: Colors.red),
             title: Text(
               'Settings',
             ),

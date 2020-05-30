@@ -1,13 +1,13 @@
 // import 'package:flutter/material.dart';
 // import 'package:get_it/get_it.dart';
 // import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-// import 'package:nanny_mctea_sitters_flutter/common/clipper_slant.dart';
+// import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 // import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 // import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-// import 'package:nanny_mctea_sitters_flutter/services/modal.dart';
+// import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 // import 'package:url_launcher/url_launcher.dart';
-// import '../constants.dart';
-// import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+
+// import '../constants_ui.dart';
 
 // class ContactPage extends StatefulWidget {
 //   @override
@@ -20,7 +20,6 @@
 //   final TextEditingController _nameController = TextEditingController();
 //   final TextEditingController _subjectController = TextEditingController();
 //   final TextEditingController _messageController = TextEditingController();
-//   final GetIt getIt = GetIt.I;
 //   bool _isLoading = true;
 //   bool _autoValidate = false;
 
@@ -52,10 +51,10 @@
 //           throw 'Could not launch $uri';
 //         }
 //       } catch (e) {
-//         getIt<Modal>().showInSnackBar(
-//           scaffoldKey: _scaffoldKey,
-//           text: e.message,
-//         );
+//         // getIt<Modal>().showInSnackBar(
+//         //   scaffoldKey: _scaffoldKey,
+//         //   text: e.message,
+//         // );
 //       }
 //     } else {
 //       setState(
@@ -155,7 +154,7 @@
 //       textInputAction: TextInputAction.next,
 //       maxLengthEnforced: true,
 //       onFieldSubmitted: (term) {},
-//       validator: getIt<Validator>().isEmpty,
+//       validator: locator<ValidatorService>().isEmpty,
 //       onSaved: (value) {},
 //       decoration: InputDecoration(
 //         hintText: 'Name',
@@ -172,7 +171,7 @@
 //       textInputAction: TextInputAction.next,
 //       maxLengthEnforced: true,
 //       onFieldSubmitted: (term) {},
-//       validator: getIt<Validator>().isEmpty,
+//       validator: locator<ValidatorService>().isEmpty,
 //       onSaved: (value) {},
 //       decoration: InputDecoration(
 //         hintText: 'Subject',
@@ -191,7 +190,7 @@
 //       maxLengthEnforced: true,
 //       maxLines: 5,
 //       onFieldSubmitted: (term) {},
-//       validator: getIt<Validator>().isEmpty,
+//       validator: locator<ValidatorService>().isEmpty,
 //       onSaved: (value) {},
 //       decoration: InputDecoration(
 //         hintText: 'Message',
