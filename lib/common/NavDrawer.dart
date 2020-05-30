@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/BookSitterServicePage.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/login/LoginPage.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/SettingsPage.dart';
@@ -10,10 +11,11 @@ import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability.dart
 import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/authentication/sign_up_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as loginBloc;
+import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as LoginBP;
+import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/Bloc.dart'
+    as BookSitterServiceBP;
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key key}) : super(key: key);
@@ -186,12 +188,14 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => BookSitterServicePage(),
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) =>
+                      BookSitterServiceBP.BookSitterServiceBloc(),
+                  child: BookSitterServicePage(),
                 ),
               );
+              Navigator.push(context, route);
             },
           );
   }
@@ -278,7 +282,7 @@ class NavDrawerState extends State<NavDrawer> {
             onTap: () {
               Route route = MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
-                  create: (BuildContext context) => loginBloc.LoginBloc(),
+                  create: (BuildContext context) => LoginBP.LoginBloc(),
                   child: LoginPage(),
                 ),
               );

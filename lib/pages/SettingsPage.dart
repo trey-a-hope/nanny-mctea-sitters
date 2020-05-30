@@ -175,27 +175,26 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Delete Account'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () async {
-                      // locator<ModalService>().showAlert(
-                      //     context: context,
-                      //     title: 'Contact Admin',
-                      //     message:
-                      //         'This requires extra steps from the admin team.');
+                      locator<ModalService>().showAlert(
+                          context: context,
+                          title: 'Contact Admin',
+                          message:
+                              'This requires extra steps from the admin team.');
                     },
                   ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.security, color: Colors.red.shade300),
-                    title: Text('Admin'),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => AdminPage(),
-                      //   ),
-                      // );
-                    },
-                  )
+                  // ListTile(
+                  //   leading: Icon(Icons.security, color: Colors.red.shade300),
+                  //   title: Text('Admin'),
+                  //   trailing: Icon(Icons.chevron_right),
+                  //   onTap: () {
+                  //     // Navigator.push(
+                  //     //   context,
+                  //     //   MaterialPageRoute(
+                  //     //     builder: (context) => AdminPage(),
+                  //     //   ),
+                  //     // );
+                  //   },
+                  // )
                 ],
               ),
             ),
