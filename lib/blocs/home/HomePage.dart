@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/contact/ContactPage.dart';
-import 'package:nanny_mctea_sitters_flutter/common/nav_drawer.dart';
+import 'package:nanny_mctea_sitters_flutter/common/NavDrawer.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -15,9 +15,9 @@ import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'Bloc.dart' as homeBloc;
+import 'Bloc.dart' as HomeBP;
 import 'package:nanny_mctea_sitters_flutter/blocs/contact/Bloc.dart'
-    as contactBloc;
+    as ContactBP;
 
 class HomePage extends StatefulWidget {
   @override
@@ -40,6 +40,16 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+
+      // drawer: BlocConsumer<MenuBP.MenuBloc, MenuBP.MenuState>(
+      //   listener: (BuildContext context, MenuBP.MenuState state) {},
+      //   builder: (BuildContext context, MenuBP.MenuState state) {
+      //     if (state is MenuBP.LoadingState) {
+      //       return Spinner();
+      //     }
+      //   },
+      // ),
+
       drawer: NavDrawer(),
       floatingActionButton: FloatingActionButton(
         elevation: Theme.of(context).floatingActionButtonTheme.elevation,
@@ -53,12 +63,12 @@ class HomePageState extends State<HomePage> {
           );
         },
       ),
-      body: BlocConsumer<homeBloc.HomeBloc, homeBloc.HomeState>(
-        listener: (BuildContext context, homeBloc.HomeState state) {},
-        builder: (BuildContext context, homeBloc.HomeState state) {
-          if (state is homeBloc.LoadingState) {
+      body: BlocConsumer<HomeBP.HomeBloc, HomeBP.HomeState>(
+        listener: (BuildContext context, HomeBP.HomeState state) {},
+        builder: (BuildContext context, HomeBP.HomeState state) {
+          if (state is HomeBP.LoadingState) {
             return Spinner();
-          } else if (state is homeBloc.LoadedState) {
+          } else if (state is HomeBP.LoadedState) {
             return ListView(
               controller: _scrollController,
               padding: EdgeInsets.only(top: 0),
@@ -83,7 +93,7 @@ class HomePageState extends State<HomePage> {
                         Route route = MaterialPageRoute(
                           builder: (BuildContext context) => BlocProvider(
                             create: (BuildContext context) =>
-                                contactBloc.ContactBloc(),
+                                ContactBP.ContactBloc(),
                             child: ContactPage(),
                           ),
                         );
@@ -417,7 +427,7 @@ class HomePageState extends State<HomePage> {
                 )
               ],
             );
-          } else if (state is homeBloc.ErrorState) {
+          } else if (state is HomeBP.ErrorState) {
             return Center(child: Text('Error: ${state.error.toString()}'));
           } else {
             return Center(
