@@ -105,50 +105,6 @@ class SettingsPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              "Personal",
-              style: headerStyle,
-            ),
-            const SizedBox(height: 10.0),
-            Card(
-              elevation: 0.5,
-              margin: const EdgeInsets.symmetric(
-                vertical: 4.0,
-                horizontal: 0,
-              ),
-              child: Column(
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.person, color: Colors.red.shade300),
-                    title: Text('Change Username'),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ChangeUsernamePage(),
-                      //   ),
-                      // );
-                    },
-                  ),
-                  Divider(),
-                  ListTile(
-                    leading: Icon(Icons.lock, color: Colors.red.shade300),
-                    title: Text('Change Password'),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ChangePasswordPage(),
-                      //   ),
-                      // );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Text(
               "Payments",
               style: headerStyle,
             ),
@@ -165,6 +121,10 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Payment Method'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
+                      locator<ModalService>().showAlert(
+                          context: context,
+                          title: 'To Do',
+                          message: 'Navigate to payment methods.');
                       // Navigator.push(
                       //   context,
                       //   MaterialPageRoute(
@@ -180,6 +140,10 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Subscription'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
+                      locator<ModalService>().showAlert(
+                          context: context,
+                          title: 'To Do',
+                          message: 'Navigate to subscription page.');
                       // Route route = MaterialPageRoute(
                       //   builder: (BuildContext context) => BlocProvider(
                       //     create: (BuildContext context) =>
@@ -207,21 +171,6 @@ class SettingsPage extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ListTile(
-                    leading:
-                        Icon(Icons.question_answer, color: Colors.red.shade300),
-                    title: Text('Q&A'),
-                    trailing: Icon(Icons.chevron_right),
-                    onTap: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => QAPage(),
-                      //   ),
-                      // );
-                    },
-                  ),
-                  Divider(),
-                  ListTile(
                     leading: Icon(Icons.delete, color: Colors.red.shade300),
                     title: Text('Delete Account'),
                     trailing: Icon(Icons.chevron_right),
@@ -233,26 +182,21 @@ class SettingsPage extends StatelessWidget {
                       //         'This requires extra steps from the admin team.');
                     },
                   ),
+                  Divider(),
+                  ListTile(
+                    leading: Icon(Icons.security, color: Colors.red.shade300),
+                    title: Text('Admin'),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: () {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => AdminPage(),
+                      //   ),
+                      // );
+                    },
+                  )
                 ],
-              ),
-            ),
-            Card(
-              margin: const EdgeInsets.symmetric(
-                vertical: 8.0,
-                horizontal: 0,
-              ),
-              child: ListTile(
-                leading: Icon(Icons.security, color: Colors.red.shade300),
-                title: Text('Admin'),
-                trailing: Icon(Icons.chevron_right),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => AdminPage(),
-                  //   ),
-                  // );
-                },
               ),
             ),
             Card(

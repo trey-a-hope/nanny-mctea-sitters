@@ -9,9 +9,6 @@ import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/ServicePage.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/services/professional_nannies.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/services/event_services.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/services/sitter_services.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
@@ -188,9 +185,11 @@ class HomePageState extends State<HomePage> {
                         style: _bodyStyle,
                       ),
                       RaisedButton(
-                        color: Theme.of(context).buttonColor,
+                        color: Colors.red,
                         child: Text(
-                          'Read More',
+                          'Learn More',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
                           // style: Theme.of(context).accentTextTheme.button,
                         ),
                         onPressed: () {
@@ -229,18 +228,32 @@ class HomePageState extends State<HomePage> {
                         style: _bodyStyle,
                       ),
                       RaisedButton(
-                        color: Theme.of(context).buttonColor,
+                       color: Colors.red,
                         child: Text(
-                          'Read More',
+                          'Learn More',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
                           // style: Theme.of(context).accentTextTheme.button,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SitterServicesPage(),
+                          Route route = MaterialPageRoute(
+                            builder: (BuildContext context) => ServicePage(
+                              serviceTitle: 'Sitter Services',
+                              serviceUrl:
+                                  'https://docs.google.com/forms/d/e/1FAIpQLSdAMrVxgoEDLzcfy-hC9X3h_HNsGVYzXCPubTB-5sssB4BAjA/viewform',
+                              buttonTitle:
+                                  'LAST MINUTE/SICK CARE SITTER REQUEST',
+                              paragraphTexts: [
+                                'Everyone doesn\'t need a nanny, sometimes you just need a break to breath, relax, go to the store, go on a date, even take a nap. Whatever the reason we are prepared. Nanny McTea Sitters offers a variety of sitter services, all available for your family.',
+                                '1. Planned Sitter Service -- This service you can book directly on our website under the book us tab! This service is for planned events like your cousins wedding or your anniversary, anything that you know the date prior to. A  non refundable \$25 booking fee is required to secure your date in advance. The day of your sit you are required to pay your sitter \$13 per hour. We have a 4 hour minimum.',
+                                '2. Last Minute Sitter Service -- A last minute is a sit scheduled within 36 hours of its start time. For this service you must fill out the Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                                '3. Sick Care Service  --  For this service you must fill out the  Last Minute Sitter Request form found at the bottom of the page. We will receive your information and call promptly to confirm your request. Once request is confirmed we will dial out to our sitters. If a sitter is available you will pay that sitter \$17 per hour the day of the sit and charged a \$35 booking fee.',
+                                '4. Monthly Sitter Membership --  This awesome service helps eliminate the booking fee for the above mentioned planned sitter service. If you know you are consistently going to be receiving care you\'ll want to book the membership. This membership guarantee you unlimited week nights after 5 and unlimited weekend sits. You\'ll pay a monthly fee of \$100 and pay your sitter their hourly rate of \$13 whenever you use them. '
+                              ],
                             ),
                           );
+
+                          Navigator.push(context, route);
                         },
                       )
                     ],
@@ -259,18 +272,32 @@ class HomePageState extends State<HomePage> {
                         style: _bodyStyle,
                       ),
                       RaisedButton(
-                        color: Theme.of(context).buttonColor,
+                       color: Colors.red,
                         child: Text(
-                          'Read More',
+                          'Learn More',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white),
                           // style: Theme.of(context).accentTextTheme.button,
                         ),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProfessionalNanniesPage(),
+                          Route route = MaterialPageRoute(
+                            builder: (BuildContext context) => ServicePage(
+                              serviceTitle: 'Professional Nannies',
+                              serviceUrl:
+                                  'https://docs.google.com/forms/d/e/1FAIpQLSc1BoEVUcebGSTZaGRMvMfebVC-G7YX2EVBhxPs8niHv4HYkA/viewform',
+                              buttonTitle: 'FAMILY APPLICATION',
+                              paragraphTexts: [
+                                'With many years of experience, our professional consultants have you covered. Our Consultant began in the nanny world themselves. We have learned the in\'s and out\'s of selecting a quality caregiver and are happy to share this with you.',
+                                'Nanny McTea Sitters Consultants handles the entire screening process for you. With our 5 step interview process we fully vet applicants to send your family qualified candidates.',
+                                'We work closely with your family to draft your work agreement and set your nanny/employer relationship for success.',
+                                'Our total placement cost \$1,475 split into a non refundable deposit of \$350 this allows us to post your application and begin screening candidates on your behalf. If you select a nanny that our team has vetted for you, the remainder balance of \$1,125 is due upon signing the work agreement.',
+                                'We receive anywhere from 15 to 30 applicants per job posting depending on hours, location, pay and number of children etc. With our 5 step interview process we are spending roughly 5 or more hours with each candidate to determine their eligibility with your family.  The final nanny placement of \$1,125 is only paid if your family selects a nanny that we bring to you and is based on the amount of hours we spend reviewing candidates. 15 candidate x 5 hours = 75 hours, 75 hours x \$15/hr = \$1,125.',
+                                '​For more information fill out our family application and a Nanny McTea Sitter consultant will be in touch.'
+                              ],
                             ),
                           );
+
+                          Navigator.push(context, route);
                         },
                       )
                     ],

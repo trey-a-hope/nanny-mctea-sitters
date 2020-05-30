@@ -15,7 +15,7 @@ import 'Bloc.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final FirebaseMessaging _fcm = FirebaseMessaging();
   List<UserModel> _sitters;
-  UserModel currentUser;
+  UserModel _currentUser;
 
   @override
   HomeState get initialState => HomeState();
@@ -33,7 +33,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     final String fcmToken = await _fcm.getToken();
     if (fcmToken != null) {
       locator<UserService>()
-          .updateUser(userID: currentUser.id, data: {'fcmToken': fcmToken});
+          .updateUser(userID: _currentUser.id, data: {'fcmToken': fcmToken});
     }
 
     //Configure notifications for several action types.
@@ -69,10 +69,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _sitters = await locator<UserService>().retrieveUsers(isSitter: true);
 
         //Fetch user.
-        currentUser = await locator<AuthService>().getCurrentUser();
+        _currentUser = await locator<AuthService>().getCurrentUser();
 
         //If user is logged in, setup firebase messaging.
-        if (currentUser != null) {
+        if (_currentUser != null) {
           _setUpFirebaseMessaging();
         }
 

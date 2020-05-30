@@ -85,7 +85,6 @@ class NavDrawerState extends State<NavDrawer> {
                 _buildProfile(),
                 // _buildAddAvailability(),
                 // _buildDeleteAvailability(),
-                _buildLogout(),
                 _buildLogin(),
                 _buildSignUp(),
                 _buildSettings(),
