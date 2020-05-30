@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/login/LoginPage.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/main.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability.dart';
@@ -15,6 +17,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/booking/book_sitter_service.da
 import 'package:nanny_mctea_sitters_flutter/pages/settings_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as loginBloc;
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key key}) : super(key: key);
@@ -74,30 +77,31 @@ class NavDrawerState extends State<NavDrawer> {
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        // mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           _buildUserAccountsDrawerHeader(),
-          _buildBookSitter(),
-          _buildPlansPricing(),
-          _buildJoinTeam(),
-          _buildProfile(),
-          _buildAddAvailability(),
-          _buildDeleteAvailability(),
-          _buildLogout(),
-          _buildLogin(),
-          _buildSignUp(),
-          _buildSettings(),
           Expanded(
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: EdgeInsets.all(20),
-                child: Text(
-                  'Version $version / Build $buildNumber.\n©2020 by Nanny McTea Sitters\n',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
-                ),
-              ),
+            child: ListView(
+              children: <Widget>[
+                _buildBookSitter(),
+                _buildPlansPricing(),
+                _buildJoinTeam(),
+                _buildProfile(),
+                _buildAddAvailability(),
+                _buildDeleteAvailability(),
+                _buildLogout(),
+                _buildLogin(),
+                _buildSignUp(),
+                _buildSettings(),
+              ],
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(20),
+            child: Text(
+              'Version $version / Build $buildNumber.\n©2020 by Nanny McTea Sitters\n',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
             ),
           ),
         ],
@@ -255,11 +259,11 @@ class NavDrawerState extends State<NavDrawer> {
             ),
             onTap: () async {
               bool confirm = await locator<ModalService>().showConfirmation(
-                  context: context, title: 'Sign Out', text: 'Are you sure?');
+                  context: context,
+                  title: 'Sign Out',
+                  message: 'Are you sure?');
               if (confirm) {
-                _auth.signOut().then(
-                      (r) {},
-                    );
+                await _auth.signOut();
               }
             },
           );
@@ -277,12 +281,13 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => LoginPage(),
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) => loginBloc.LoginBloc(),
+                  child: LoginPage(),
                 ),
               );
+              Navigator.push(context, route);
             },
           )
         : Container();
@@ -324,12 +329,12 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => SettingsPage(),
-              //   ),
-              // );
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsPage(),
+                ),
+              );
             },
           );
   }

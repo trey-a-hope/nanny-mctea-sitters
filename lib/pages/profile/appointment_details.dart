@@ -87,11 +87,11 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       print(createEventResult);
 
       locator<ModalService>().showInSnackBar(
-          scaffoldKey: _scaffoldKey, text: 'Event added to calendar.');
+          scaffoldKey: _scaffoldKey, message: 'Event added to calendar.');
     } catch (e) {
       locator<ModalService>().showInSnackBar(
         scaffoldKey: _scaffoldKey,
-        text: e.toString(),
+        message: e.toString(),
       );
     }
   }
@@ -306,7 +306,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
   _cancelAppoinment() async {
     bool confirm = await locator<ModalService>().showConfirmation(
-        context: context, title: 'Cancel Appointment', text: 'Are you sure?');
+        context: context, title: 'Cancel Appointment', message: 'Are you sure?');
     if (confirm) {
       setState(
         () {
@@ -343,7 +343,7 @@ class AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
           bool confirm = await locator<ModalService>().showConfirmation(
               context: context,
               title: 'Add To Calendar',
-              text: 'Are you sure?');
+              message: 'Are you sure?');
           if (confirm) {
             _addEventToCalendar();
           }

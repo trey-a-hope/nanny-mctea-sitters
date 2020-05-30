@@ -45,7 +45,7 @@ class SignUpPageState extends State<SignUpPage> {
       _formKey.currentState.save();
 
       bool confirm = await locator<ModalService>().showConfirmation(
-          context: context, title: 'Submit', text: 'Are you ready?');
+          context: context, title: 'Submit', message: 'Are you ready?');
       if (confirm) {
         try {
           setState(
@@ -85,7 +85,7 @@ class SignUpPageState extends State<SignUpPage> {
             () {
               _isLoading = true;
               locator<ModalService>()
-                  .showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
+                  .showInSnackBar(scaffoldKey: _scaffoldKey, message: e.message);
             },
           );
         }

@@ -1,12 +1,15 @@
-import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
+import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+import '../ServiceLocator.dart';
 import 'ValidatorService.dart';
 
 abstract class IModalService {
   void showInSnackBar(
-      {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text});
+      {@required GlobalKey<ScaffoldState> scaffoldKey,
+      @required String message});
   void showAlert(
       {@required BuildContext context,
       @required String title,
@@ -16,15 +19,26 @@ abstract class IModalService {
   Future<bool> showConfirmation(
       {@required BuildContext context,
       @required String title,
-      @required String text});
+      @required String message});
+  Future<bool> showConfirmationWithImage(
+      {@required BuildContext context,
+      @required String title,
+      @required String message,
+      @required File file});
+
+  Future<int> showOptions(
+      {@required BuildContext context,
+      @required String title,
+      @required List<String> options});
 }
 
 class ModalService extends IModalService {
   @override
   void showInSnackBar(
-      {@required GlobalKey<ScaffoldState> scaffoldKey, @required String text}) {
+      {@required GlobalKey<ScaffoldState> scaffoldKey,
+      @required String message}) {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(text),
+      content: Text(message),
     ));
   }
 
@@ -36,18 +50,34 @@ class ModalService extends IModalService {
     showDialog(
       context: context,
       builder: (BuildContext buildContext) {
-        return AlertDialog(
-          title: Text(title),
-          content: Text(message),
-          actions: <Widget>[
-            FlatButton(
-              child: const Text('OK'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
+        if (Platform.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        } else {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        }
       },
     );
   }
@@ -55,8 +85,8 @@ class ModalService extends IModalService {
   @override
   Future<String> showPasswordResetEmail({@required BuildContext context}) {
     final TextEditingController emailController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    bool _autovalidate = false;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    bool autovalidate = false;
 
     return showDialog<String>(
       barrierDismissible: false,
@@ -64,8 +94,8 @@ class ModalService extends IModalService {
       child: AlertDialog(
         title: Text('Reset Password'),
         content: Form(
-          key: _formKey,
-          autovalidate: _autovalidate,
+          key: formKey,
+          autovalidate: autovalidate,
           child: TextFormField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
@@ -92,9 +122,9 @@ class ModalService extends IModalService {
           FlatButton(
             child: const Text('SUBMIT'),
             onPressed: () {
-              final FormState form = _formKey.currentState;
+              final FormState form = formKey.currentState;
               if (!form.validate()) {
-                _autovalidate = true;
+                autovalidate = true;
               } else {
                 Navigator.of(context).pop(emailController.text);
               }
@@ -108,8 +138,8 @@ class ModalService extends IModalService {
   @override
   Future<String> showChangeEmail({@required BuildContext context}) {
     final TextEditingController emailController = TextEditingController();
-    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-    bool _autovalidate = false;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+    bool autovalidate = false;
 
     return showDialog<String>(
       barrierDismissible: false,
@@ -117,8 +147,8 @@ class ModalService extends IModalService {
       child: AlertDialog(
         title: Text('Change Email'),
         content: Form(
-          key: _formKey,
-          autovalidate: _autovalidate,
+          key: formKey,
+          autovalidate: autovalidate,
           child: TextFormField(
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
@@ -145,9 +175,9 @@ class ModalService extends IModalService {
           FlatButton(
             child: const Text('SUBMIT'),
             onPressed: () {
-              final FormState form = _formKey.currentState;
+              final FormState form = formKey.currentState;
               if (!form.validate()) {
-                _autovalidate = true;
+                autovalidate = true;
               } else {
                 Navigator.of(context).pop(emailController.text);
               }
@@ -162,22 +192,90 @@ class ModalService extends IModalService {
   Future<bool> showConfirmation(
       {@required BuildContext context,
       @required String title,
-      @required String text}) {
+      @required String message}) {
+    return showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        if (Platform.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: [
+              CupertinoDialogAction(
+                isDefaultAction: true,
+                child: Text('Yes'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              CupertinoDialogAction(
+                isDefaultAction: false,
+                child: Text('No'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              )
+            ],
+          );
+        } else {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: <Widget>[
+              FlatButton(
+                child: const Text('YES', style: TextStyle(color: Colors.black)),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              FlatButton(
+                child: const Text('NO', style: TextStyle(color: Colors.black)),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  Future<bool> showConfirmationWithImage(
+      {@required BuildContext context,
+      @required String title,
+      @required String message,
+      @required File file}) {
     return showDialog<bool>(
       barrierDismissible: false,
       context: context,
       child: AlertDialog(
-        title: Text(title),
-        content: Text(text),
+        title: Text(
+          title,
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: Center(
+          child: Image.file(file),
+        ),
         actions: <Widget>[
           FlatButton(
-            child: const Text('NO', style: TextStyle(color: Colors.black)),
+            child: const Text(
+              'NO',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             onPressed: () {
               Navigator.of(context).pop(false);
             },
           ),
           FlatButton(
-            child: const Text('YES', style: TextStyle(color: Colors.black)),
+            child: const Text(
+              'YES',
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            ),
             onPressed: () {
               Navigator.of(context).pop(true);
             },
@@ -185,5 +283,75 @@ class ModalService extends IModalService {
         ],
       ),
     );
+  }
+
+  @override
+  Future<int> showOptions(
+      {@required BuildContext context,
+      @required String title,
+      @required List<String> options}) async {
+    if (Platform.isIOS) {
+      return showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          List<CupertinoActionSheetAction> actions =
+              List<CupertinoActionSheetAction>();
+
+          //Build actions based on optino titles.
+          for (var i = 0; i < options.length; i++) {
+            actions.add(
+              CupertinoActionSheetAction(
+                child: Text(options[i]),
+                onPressed: () {
+                  Navigator.of(context).pop(i);
+                },
+              ),
+            );
+          }
+
+          return CupertinoActionSheet(
+            title: Text(title),
+            actions: actions,
+            cancelButton: CupertinoActionSheetAction(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.redAccent),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          );
+        },
+      );
+    } else {
+      return await showModalBottomSheet<int>(
+        context: context,
+        builder: (BuildContext context) {
+          List<ListTile> actions = List<ListTile>();
+
+          actions.add(
+            ListTile(
+              title: Text(title),
+            ),
+          );
+
+          for (var i = 0; i < options.length; i++) {
+            actions.add(
+              ListTile(
+                title: Text(options[i]),
+                onTap: () {
+                  Navigator.of(context).pop(i);
+                  //return i;
+                },
+              ),
+            );
+          }
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: actions,
+          );
+        },
+      );
+    }
   }
 }

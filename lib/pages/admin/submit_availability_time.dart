@@ -127,7 +127,7 @@ class SubmitAvailabilityTimePageState
     bool confirm = await locator<ModalService>().showConfirmation(
       context: context,
       title: 'Submit Availability',
-      text: _slotsToString(),
+      message: _slotsToString(),
     );
     if (confirm) {
       for (int i = 0; i < _selectedSlots.length; i++) {

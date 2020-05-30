@@ -67,9 +67,19 @@ class LoginPageState extends State<LoginPage> {
 
     loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Login',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ),
       key: _scaffoldKey,
       body: BlocConsumer<LoginBloc, LoginState>(
-        listener: (BuildContext context, LoginState state) {},
+        listener: (BuildContext context, LoginState state) {
+          if (state is LoginSuccessfulState) {
+            Navigator.of(context).pop();
+          }
+        },
         builder: (BuildContext context, LoginState state) {
           if (state is InitialState) {
             return _buildView(screenWidth: screenWidth, autoValidate: false);
@@ -95,143 +105,90 @@ class LoginPageState extends State<LoginPage> {
     @required double screenWidth,
     @required bool autoValidate,
   }) {
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: asImgFloorCrayons,
-                  fit: BoxFit.cover,
-                  alignment: Alignment.center)),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                colors: [
-                  Colors.yellow.withOpacity(0.3),
-                  Colors.red.withOpacity(0.9)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0, 1]),
-          ),
-        ),
-        Positioned(
-          left: (screenWidth * 0.1) / 2,
-          top: 50,
-          child: Text(
-            'Login',
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          ),
-        ),
-        Container(
-          height: autoValidate ? 290 : 240,
-          width: screenWidth * 0.9,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black12, offset: Offset(0, 6), blurRadius: 6),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Form(
-              key: _formKey,
-              autovalidate: autoValidate,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    maxLengthEnforced: true,
-                    // maxLength: MyFormData.nameCharLimit,
-                    onFieldSubmitted: (term) {},
-                    validator: locator<ValidatorService>().email,
-                    onSaved: (value) {},
-                    decoration: InputDecoration(
-                      hintText: 'Email',
-                      icon: Icon(Icons.email,
-                          color: Theme.of(context).primaryIconTheme.color),
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  TextFormField(
-                    controller: _passwordController,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    obscureText: true,
-                    onFieldSubmitted: (term) {},
-                    validator: locator<ValidatorService>().isEmpty,
-                    onSaved: (value) {},
-                    decoration: InputDecoration(
-                      hintText: 'Password',
-                      icon: Icon(Icons.lock,
-                          color: Theme.of(context).primaryIconTheme.color),
-                      fillColor: Colors.white,
-                    ),
-                  ),
-                  SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      OutlineButton.icon(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 15.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        highlightedBorderColor: Colors.red,
-                        borderSide: BorderSide(color: Colors.red),
-                        color: Colors.red,
-                        textColor: Colors.red,
-                        icon: Icon(
-                          MdiIcons.arrowLeft,
-                          size: 18.0,
-                        ),
-                        label: Text('Cancel'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      OutlineButton.icon(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 15.0,
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        highlightedBorderColor: Colors.blue,
-                        borderSide: BorderSide(color: Colors.blue),
-                        color: Colors.blue,
-                        textColor: Colors.blue,
-                        icon: Icon(
-                          MdiIcons.send,
-                          size: 18.0,
-                        ),
-                        label: Text('Login'),
-                        onPressed: () {
-                          loginBloc.add(
-                            Login(
-                                email: _emailController.text,
-                                password: _passwordController.text),
-                          );
-                          //_login();
-                        },
-                      )
-                    ],
-                  )
-                ],
+    return Padding(
+      padding: EdgeInsets.all(30),
+      child: Form(
+        key: _formKey,
+        autovalidate: autoValidate,
+        child: Column(
+          children: <Widget>[
+            TextFormField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              textInputAction: TextInputAction.next,
+              maxLengthEnforced: true,
+              // maxLength: MyFormData.nameCharLimit,
+              onFieldSubmitted: (term) {},
+              validator: locator<ValidatorService>().email,
+              onSaved: (value) {},
+              decoration: InputDecoration(
+                hintText: 'Email',
+                icon: Icon(Icons.email, color: Colors.grey),
               ),
             ),
-          ),
+            SizedBox(height: 30),
+            TextFormField(
+              controller: _passwordController,
+              keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.next,
+              obscureText: true,
+              onFieldSubmitted: (term) {},
+              validator: locator<ValidatorService>().isEmpty,
+              onSaved: (value) {},
+              decoration: InputDecoration(
+                  hintText: 'Password',
+                  icon: Icon(Icons.lock, color: Colors.grey)),
+            ),
+            Spacer(),
+            RaisedButton(
+              child: Text(
+                'Login',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              color: Colors.red,
+              textColor: Colors.white,
+              onPressed: () {
+                loginBloc.add(
+                  Login(
+                      email: _emailController.text,
+                      password: _passwordController.text),
+                );
+              },
+            )
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //   children: <Widget>[
+
+            //     OutlineButton.icon(
+            //       padding: const EdgeInsets.symmetric(
+            //         vertical: 8.0,
+            //         horizontal: 15.0,
+            //       ),
+            //       shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(20.0)),
+            //       highlightedBorderColor: Colors.blue,
+            //       borderSide: BorderSide(color: Colors.blue),
+            //       color: Colors.blue,
+            //       textColor: Colors.blue,
+            //       icon: Icon(
+            //         MdiIcons.send,
+            //         size: 18.0,
+            //       ),
+            //       label: Text('Login'),
+            //       onPressed: () {
+            //         loginBloc.add(
+            //           Login(
+            //               email: _emailController.text,
+            //               password: _passwordController.text),
+            //         );
+            //         //_login();
+            //       },
+            //     )
+            //   ],
+            // )
+          ],
         ),
-      ],
+      ),
     );
   }
 }
