@@ -8,8 +8,18 @@ import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.da
 abstract class ISuperSaaSAppointmentService {
   Future<List<AppointmentModel>> getAvailableAppointments({
     @required int scheduleID,
-    @required String resource,
+    String resource,
     @required int limit,
+    @required DateTime fromTime,
+  });
+
+  Future<void> create({
+    @required int scheduleID,
+    @required String userID,
+    @required String email,
+    @required String fullName,
+    @required DateTime start,
+    @required DateTime finish,
   });
 }
 
@@ -17,14 +27,19 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
   @override
   Future<List<AppointmentModel>> getAvailableAppointments({
     @required int scheduleID,
-    @required String resource,
+    String resource,
     @required int limit,
+    @required DateTime fromTime,
   }) async {
     Map data = {
       'scheduleID': '$scheduleID',
-      'resource': resource,
       'limit': '$limit',
+      'fromTime': fromTime.toString(),
     };
+
+    if (resource != null) {
+      data['resource'] = resource;
+    }
 
     http.Response response = await http.post(
       '${endpoint}GetAvailableAppointments',
@@ -58,6 +73,42 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
         );
 
         return appointments;
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      throw PlatformException(message: e.message, code: e.code);
+    }
+  }
+
+  @override
+  Future<void> create({
+    @required int scheduleID,
+    @required String userID,
+    @required String email,
+    @required String fullName,
+    @required DateTime start,
+    @required DateTime finish,
+  }) async {
+    Map data = {
+      'scheduleID': '$scheduleID',
+      'userID': userID,
+      'email': email,
+      'fullName': fullName,
+      'start': start.toString(),
+      'finish': finish.toString(),
+    };
+
+    http.Response response = await http.post(
+      '${endpoint}CreateAppointment',
+      body: data,
+      headers: {'content-type': 'application/x-www-form-urlencoded'},
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        //Response is simply json url where appointment is held, so just return.
+        return;
       } else {
         throw Error();
       }

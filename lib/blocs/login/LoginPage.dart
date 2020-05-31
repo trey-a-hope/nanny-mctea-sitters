@@ -24,6 +24,9 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+
+        loginBloc = BlocProvider.of<LoginBloc>(context);
+
   }
 
   // _sendForgotEmail() async {
@@ -65,7 +68,6 @@ class LoginPageState extends State<LoginPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    loginBloc = BlocProvider.of<LoginBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(

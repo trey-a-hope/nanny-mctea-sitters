@@ -17,15 +17,17 @@ class LoadingState extends BookSitterCalendarState {
 
 class LoadedState extends BookSitterCalendarState {
   final CalendarController calendarController;
-  final Map<DateTime, List<AppointmentModel>> events;
+  final Map<DateTime, List<dynamic>> events;
+  final List<dynamic> availableSlots;
 
   LoadedState({
     @required this.calendarController,
     @required this.events,
+    @required this.availableSlots,
   });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [calendarController, events, availableSlots];
 }
 
 class ErrorState extends BookSitterCalendarState {

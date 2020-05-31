@@ -1,5 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
+import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointmentService.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -11,8 +14,9 @@ class BookSitterCalendarBloc
   //todo: dispose this.
   final CalendarController _calendarController = CalendarController();
   List<AppointmentModel> _availableAppointments;
-  Map<DateTime, List<AppointmentModel>> _events =
-      Map<DateTime, List<AppointmentModel>>();
+  Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
+  List<dynamic> _availableSlots = List<dynamic>();
+  UserModel currentUser;
 
   @override
   BookSitterCalendarState get initialState => BookSitterCalendarState();
@@ -27,20 +31,51 @@ class BookSitterCalendarBloc
         //Fetch available appointments.
         _availableAppointments = await locator<SuperSaaSAppointmentService>()
             .getAvailableAppointments(
-          scheduleID: 489593,
-          resource: 'Trey Hope',
-          limit: 60,
-        );
+                scheduleID: 489593,
+                resource: 'Trey Hope',
+                limit: 60,
+                fromTime:
+                    DateTime.now() //Get available appointments after today.
+                );
 
+        //Fetch current user.
+        currentUser = await locator<AuthService>().getCurrentUser();
+
+        //Group slots by day for calendar presentation.
         _groupAppointmentsByDay();
 
-        yield LoadedState(
-          calendarController: _calendarController,
-          events: _events,
+        //todo: Delete when done testing.
+        locator<SuperSaaSAppointmentService>().create(
+          scheduleID: 489593,
+          userID: currentUser.id,
+          email: currentUser.email,
+          fullName: '${currentUser.name}',
+          start: DateTime.now(),
+          finish: DateTime.now().add(
+            Duration(hours: 2),
+          ),
         );
+
+        yield LoadedState(
+            calendarController: _calendarController,
+            events: _events,
+            availableSlots: []);
       } catch (error) {
         yield ErrorState(error: error);
       }
+    }
+
+    if (event is OnDaySelectedEvent) {
+      _availableSlots = event.events;
+
+      yield LoadedState(
+          calendarController: _calendarController,
+          events: _events,
+          availableSlots: _availableSlots);
+    }
+
+    if (event is OnSlotSelectedEvent) {
+      //todo:
     }
   }
 

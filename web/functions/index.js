@@ -57,3 +57,4 @@ exports.StripeCreateToken = StripeToken.create;
 
 //Super SAAS
 exports.GetAvailableAppointments = SuperSaasAppointments.getAvailable;
+exports.CreateAppointment = SuperSaasAppointments.create;

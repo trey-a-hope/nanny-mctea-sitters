@@ -14,6 +14,7 @@ class BookSitterCalendarPage extends StatefulWidget {
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   BookSitterCalendarPageState();
+  BookSitterCalendarBloc bookSitterCalendarBloc;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // String _sitterOption;
@@ -24,6 +25,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   @override
   void initState() {
     super.initState();
+
+    bookSitterCalendarBloc = BlocProvider.of<BookSitterCalendarBloc>(context);
   }
 
   @override
@@ -115,12 +118,37 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                   Calendar(
                     calendarController: state.calendarController,
                     events: state.events,
-                    onDaySelected: (DateTime day, List events) {},
+                    onDaySelected: (DateTime day, List events) {
+                      bookSitterCalendarBloc.add(
+                        OnDaySelectedEvent(
+                          day: day,
+                          events: events,
+                        ),
+                      );
+                    },
                     onVisibleDaysChanged: (DateTime first, DateTime last,
                         CalendarFormat format) {},
                     // onDaySelected: _onDaySelected,
                     // onVisibleDaysChanged: _onVisibleDaysChanged,
                   ),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: state.availableSlots.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text('$index'),
+                          trailing: Icon(Icons.chevron_right),
+                          onTap: () {
+                            bookSitterCalendarBloc.add(
+                              OnSlotSelectedEvent(
+                                slot: state.availableSlots[index],
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  )
                 ],
               );
             } else if (state is ErrorState) {

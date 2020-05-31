@@ -26,12 +26,12 @@ class ContactPageState extends State<ContactPage> {
   @override
   void initState() {
     super.initState();
+
+    contactBloc = BlocProvider.of<ContactBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    //Assign LoginBloc
-    contactBloc = BlocProvider.of<ContactBloc>(context);
 
     return Scaffold(
       appBar: AppBar(

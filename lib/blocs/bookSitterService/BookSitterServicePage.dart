@@ -13,12 +13,12 @@ class BookSitterServicePageState extends State<BookSitterServicePage> {
   @override
   void initState() {
     super.initState();
+
+    bookSitterServiceBloc = BlocProvider.of<BookSitterServiceBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    bookSitterServiceBloc = BlocProvider.of<BookSitterServiceBloc>(context);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
