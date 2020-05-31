@@ -2,8 +2,6 @@ import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/job_posting.dart';
 
-import 'common/book_sitter_tile_widget.dart';
-
 const String DUMMY_PROFILE_PHOTO_URL =
     'https://firebasestorage.googleapis.com/v0/b/nanny-mctea-sitters.appspot.com/o/Images%2FUsers%2FDummy%2Fprofile.jpg?alt=media&token=2dff3e32-0140-4adc-9c33-81366ec8a322';
 

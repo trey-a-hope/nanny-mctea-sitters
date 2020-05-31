@@ -2,7 +2,6 @@ import 'package:flutter/rendering.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/models/local/job_posting.dart';
 
-import 'common/book_sitter_tile_widget.dart';
 
 const String COMPANY_EMAIL = 'nannymctea@gmail.com';
 const String COMPANY_PHONE = '(859)905-0174';

@@ -15,7 +15,8 @@
   "dependencies": {
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1",
-    "stripe": "^8.55.0"
+    "stripe": "^8.55.0",
+    "supersaas-api-client": "^1.2.2"
   },
   "devDependencies": {
     "eslint": "^5.12.0",
