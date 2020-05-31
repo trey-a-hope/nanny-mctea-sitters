@@ -9,6 +9,8 @@ import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/StripePlanService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointmentService.dart';
 
 import 'Bloc.dart';
 
@@ -75,6 +77,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (_currentUser != null) {
           _setUpFirebaseMessaging();
         }
+
+
+        //todo: delete this when done.
+        var s = await locator<SuperSaaSAppointmentService>()
+            .getAvailableAppointments(scheduleID: '489593');
 
         yield LoadedState(sitters: _sitters);
       } catch (error) {

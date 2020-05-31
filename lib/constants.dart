@@ -29,7 +29,7 @@ const String testPublishableKey = 'pk_test_JZxKU5yXf6wdHXOJOWhDWeB8';
 const String liveSecretKey = 'sk_live_78VVUPikPfBgHz1BxLh08zS9';
 const String livePublishableKey = 'pk_live_t9mv71BpBrsCt6oZ8ulDFGfG';
 const String endpoint =
-    'https://us-central1-hidden-gems-e481d.cloudfunctions.net/';
+    'https://us-central1-nanny-mctea-sitters.cloudfunctions.net/';
 
 //These are set in main().
 String version;
