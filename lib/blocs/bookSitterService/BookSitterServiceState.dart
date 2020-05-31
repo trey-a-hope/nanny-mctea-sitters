@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterCalendar/Bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterCalendar/BookSitterCalendarPage.dart';
 
 class BookSitterServiceState extends Equatable {
   @override
@@ -152,6 +155,14 @@ class _BookSitterTileWidget extends StatelessWidget {
           child: RaisedButton(
             color: Colors.red,
             onPressed: () {
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) =>
+                      BookSitterCalendarBloc()..add(LoadPageEvent()),
+                  child: BookSitterCalendarPage(),
+                ),
+              );
+              Navigator.push(context, route);
               // //Probably not the most efficient way lol.
               // Appointment appointment = Appointment(
               //     service: title,

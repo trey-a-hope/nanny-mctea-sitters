@@ -5,3 +5,9 @@ abstract class BookSitterCalendarEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class LoadPageEvent extends BookSitterCalendarEvent {
+  LoadPageEvent();
+  @override
+  List<Object> get props => [];
+}

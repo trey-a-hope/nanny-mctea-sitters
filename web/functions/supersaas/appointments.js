@@ -13,8 +13,10 @@ const client = new Client({ accountName: env.supersaas.account_name, api_key: en
 
 exports.getAvailable = functions.https.onRequest((request, response) => {
     var scheduleID = parseInt(request.body.scheduleID);
+    var resource = request.body.resource;
+    var limit = parseInt(request.body.limit);
 
-    client.appointments.available(scheduleID, '2018-01-31 00:00:00', 60, 'Trey Hope', (err, data) => {
+    client.appointments.available(scheduleID, '2018-01-31 00:00:00', 60, resource, false, limit, (err, data) => {
         if (err) {
             response.send(err)
         } else {

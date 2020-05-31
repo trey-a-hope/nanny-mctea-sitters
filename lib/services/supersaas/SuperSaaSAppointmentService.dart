@@ -6,16 +6,24 @@ import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
 
 abstract class ISuperSaaSAppointmentService {
-  Future<List<AppointmentModel>> getAvailableAppointments(
-      {@required String scheduleID});
+  Future<List<AppointmentModel>> getAvailableAppointments({
+    @required int scheduleID,
+    @required String resource,
+    @required int limit,
+  });
 }
 
 class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
   @override
-  Future<List<AppointmentModel>> getAvailableAppointments(
-      {@required String scheduleID}) async {
+  Future<List<AppointmentModel>> getAvailableAppointments({
+    @required int scheduleID,
+    @required String resource,
+    @required int limit,
+  }) async {
     Map data = {
-      'scheduleID': scheduleID,
+      'scheduleID': '$scheduleID',
+      'resource': resource,
+      'limit': '$limit',
     };
 
     http.Response response = await http.post(
