@@ -35,6 +35,8 @@ class BookSitterCalendarBloc
       selectedResource; //Selected baby sitter to filter appointments on.
   DateTime now; //Look for appiontments after this date.
 
+  final int limit = 120; //Number of appointments to return on each call.
+
   @override
   BookSitterCalendarState get initialState => BookSitterCalendarState();
 
@@ -63,7 +65,7 @@ class BookSitterCalendarBloc
             .getAvailableAppointments(
                 scheduleID: SAAS_BABY_SITTING_SCHEDULE_ID,
                 resource: selectedResource.name,
-                limit: 60,
+                limit: limit,
                 fromTime: DateTime(
                   now.year,
                   now.month,
@@ -146,6 +148,9 @@ class BookSitterCalendarBloc
     if (event is OnResourceSelectedEvent) {
       yield LoadingState();
 
+      //Clear events list.
+      _events.clear();
+
       //Update selected resource.
       selectedResource = event.resource;
 
@@ -154,7 +159,7 @@ class BookSitterCalendarBloc
           await locator<SuperSaaSAppointmentService>().getAvailableAppointments(
         scheduleID: SAAS_BABY_SITTING_SCHEDULE_ID,
         resource: selectedResource.name,
-        limit: 60,
+        limit: limit,
         fromTime: DateTime(
           now.year,
           now.month,
