@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 abstract class BookSitterCalendarEvent extends Equatable {
   BookSitterCalendarEvent();
@@ -28,16 +29,18 @@ class OnDaySelectedEvent extends BookSitterCalendarEvent {
 }
 
 class OnVisibleDaysChangedEvent extends BookSitterCalendarEvent {
-  final DateTime day;
-  final List<dynamic> events;
+  final DateTime first;
+  final DateTime last;
+  final CalendarFormat format;
 
   OnVisibleDaysChangedEvent({
-    @required this.day,
-    @required this.events,
+    @required this.first,
+    @required this.last,
+    @required this.format,
   });
 
   @override
-  List<Object> get props => [day, events];
+  List<Object> get props => [first, last, format];
 }
 
 class OnSlotSelectedEvent extends BookSitterCalendarEvent {

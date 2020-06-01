@@ -128,17 +128,7 @@ class BookSitterCalendarBloc
     }
 
     if (event is OnVisibleDaysChangedEvent) {
-      // _availableSlots = event.events;
-
-      yield LoadedState(
-        calendarController: _calendarController,
-        events: _events,
-        start: DateTime.now(),
-        finish: DateTime.now(),
-        // availableSlots: _availableSlots,
-        resources: resources,
-        selectedResource: selectedResource,
-      );
+      //todo:
     }
 
     if (event is OnSlotSelectedEvent) {

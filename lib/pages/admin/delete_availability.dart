@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
-import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
+import 'package:nanny_mctea_sitters_flutter/common/CalendarWidget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -141,7 +141,7 @@ class DeleteAvailabilityPageState extends State<DeleteAvailabilityPage> {
                       ],
                     ),
                   ),
-                  Calendar(
+                  CalendarWidget(
                       calendarController: _calendarController,
                       events: _events,
                       onDaySelected: _onDaySelected,

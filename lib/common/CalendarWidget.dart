@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Calendar extends StatelessWidget {
+class CalendarWidget extends StatelessWidget {
   final CalendarController calendarController;
   final Map<DateTime, List<dynamic>> events;
   final Function(DateTime, List<dynamic>) onDaySelected;
   final Function(DateTime, DateTime, CalendarFormat) onVisibleDaysChanged;
-  const Calendar(
+  const CalendarWidget(
       {@required this.calendarController,
       @required this.events,
       @required this.onDaySelected,
@@ -34,7 +34,7 @@ class Calendar extends StatelessWidget {
       calendarController: calendarController,
       events: events,
       // holidays: _holidays,
-      startingDayOfWeek: StartingDayOfWeek.monday,
+      startingDayOfWeek: StartingDayOfWeek.sunday,
       calendarStyle: calendarStyle,
       headerStyle: headerStyle,
       onDaySelected: onDaySelected,
