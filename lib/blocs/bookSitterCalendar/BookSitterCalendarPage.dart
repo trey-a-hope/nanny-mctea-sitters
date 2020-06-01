@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
@@ -16,7 +17,7 @@ class BookSitterCalendarPage extends StatefulWidget {
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   BookSitterCalendarPageState();
   BookSitterCalendarBloc bookSitterCalendarBloc;
-
+  final DateFormat dateFormat = DateFormat('hh:mm aaa'); //T
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // String _sitterOption;
   // List<UserModel> _sitters = List<UserModel>();
@@ -162,22 +163,28 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                     // onVisibleDaysChanged: _onVisibleDaysChanged,
                   ),
                   Expanded(
-                    child: state.availableSlots.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: state.availableSlots.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return ListTile(
-                                title: Text('$index'),
-                                trailing: Icon(Icons.chevron_right),
-                                onTap: () {
-                                  bookSitterCalendarBloc.add(
-                                    OnSlotSelectedEvent(
-                                      slot: state.availableSlots[index],
-                                    ),
-                                  );
+                      child: Padding(
+                    padding: EdgeInsets.all(20),
+                    child: (state.start != null && state.finish != null)
+                        ? Column(
+                            children: <Widget>[
+                              Text(
+                                'Available from ${dateFormat.format(state.start)} to ${dateFormat.format(state.finish)}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Spacer(),
+                              RaisedButton(
+                                child: Text(
+                                  'Book Appointment for This Day?',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                color: Colors.red,
+                                textColor: Colors.white,
+                                onPressed: () {
+                                  //todo:
                                 },
-                              );
-                            },
+                              )
+                            ],
                           )
                         : Center(
                             child: Text(
@@ -185,7 +192,20 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                           ),
-                  ),
+                  )
+
+                      //     (state.start != null && state.finish != null)
+                      // ? Center(
+                      //     child: Text(
+                      //         'Available from ${state.start} to ${state.finish}'),
+                      //   )
+                      // : Center(
+                      //     child: Text(
+                      //       'No availability this day...',
+                      //       style: TextStyle(fontWeight: FontWeight.bold),
+                      //     ),
+                      //   ),
+                      ),
                 ],
               );
             } else if (state is ErrorState) {

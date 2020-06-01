@@ -28,7 +28,7 @@ class BookSitterCalendarBloc
   final CalendarController _calendarController = CalendarController();
   List<AppointmentModel> _availableAppointments;
   Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
-  List<dynamic> _availableSlots = List<dynamic>();
+  // List<dynamic> _availableSlots = List<dynamic>();
   UserModel currentUser; //Current user of the app.
   List<ResourceModel> resources; //Available baby sitters.
   ResourceModel
@@ -92,7 +92,9 @@ class BookSitterCalendarBloc
         yield LoadedState(
           calendarController: _calendarController,
           events: _events,
-          availableSlots: [],
+          // availableSlots: [],
+          start: null,
+          finish: null,
           resources: resources,
           selectedResource: selectedResource,
         );
@@ -102,12 +104,22 @@ class BookSitterCalendarBloc
     }
 
     if (event is OnDaySelectedEvent) {
-      _availableSlots = event.events;
+      // _availableSlots = event.events;
+
+      var start;
+      var finish;
+
+      if (event.events.isNotEmpty) {
+        start = event.events[0].start;
+        finish = event.events[event.events.length - 1].finish;
+      }
 
       yield LoadedState(
         calendarController: _calendarController,
         events: _events,
-        availableSlots: _availableSlots,
+        start: start,
+        finish: finish,
+        // availableSlots: _availableSlots,
         resources: resources,
         selectedResource: selectedResource,
       );
@@ -119,7 +131,9 @@ class BookSitterCalendarBloc
       yield LoadedState(
         calendarController: _calendarController,
         events: _events,
-        availableSlots: _availableSlots,
+        start: DateTime.now(),
+        finish: DateTime.now(),
+        // availableSlots: _availableSlots,
         resources: resources,
         selectedResource: selectedResource,
       );
@@ -156,7 +170,9 @@ class BookSitterCalendarBloc
       yield LoadedState(
         calendarController: _calendarController,
         events: _events,
-        availableSlots: _availableSlots,
+        start: DateTime.now(),
+        finish: DateTime.now(),
+        // availableSlots: _availableSlots,
         resources: resources,
         selectedResource: selectedResource,
       );

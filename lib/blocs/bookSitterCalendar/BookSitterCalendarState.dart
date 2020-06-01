@@ -19,13 +19,19 @@ class LoadingState extends BookSitterCalendarState {
 class LoadedState extends BookSitterCalendarState {
   final CalendarController calendarController;
   final Map<DateTime, List<dynamic>> events;
-  final List<dynamic> availableSlots;
+  // final List<dynamic> availableSlots;
   final List<ResourceModel> resources;
   final ResourceModel selectedResource;
+
+  final DateTime start;
+  final DateTime finish;
+
   LoadedState({
     @required this.calendarController,
     @required this.events,
-    @required this.availableSlots,
+    // @required this.availableSlots,
+    @required this.start,
+    @required this.finish,
     @required this.resources,
     @required this.selectedResource,
   });
@@ -34,7 +40,9 @@ class LoadedState extends BookSitterCalendarState {
   List<Object> get props => [
         calendarController,
         events,
-        availableSlots,
+        // availableSlots,
+        start,
+        finish,
         resources,
         selectedResource,
       ];
