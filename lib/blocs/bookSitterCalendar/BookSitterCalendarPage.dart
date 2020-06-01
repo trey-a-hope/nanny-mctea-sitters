@@ -162,23 +162,30 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                     // onVisibleDaysChanged: _onVisibleDaysChanged,
                   ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: state.availableSlots.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return ListTile(
-                          title: Text('$index'),
-                          trailing: Icon(Icons.chevron_right),
-                          onTap: () {
-                            bookSitterCalendarBloc.add(
-                              OnSlotSelectedEvent(
-                                slot: state.availableSlots[index],
-                              ),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  )
+                    child: state.availableSlots.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: state.availableSlots.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ListTile(
+                                title: Text('$index'),
+                                trailing: Icon(Icons.chevron_right),
+                                onTap: () {
+                                  bookSitterCalendarBloc.add(
+                                    OnSlotSelectedEvent(
+                                      slot: state.availableSlots[index],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                          )
+                        : Center(
+                            child: Text(
+                              'No availability this day...',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                  ),
                 ],
               );
             } else if (state is ErrorState) {

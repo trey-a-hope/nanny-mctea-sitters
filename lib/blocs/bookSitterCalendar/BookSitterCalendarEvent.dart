@@ -27,6 +27,19 @@ class OnDaySelectedEvent extends BookSitterCalendarEvent {
   List<Object> get props => [day, events];
 }
 
+class OnVisibleDaysChangedEvent extends BookSitterCalendarEvent {
+  final DateTime day;
+  final List<dynamic> events;
+
+  OnVisibleDaysChangedEvent({
+    @required this.day,
+    @required this.events,
+  });
+
+  @override
+  List<Object> get props => [day, events];
+}
+
 class OnSlotSelectedEvent extends BookSitterCalendarEvent {
   final dynamic slot;
 
