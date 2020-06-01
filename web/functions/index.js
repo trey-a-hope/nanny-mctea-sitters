@@ -10,7 +10,8 @@ const StripeOrder = require('./stripe/order_functions');
 const StripeProduct = require('./stripe/product_functions');
 const StripeSku = require('./stripe/sku_functions');
 const StripePlan = require('./stripe/plan_functions');
-const SuperSaasAppointments = require('./supersaas/appointments');
+const SuperSaaSAppointments = require('./supersaas/appointments');
+const SuperSaaSResources = require('./supersaas/resources');
 
 admin.initializeApp(functions.config().firebase);
 
@@ -56,5 +57,6 @@ exports.StripeCancelSubscription = StripeSubscription.cancel;
 exports.StripeCreateToken = StripeToken.create;
 
 //Super SAAS
-exports.GetAvailableAppointments = SuperSaasAppointments.getAvailable;
-exports.CreateAppointment = SuperSaasAppointments.create;
+exports.GetAvailableAppointments = SuperSaaSAppointments.getAvailable;
+exports.CreateAppointment = SuperSaaSAppointments.create;
+exports.ListAllResources = SuperSaaSResources.list;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nanny_mctea_sitters_flutter/common/calendar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import 'Bloc.dart';
@@ -115,6 +116,35 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
             } else if (state is LoadedState) {
               return Column(
                 children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        Text(
+                          'Choose Sitter',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        DropdownButton<ResourceModel>(
+                          value: state.selectedResource,
+                          onChanged: (ResourceModel newValue) async {
+                            bookSitterCalendarBloc.add(
+                              OnResourceSelectedEvent(resource: newValue),
+                            );
+                          },
+                          items: state.resources
+                              .map<DropdownMenuItem<ResourceModel>>(
+                            (ResourceModel value) {
+                              return DropdownMenuItem<ResourceModel>(
+                                value: value,
+                                child: Text(value.name),
+                              );
+                            },
+                          ).toList(),
+                        )
+                      ],
+                    ),
+                  ),
                   Calendar(
                     calendarController: state.calendarController,
                     events: state.events,

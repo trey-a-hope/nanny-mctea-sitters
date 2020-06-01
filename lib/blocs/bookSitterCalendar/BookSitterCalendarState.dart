@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
+import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class BookSitterCalendarState extends Equatable {
@@ -19,15 +20,24 @@ class LoadedState extends BookSitterCalendarState {
   final CalendarController calendarController;
   final Map<DateTime, List<dynamic>> events;
   final List<dynamic> availableSlots;
-
+  final List<ResourceModel> resources;
+  final ResourceModel selectedResource;
   LoadedState({
     @required this.calendarController,
     @required this.events,
     @required this.availableSlots,
+    @required this.resources,
+    @required this.selectedResource,
   });
 
   @override
-  List<Object> get props => [calendarController, events, availableSlots];
+  List<Object> get props => [
+        calendarController,
+        events,
+        availableSlots,
+        resources,
+        selectedResource,
+      ];
 }
 
 class ErrorState extends BookSitterCalendarState {

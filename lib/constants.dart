@@ -9,6 +9,8 @@ const List<String> ADMIN_UIDS = ['KFO2MAjsJNP1racr4Uivs8Zz3h32'];
 
 const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';
 
+const int SAAS_BABY_SITTING_SCHEDULE_ID = 489593;
+
 const List<String> MONTHS = [
   'January',
   'February',

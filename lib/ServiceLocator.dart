@@ -15,6 +15,7 @@ import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeSkuService.dar
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeSubscriptionService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeTokenService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointmentService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSResourceService.dart';
 
 GetIt locator = GetIt.I;
 
@@ -37,4 +38,5 @@ void setUpLocater() {
   locator.registerLazySingleton(() => StripeSubscriptionService());
   //Super SaaS
   locator.registerLazySingleton(() => SuperSaaSAppointmentService());
+  locator.registerLazySingleton(() => SuperSaaSResourceService());
 }

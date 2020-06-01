@@ -158,7 +158,8 @@ class _BookSitterTileWidget extends StatelessWidget {
               Route route = MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
                   create: (BuildContext context) =>
-                      BookSitterCalendarBloc()..add(LoadPageEvent()),
+                      BookSitterCalendarBloc(hours: 5, cost: 125.00)
+                        ..add(LoadPageEvent()),
                   child: BookSitterCalendarPage(),
                 ),
               );
