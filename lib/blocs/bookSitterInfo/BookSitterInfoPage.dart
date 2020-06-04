@@ -34,7 +34,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Book Sitter - Time',
+          'Book Sitter - Info',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -46,9 +46,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
             BookSitterInfoBP.BookSitterInfoState state) {},
         builder:
             (BuildContext context, BookSitterInfoBP.BookSitterInfoState state) {
-          if (state is BookSitterInfoBP.LoadingState) {
-            return Spinner();
-          } else if (state is BookSitterInfoBP.LoadedState) {
+          if (state is BookSitterInfoBP.LoadedState) {
             return Center(
               child: DateTimePicker(
                 selectedTime: TimeOfDay.now(),

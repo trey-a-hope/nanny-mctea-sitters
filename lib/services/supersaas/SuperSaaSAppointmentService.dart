@@ -93,6 +93,9 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
     @required String fullName,
     @required DateTime start,
     @required DateTime finish,
+    @required String phone,
+    @required String address,
+    @required String resourceID,
   }) async {
     Map data = {
       'scheduleID': '$scheduleID',
@@ -101,6 +104,9 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
       'fullName': fullName,
       'start': start.toString(),
       'finish': finish.toString(),
+      'phone': phone,
+      'address': address,
+      'resourceID': resourceID,
     };
 
     http.Response response = await http.post(

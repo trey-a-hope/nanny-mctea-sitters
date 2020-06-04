@@ -79,18 +79,6 @@ class BookSitterCalendarBloc
         //Group slots by day for calendar presentation.
         _groupAppointmentsByDay();
 
-        //todo: Delete when done testing.
-        // locator<SuperSaaSAppointmentService>().create(
-        //   scheduleID: 489593,
-        //   userID: currentUser.id,
-        //   email: currentUser.email,
-        //   fullName: '${currentUser.name}',
-        //   start: DateTime.now(),
-        //   finish: DateTime.now().add(
-        //     Duration(hours: 2),
-        //   ),
-        // );
-
         yield LoadedState(
           calendarController: _calendarController,
           events: _events,

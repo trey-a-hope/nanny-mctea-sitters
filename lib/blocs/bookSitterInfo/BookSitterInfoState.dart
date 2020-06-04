@@ -9,6 +9,12 @@ class BookSitterInfoState extends Equatable {
   List<Object> get props => [];
 }
 
+class InitialState extends BookSitterInfoState {
+  InitialState();
+  @override
+  List<Object> get props => [];
+}
+
 class LoadingState extends BookSitterInfoState {
   LoadingState();
   @override
@@ -16,36 +22,10 @@ class LoadingState extends BookSitterInfoState {
 }
 
 class LoadedState extends BookSitterInfoState {
-  // final CalendarController calendarController;
-  // final Map<DateTime, List<dynamic>> events;
-  // final List<ResourceModel> resources;
-  // final ResourceModel selectedResource;
-
-  // final DateTime start;
-  // final DateTime finish;
-
-  LoadedState(
-      //   {
-      //   @required this.calendarController,
-      //   @required this.events,
-      //   // @required this.availableSlots,
-      //   @required this.start,
-      //   @required this.finish,
-      //   @required this.resources,
-      //   @required this.selectedResource,
-      // }
-      );
+  LoadedState();
 
   @override
-  List<Object> get props => [
-        // calendarController,
-        // events,
-        // // availableSlots,
-        // start,
-        // finish,
-        // resources,
-        // selectedResource,
-      ];
+  List<Object> get props => [];
 }
 
 class ErrorState extends BookSitterInfoState {

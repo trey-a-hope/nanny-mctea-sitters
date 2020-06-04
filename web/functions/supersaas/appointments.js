@@ -33,6 +33,9 @@ exports.create = functions.https.onRequest((request, response) => {
     var fullName = request.body.fullName;
     var start = request.body.start;
     var finish = request.body.finish;
+    var phone = request.body.phone;
+    var address = request.body.address;
+    var resourceID = request.body.resourceID;
 
     // user_id: attributes['user_id'],
     // booking: {
@@ -54,7 +57,7 @@ exports.create = functions.https.onRequest((request, response) => {
     //   slot_id: attributes['slot_id']
     // }
 
-    var attributes = { 'email': email, 'start': start, 'finish': finish, 'full_name': fullName }
+    var attributes = { 'email': email, 'start': start, 'finish': finish, 'full_name': fullName, 'phone': phone, 'address': address, 'resource_id': resourceID, }
 
     client.appointments.create(scheduleID, userID, attributes, true, true, (err, data) => {
         if (err) {
