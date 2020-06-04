@@ -15,7 +15,6 @@ class BookSitterCalendarPage extends StatefulWidget {
 }
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
-  BookSitterCalendarPageState();
   BookSitterCalendarBP.BookSitterCalendarBloc bookSitterCalendarBloc;
   final DateFormat dateFormat = DateFormat('hh:mm aaa');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
