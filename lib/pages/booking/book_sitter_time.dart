@@ -163,14 +163,14 @@ class BookSitterTimePageState extends State<BookSitterTimePage> {
                 //Attach slot to order.
                 appointment.slot = _selectedSlot;
 
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookSitterSitterPage(
-                        availableSitters: availableSitters,
-                        appointment: appointment),
-                  ),
-                );
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(
+                //     builder: (context) => BookSitterSitterPage(
+                //         availableSitters: availableSitters,
+                //         appointment: appointment),
+                //   ),
+                // );
               },
               color: Colors.grey.shade200,
               child: Center(

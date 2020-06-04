@@ -4,19 +4,15 @@ import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointmentService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSResourceService.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../../ServiceLocator.dart';
 import '../../constants.dart';
 import 'Bloc.dart';
 
 class BookSitterCalendarBloc
     extends Bloc<BookSitterCalendarEvent, BookSitterCalendarState> {
-  //todo: dispose this.
-
   BookSitterCalendarBloc({
     @required this.hours,
     @required this.cost,
@@ -26,8 +22,12 @@ class BookSitterCalendarBloc
   final double cost; //Total cost of the appointment.
 
   final CalendarController _calendarController = CalendarController();
-  List<AppointmentModel> _availableAppointments;
-  Map<DateTime, List<dynamic>> _events = Map<DateTime, List<dynamic>>();
+  List<AppointmentModel>
+      _availableAppointments; //Available appointments for this resource.
+  Map<DateTime, List<dynamic>> _events = Map<
+      DateTime,
+      List<
+          dynamic>>(); //Available appointments that have been mapped to a date.
   // List<dynamic> _availableSlots = List<dynamic>();
   UserModel currentUser; //Current user of the app.
   List<ResourceModel> resources; //Available baby sitters.
@@ -135,6 +135,10 @@ class BookSitterCalendarBloc
       //todo:
     }
 
+    if (event is NavigateToBookSitterTimePageEvent) {
+      yield NavigateToBookSitterTimePageState();
+    }
+
     if (event is OnResourceSelectedEvent) {
       yield LoadingState();
 
@@ -174,18 +178,21 @@ class BookSitterCalendarBloc
     }
   }
 
+//Map the available appointments to a day.
   void _groupAppointmentsByDay() {
-    _availableAppointments.forEach((aa) {
-      DateTime dayKey = DateTime(aa.start.year, aa.start.month, aa.start.day);
+    _availableAppointments.forEach(
+      (aa) {
+        DateTime dayKey = DateTime(aa.start.year, aa.start.month, aa.start.day);
 
-      if (_events.containsKey(dayKey)) {
-        if (!_events[dayKey].contains(aa)) {
-          _events[dayKey].add(aa);
+        if (_events.containsKey(dayKey)) {
+          if (!_events[dayKey].contains(aa)) {
+            _events[dayKey].add(aa);
+          }
+        } else {
+          _events[dayKey] = [aa];
         }
-      } else {
-        _events[dayKey] = [aa];
-      }
-    });
+      },
+    );
 
     return;
   }

@@ -6,8 +6,8 @@ import 'package:nanny_mctea_sitters_flutter/common/CalendarWidget.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
-
-import 'Bloc.dart';
+import '../../blocs/bookSitterCalendar/Bloc.dart' as BookSitterCalendarBP;
+import '../../blocs/bookSitterTime/Bloc.dart' as BookSitterTimeBP;
 
 class BookSitterCalendarPage extends StatefulWidget {
   @override
@@ -16,13 +16,14 @@ class BookSitterCalendarPage extends StatefulWidget {
 
 class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
   BookSitterCalendarPageState();
-  BookSitterCalendarBloc bookSitterCalendarBloc;
+  BookSitterCalendarBP.BookSitterCalendarBloc bookSitterCalendarBloc;
   final DateFormat dateFormat = DateFormat('hh:mm aaa');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
-    bookSitterCalendarBloc = BlocProvider.of<BookSitterCalendarBloc>(context);
+    bookSitterCalendarBloc =
+        BlocProvider.of<BookSitterCalendarBP.BookSitterCalendarBloc>(context);
     super.initState();
   }
 
@@ -43,12 +44,15 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       ),
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: BlocConsumer<BookSitterCalendarBloc, BookSitterCalendarState>(
-        listener: (BuildContext context, BookSitterCalendarState state) {},
-        builder: (BuildContext context, BookSitterCalendarState state) {
-          if (state is LoadingState) {
+      body: BlocConsumer<BookSitterCalendarBP.BookSitterCalendarBloc,
+          BookSitterCalendarBP.BookSitterCalendarState>(
+        listener: (BuildContext context,
+            BookSitterCalendarBP.BookSitterCalendarState state) {},
+        builder: (BuildContext context,
+            BookSitterCalendarBP.BookSitterCalendarState state) {
+          if (state is BookSitterCalendarBP.LoadingState) {
             return Spinner();
-          } else if (state is LoadedState) {
+          } else if (state is BookSitterCalendarBP.LoadedState) {
             return Column(
               children: <Widget>[
                 Padding(
@@ -64,7 +68,8 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                         value: state.selectedResource,
                         onChanged: (ResourceModel newValue) async {
                           bookSitterCalendarBloc.add(
-                            OnResourceSelectedEvent(resource: newValue),
+                            BookSitterCalendarBP.OnResourceSelectedEvent(
+                                resource: newValue),
                           );
                         },
                         items: state.resources
@@ -85,7 +90,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                   events: state.events,
                   onDaySelected: (DateTime day, List events) {
                     bookSitterCalendarBloc.add(
-                      OnDaySelectedEvent(
+                      BookSitterCalendarBP.OnDaySelectedEvent(
                         day: day,
                         events: events,
                       ),
@@ -94,12 +99,10 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                   onVisibleDaysChanged:
                       (DateTime first, DateTime last, CalendarFormat format) {
                     bookSitterCalendarBloc.add(
-                      OnVisibleDaysChangedEvent(
+                      BookSitterCalendarBP.OnVisibleDaysChangedEvent(
                           first: first, last: last, format: format),
                     );
                   },
-                  // onDaySelected: _onDaySelected,
-                  // onVisibleDaysChanged: _onVisibleDaysChanged,
                 ),
                 Expanded(
                   child: Padding(
@@ -120,7 +123,20 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                 color: Colors.red,
                                 textColor: Colors.white,
                                 onPressed: () {
-                                  //todo:
+                                  Route route = MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        BlocProvider(
+                                      create: (BuildContext context) =>
+                                          BookSitterTimeBP.BookSitterTimeBloc(
+                                        selectedDate: DateTime.now(),
+                                      )..add(
+                                              BookSitterTimeBP.LoadPageEvent(),
+                                            ),
+                                      child:
+                                          BookSitterTimeBP.BookSitterTimePage(),
+                                    ),
+                                  );
+                                  Navigator.push(context, route);
                                 },
                               )
                             ],
@@ -135,7 +151,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                 ),
               ],
             );
-          } else if (state is ErrorState) {
+          } else if (state is BookSitterCalendarBP.ErrorState) {
             return Center(
               child: Text('Error: ${state.error.toString()}'),
             );

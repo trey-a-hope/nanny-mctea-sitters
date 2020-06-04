@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -52,6 +51,12 @@ class ErrorState extends BookSitterCalendarState {
   final dynamic error;
 
   ErrorState({@required this.error});
+  @override
+  List<Object> get props => [];
+}
+
+class NavigateToBookSitterTimePageState extends BookSitterCalendarState {
+  NavigateToBookSitterTimePageState();
   @override
   List<Object> get props => [];
 }

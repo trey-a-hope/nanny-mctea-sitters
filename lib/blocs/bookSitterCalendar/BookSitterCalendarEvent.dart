@@ -64,3 +64,10 @@ class OnResourceSelectedEvent extends BookSitterCalendarEvent {
   @override
   List<Object> get props => [resource];
 }
+
+class NavigateToBookSitterTimePageEvent extends BookSitterCalendarEvent {
+  NavigateToBookSitterTimePageEvent();
+
+  @override
+  List<Object> get props => [];
+}
