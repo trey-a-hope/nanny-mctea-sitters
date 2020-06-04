@@ -28,14 +28,17 @@ class BookSitterCalendarBloc
       DateTime,
       List<
           dynamic>>(); //Available appointments that have been mapped to a date.
-  // List<dynamic> _availableSlots = List<dynamic>();
   UserModel currentUser; //Current user of the app.
   List<ResourceModel> resources; //Available baby sitters.
   ResourceModel
       selectedResource; //Selected baby sitter to filter appointments on.
-  DateTime now; //Look for appiontments after this date.
+  DateTime now = DateTime.now(); //Look for appiontments after this date.
+  TimeOfDay selectedTime = TimeOfDay.now(); //Default time for picker.
 
   final int limit = 120; //Number of appointments to return on each call.
+
+  DateTime start;
+  DateTime finish;
 
   @override
   BookSitterCalendarState get initialState => BookSitterCalendarState();
@@ -56,9 +59,6 @@ class BookSitterCalendarBloc
 
         //Set default selected resource.
         selectedResource = resources[0];
-
-        //Create variable to represent local time.
-        now = DateTime.now();
 
         //Fetch available appointments.
         _availableAppointments = await locator<SuperSaaSAppointmentService>()
@@ -94,11 +94,11 @@ class BookSitterCalendarBloc
         yield LoadedState(
           calendarController: _calendarController,
           events: _events,
-          // availableSlots: [],
           start: null,
           finish: null,
           resources: resources,
           selectedResource: selectedResource,
+          selectTime: selectedTime,
         );
       } catch (error) {
         yield ErrorState(error: error);
@@ -106,14 +106,17 @@ class BookSitterCalendarBloc
     }
 
     if (event is OnDaySelectedEvent) {
-      // _availableSlots = event.events;
-
-      var start;
-      var finish;
+      start = null;
+      finish = null;
 
       if (event.events.isNotEmpty) {
         start = event.events[0].start;
         finish = event.events[event.events.length - 1].finish;
+
+        //Default the select time to the first available time.
+        selectedTime = TimeOfDay.fromDateTime(
+          start,
+        );
       }
 
       yield LoadedState(
@@ -121,9 +124,9 @@ class BookSitterCalendarBloc
         events: _events,
         start: start,
         finish: finish,
-        // availableSlots: _availableSlots,
         resources: resources,
         selectedResource: selectedResource,
+        selectTime: selectedTime,
       );
     }
 
@@ -137,6 +140,20 @@ class BookSitterCalendarBloc
 
     if (event is NavigateToBookSitterTimePageEvent) {
       yield NavigateToBookSitterTimePageState();
+    }
+
+    if (event is OnTimeSelectEvent) {
+      await _selectTime(event.context);
+
+      yield LoadedState(
+        calendarController: _calendarController,
+        events: _events,
+        start: start,
+        finish: finish,
+        resources: resources,
+        selectedResource: selectedResource,
+        selectTime: selectedTime,
+      );
     }
 
     if (event is OnResourceSelectedEvent) {
@@ -167,14 +184,14 @@ class BookSitterCalendarBloc
       _groupAppointmentsByDay();
 
       yield LoadedState(
-        calendarController: _calendarController,
-        events: _events,
-        start: DateTime.now(),
-        finish: DateTime.now(),
-        // availableSlots: _availableSlots,
-        resources: resources,
-        selectedResource: selectedResource,
-      );
+          calendarController: _calendarController,
+          events: _events,
+          start: DateTime.now(),
+          finish: DateTime.now(),
+          // availableSlots: _availableSlots,
+          resources: resources,
+          selectedResource: selectedResource,
+          selectTime: TimeOfDay.now());
     }
   }
 
@@ -195,5 +212,16 @@ class BookSitterCalendarBloc
     );
 
     return;
+  }
+
+  //Set selectedTime variable from modal.
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+    if (picked != null && picked != selectedTime) {
+      selectedTime = picked;
+    }
   }
 }

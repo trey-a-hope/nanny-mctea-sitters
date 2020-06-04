@@ -3,19 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class BookSitterTimeState extends Equatable {
-  BookSitterTimeState();
+class BookSitterInfoState extends Equatable {
+  BookSitterInfoState();
   @override
   List<Object> get props => [];
 }
 
-class LoadingState extends BookSitterTimeState {
+class LoadingState extends BookSitterInfoState {
   LoadingState();
   @override
   List<Object> get props => [];
 }
 
-class LoadedState extends BookSitterTimeState {
+class LoadedState extends BookSitterInfoState {
   // final CalendarController calendarController;
   // final Map<DateTime, List<dynamic>> events;
   // final List<ResourceModel> resources;
@@ -25,16 +25,16 @@ class LoadedState extends BookSitterTimeState {
   // final DateTime finish;
 
   LoadedState(
-  //   {
-  //   @required this.calendarController,
-  //   @required this.events,
-  //   // @required this.availableSlots,
-  //   @required this.start,
-  //   @required this.finish,
-  //   @required this.resources,
-  //   @required this.selectedResource,
-  // }
-  );
+      //   {
+      //   @required this.calendarController,
+      //   @required this.events,
+      //   // @required this.availableSlots,
+      //   @required this.start,
+      //   @required this.finish,
+      //   @required this.resources,
+      //   @required this.selectedResource,
+      // }
+      );
 
   @override
   List<Object> get props => [
@@ -48,7 +48,7 @@ class LoadedState extends BookSitterTimeState {
       ];
 }
 
-class ErrorState extends BookSitterTimeState {
+class ErrorState extends BookSitterInfoState {
   final dynamic error;
 
   ErrorState({@required this.error});

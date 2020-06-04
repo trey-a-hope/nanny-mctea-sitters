@@ -11,18 +11,20 @@ import '../../ServiceLocator.dart';
 import '../../constants.dart';
 import 'Bloc.dart';
 
-class BookSitterTimeBloc
-    extends Bloc<BookSitterTimeEvent, BookSitterTimeState> {
-  BookSitterTimeBloc({@required this.selectedDate});
+class BookSitterInfoBloc
+    extends Bloc<BookSitterInfoEvent, BookSitterInfoState> {
+  BookSitterInfoBloc({
+    @required this.selectedDate,
+  });
 
   final DateTime selectedDate;
 
   @override
-  BookSitterTimeState get initialState => BookSitterTimeState();
+  BookSitterInfoState get initialState => BookSitterInfoState();
 
   @override
-  Stream<BookSitterTimeState> mapEventToState(
-      BookSitterTimeEvent event) async* {
+  Stream<BookSitterInfoState> mapEventToState(
+      BookSitterInfoEvent event) async* {
     if (event is LoadPageEvent) {
       yield LoadingState();
 

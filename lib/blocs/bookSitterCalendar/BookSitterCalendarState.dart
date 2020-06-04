@@ -24,16 +24,17 @@ class LoadedState extends BookSitterCalendarState {
 
   final DateTime start;
   final DateTime finish;
+  final TimeOfDay selectTime;
 
-  LoadedState({
-    @required this.calendarController,
-    @required this.events,
-    // @required this.availableSlots,
-    @required this.start,
-    @required this.finish,
-    @required this.resources,
-    @required this.selectedResource,
-  });
+  LoadedState(
+      {@required this.calendarController,
+      @required this.events,
+      // @required this.availableSlots,
+      @required this.start,
+      @required this.finish,
+      @required this.resources,
+      @required this.selectedResource,
+      @required this.selectTime});
 
   @override
   List<Object> get props => [
@@ -44,6 +45,7 @@ class LoadedState extends BookSitterCalendarState {
         finish,
         resources,
         selectedResource,
+        selectTime,
       ];
 }
 

@@ -7,7 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../blocs/bookSitterCalendar/Bloc.dart' as BookSitterCalendarBP;
-import '../../blocs/bookSitterTime/Bloc.dart' as BookSitterTimeBP;
+import '../../blocs/bookSitterInfo/Bloc.dart' as BookSitterInfoBP;
 
 class BookSitterCalendarPage extends StatefulWidget {
   @override
@@ -114,6 +114,32 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                 'Available from ${dateFormat.format(state.start)} to ${dateFormat.format(state.finish)}',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
+                              InkWell(
+                                onTap: () {
+                                  bookSitterCalendarBloc.add(
+                                    BookSitterCalendarBP.OnTimeSelectEvent(
+                                        context: context),
+                                  );
+                                },
+                                child: InputDecorator(
+                                  decoration: InputDecoration(
+                                    labelText: 'Select Time',
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(state.selectTime.format(context)),
+                                      Icon(Icons.arrow_drop_down,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.light
+                                              ? Colors.grey.shade700
+                                              : Colors.white70),
+                                    ],
+                                  ),
+                                ),
+                              ),
                               Spacer(),
                               RaisedButton(
                                 child: Text(
@@ -123,19 +149,23 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                 color: Colors.red,
                                 textColor: Colors.white,
                                 onPressed: () {
+                                  //todo: Create date from time and date.
+                                  DateTime finalDate = DateTime.now();
+
                                   Route route = MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         BlocProvider(
                                       create: (BuildContext context) =>
-                                          BookSitterTimeBP.BookSitterTimeBloc(
-                                        selectedDate: DateTime.now(),
+                                          BookSitterInfoBP.BookSitterInfoBloc(
+                                        selectedDate: finalDate,
                                       )..add(
-                                              BookSitterTimeBP.LoadPageEvent(),
+                                              BookSitterInfoBP.LoadPageEvent(),
                                             ),
                                       child:
-                                          BookSitterTimeBP.BookSitterTimePage(),
+                                          BookSitterInfoBP.BookSitterInfoPage(),
                                     ),
                                   );
+
                                   Navigator.push(context, route);
                                 },
                               )
