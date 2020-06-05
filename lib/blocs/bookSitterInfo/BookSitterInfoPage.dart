@@ -7,6 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import '../../ServiceLocator.dart';
 import '../../blocs/bookSitterInfo/Bloc.dart' as BookSitterInfoBP;
+import '../../blocs/bookSitterPayment/Bloc.dart' as BookSitterPaymentBP;
 
 class BookSitterInfoPage extends StatefulWidget {
   @override
@@ -47,7 +48,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Book Sitter - Info',
+          'Book Sitter - Payment',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -58,12 +59,14 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
         listener:
             (BuildContext context, BookSitterInfoBP.BookSitterInfoState state) {
           if (state is BookSitterInfoBP.NavigateToPaymentPageState) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => ProfilePage(),
+            Route route = MaterialPageRoute(
+              builder: (BuildContext context) => BlocProvider(
+                create: (BuildContext context) =>
+                    BookSitterPaymentBP.BookSitterPaymentBloc(),
+                child: BookSitterPaymentBP.BookSitterPaymentPage(),
               ),
             );
+            Navigator.push(context, route);
           }
         },
         builder:

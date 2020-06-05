@@ -32,16 +32,5 @@ class BookSitterInfoBloc
       );
     }
 
-    //todo: This will go in the final screen after collecting payment.
-    // locator<SuperSaaSAppointmentService>().create(
-    //   scheduleID: 489593,
-    //   userID: currentUser.id,
-    //   email: currentUser.email,
-    //   fullName: '${currentUser.name}',
-    //   start: DateTime.now(),
-    //   finish: DateTime.now().add(
-    //     Duration(hours: 2),
-    //   ),
-    // );
   }
 }
