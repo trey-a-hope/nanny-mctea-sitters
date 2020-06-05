@@ -33,6 +33,7 @@ class BookSitterCalendarBloc
   ResourceModel
       selectedResource; //Selected baby sitter to filter appointments on.
   DateTime now = DateTime.now(); //Look for appiontments after this date.
+  DateTime selectedDay = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now(); //Default time for picker.
 
   final int limit = 120; //Number of appointments to return on each call.
@@ -86,6 +87,7 @@ class BookSitterCalendarBloc
           finish: null,
           resources: resources,
           selectedResource: selectedResource,
+          selectedDay: selectedDay,
           selectTime: selectedTime,
         );
       } catch (error) {
@@ -96,6 +98,8 @@ class BookSitterCalendarBloc
     if (event is OnDaySelectedEvent) {
       start = null;
       finish = null;
+
+      selectedDay = event.day;
 
       if (event.events.isNotEmpty) {
         start = event.events[0].start;
@@ -114,6 +118,7 @@ class BookSitterCalendarBloc
         finish: finish,
         resources: resources,
         selectedResource: selectedResource,
+        selectedDay: selectedDay,
         selectTime: selectedTime,
       );
     }
@@ -140,6 +145,7 @@ class BookSitterCalendarBloc
         finish: finish,
         resources: resources,
         selectedResource: selectedResource,
+        selectedDay: selectedDay,
         selectTime: selectedTime,
       );
     }
@@ -172,14 +178,16 @@ class BookSitterCalendarBloc
       _groupAppointmentsByDay();
 
       yield LoadedState(
-          calendarController: _calendarController,
-          events: _events,
-          start: DateTime.now(),
-          finish: DateTime.now(),
-          // availableSlots: _availableSlots,
-          resources: resources,
-          selectedResource: selectedResource,
-          selectTime: TimeOfDay.now());
+        calendarController: _calendarController,
+        events: _events,
+        start: DateTime.now(),
+        finish: DateTime.now(),
+        // availableSlots: _availableSlots,
+        resources: resources,
+        selectedResource: selectedResource,
+        selectedDay: selectedDay,
+        selectTime: TimeOfDay.now(),
+      );
     }
   }
 

@@ -9,8 +9,14 @@ abstract class BookSitterInfoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadPageEvent extends BookSitterInfoEvent {
-  LoadPageEvent();
+class ValidateFormEvent extends BookSitterInfoEvent {
+  final GlobalKey<FormState> formKey;
+
+  ValidateFormEvent({
+    @required this.formKey,
+  });
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        formKey,
+      ];
 }

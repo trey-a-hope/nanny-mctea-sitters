@@ -148,8 +148,18 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                 color: Colors.red,
                                 textColor: Colors.white,
                                 onPressed: () {
-                                  //todo: Create date from time and date.
-                                  DateTime finalDate = DateTime.now();
+                                  //Create date time object from DateTime and TimeOfDay variables.
+                                  DateTime selectedDay = state.selectedDay;
+                                  TimeOfDay selectedTime = state.selectTime;
+
+                                  DateTime finalDate = DateTime(
+                                    selectedDay.year,
+                                    selectedDay.month,
+                                    selectedDay.day,
+                                    selectedTime.hour,
+                                    selectedTime.minute,
+                                    0,
+                                  );
 
                                   Route route = MaterialPageRoute(
                                     builder: (BuildContext context) =>
@@ -157,9 +167,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                       create: (BuildContext context) =>
                                           BookSitterInfoBP.BookSitterInfoBloc(
                                         selectedDate: finalDate,
-                                      )..add(
-                                              BookSitterInfoBP.LoadPageEvent(),
-                                            ),
+                                      ),
                                       child:
                                           BookSitterInfoBP.BookSitterInfoPage(),
                                     ),
