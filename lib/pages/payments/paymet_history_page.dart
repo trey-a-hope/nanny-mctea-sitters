@@ -25,7 +25,7 @@
 //   final GetIt getIt = GetIt.instance;
 //   final int detailsCharLimit = 60;
 //   final String timeFormat = 'MMM d, yyyy';
-//   bool _isLoading = true;
+//   bool _isLoading = true;a
 //   User _currentUser;
 //   List<Charge> _charges = List<Charge>();
 

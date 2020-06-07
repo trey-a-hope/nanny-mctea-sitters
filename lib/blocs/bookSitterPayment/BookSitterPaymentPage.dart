@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import '../../ServiceLocator.dart';
@@ -71,7 +72,9 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
         },
         builder: (BuildContext context,
             BookSitterPaymentBP.BookSitterPaymentState state) {
-          if (state is BookSitterPaymentBP.InitialState) {
+          if (state is BookSitterPaymentBP.LoadingState) {
+            return Spinner();
+          } else if (state is BookSitterPaymentBP.InitialState) {
             return Padding(
               padding: EdgeInsets.all(20),
               child: Column(

@@ -14,20 +14,23 @@ class UserModel {
   String phone;
   DateTime time;
   String uid;
+  String subscriptionID;
 
-  UserModel(
-      {@required String bio,
-      @required String customerID,
-      @required String details,
-      @required String email,
-      @required String fcmToken,
-      @required String id,
-      @required String imgUrl,
-      @required bool isSitter,
-      @required String name,
-      @required String phone,
-      @required DateTime time,
-      @required String uid}) {
+  UserModel({
+    @required String bio,
+    @required String customerID,
+    @required String details,
+    @required String email,
+    @required String fcmToken,
+    @required String id,
+    @required String imgUrl,
+    @required bool isSitter,
+    @required String name,
+    @required String phone,
+    @required DateTime time,
+    @required String uid,
+    @required String subscriptionID,
+  }) {
     this.bio = bio;
     this.customerID = customerID;
     this.details = details;
@@ -40,6 +43,7 @@ class UserModel {
     this.phone = phone;
     this.time = time;
     this.uid = uid;
+    this.subscriptionID = subscriptionID;
   }
 
   Map<String, dynamic> toMap() {
@@ -55,7 +59,8 @@ class UserModel {
       'name': name,
       'phone': phone,
       'time': time,
-      'uid': uid
+      'uid': uid,
+      'subscriptionID': subscriptionID
     };
   }
 
@@ -73,6 +78,7 @@ class UserModel {
       phone: ds.data['phone'],
       time: ds.data['time'].toDate(),
       uid: ds.data['uid'],
+      subscriptionID: ds.data['subscriptionID'],
     );
   }
 }

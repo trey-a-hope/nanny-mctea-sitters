@@ -75,6 +75,7 @@ class SignUpPageState extends State<SignUpPage> {
             uid: user.uid,
             isSitter: false,
             customerID: null,
+            subscriptionID: null,
           );
 
           locator<UserService>().createUser(user: newUser);
@@ -84,8 +85,8 @@ class SignUpPageState extends State<SignUpPage> {
           setState(
             () {
               _isLoading = true;
-              locator<ModalService>()
-                  .showInSnackBar(scaffoldKey: _scaffoldKey, message: e.message);
+              locator<ModalService>().showInSnackBar(
+                  scaffoldKey: _scaffoldKey, message: e.message);
             },
           );
         }
