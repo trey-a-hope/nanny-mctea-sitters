@@ -69,7 +69,18 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
             Route route = MaterialPageRoute(
               builder: (BuildContext context) => BlocProvider(
                 create: (BuildContext context) =>
-                    BookSitterPaymentBP.BookSitterPaymentBloc(),
+                    BookSitterPaymentBP.BookSitterPaymentBloc(
+                  aptNo: state.aptNo,
+                  cost: state.cost,
+                  hours: state.hours,
+                  service: state.service,
+                  city: state.city,
+                  selectedDate: state.selectedDate,
+                  street: state.street,
+                  phoneNumber: state.phoneNumber,
+                  email: state.email,
+                  name: state.name,
+                )..add(BookSitterPaymentBP.LoadPageEvent()),
                 child: BookSitterPaymentBP.BookSitterPaymentPage(),
               ),
             );

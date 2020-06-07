@@ -9,9 +9,22 @@ abstract class BookSitterPaymentEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class LoadPageEvent extends BookSitterPaymentEvent {
+  LoadPageEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
 class SubmitPaymentEvent extends BookSitterPaymentEvent {
   SubmitPaymentEvent();
 
+  @override
+  List<Object> get props => [];
+}
+
+class NavigateToAddCardEvent extends BookSitterPaymentEvent {
+  NavigateToAddCardEvent();
   @override
   List<Object> get props => [];
 }

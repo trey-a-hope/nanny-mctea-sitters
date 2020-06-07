@@ -45,7 +45,30 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
       body: BlocConsumer<BookSitterPaymentBP.BookSitterPaymentBloc,
           BookSitterPaymentBP.BookSitterPaymentState>(
         listener: (BuildContext context,
-            BookSitterPaymentBP.BookSitterPaymentState state) {},
+            BookSitterPaymentBP.BookSitterPaymentState state) {
+          if (state is BookSitterPaymentBP.NavigateToAddCardState) {
+            //todo: Create route to add card page.
+            //             Route route = MaterialPageRoute(
+            //   builder: (BuildContext context) => BlocProvider(
+            //     create: (BuildContext context) =>
+            //         BookSitterPaymentBP.BookSitterPaymentBloc(
+            //       aptNo: state.aptNo,
+            //       cost: state.cost,
+            //       hours: state.hours,
+            //       service: state.service,
+            //       city: state.city,
+            //       selectedDate: state.selectedDate,
+            //       street: state.street,
+            //       phoneNumber: state.phoneNumber,
+            //       email: state.email,
+            //       name: state.name,
+            //     )..add(BookSitterPaymentBP.LoadPageEvent()),
+            //     child: BookSitterPaymentBP.BookSitterPaymentPage(),
+            //   ),
+            // );
+            // Navigator.push(context, route);
+          }
+        },
         builder: (BuildContext context,
             BookSitterPaymentBP.BookSitterPaymentState state) {
           if (state is BookSitterPaymentBP.InitialState) {
@@ -53,10 +76,6 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: <Widget>[
-                  Text('Service'),
-                  SizedBox(
-                    height: 20,
-                  ),
                   Card(
                     elevation: 4,
                     child: Padding(
@@ -65,7 +84,7 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
                         leading: CircleAvatar(
                           backgroundImage: CachedNetworkImageProvider(''),
                         ),
-                        title: Text('Service Goes Here'),
+                        title: Text(state.service),
                         subtitle: Text(
                             'Sitter: Talea Chenault \nTime: Wednesday, June 1st 2020 @ 8:00am'),
                       ),
@@ -189,6 +208,24 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
                       bookSitterPaymentBloc
                           .add(BookSitterPaymentBP.SubmitPaymentEvent());
                     },
+                  )
+                ],
+              ),
+            );
+          } else if (state is BookSitterPaymentBP.NoCardState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('No card found for this user.'),
+                  RaisedButton(
+                    child: Text('Add card now?'),
+                    onPressed: () {
+                      bookSitterPaymentBloc
+                          .add(BookSitterPaymentBP.NavigateToAddCardEvent());
+                    },
+                    color: Colors.red,
+                    textColor: Colors.white,
                   )
                 ],
               ),
