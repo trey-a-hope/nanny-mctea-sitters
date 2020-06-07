@@ -61,8 +61,24 @@ class ErrorState extends BookSitterCalendarState {
   List<Object> get props => [];
 }
 
-class NavigateToBookSitterTimePageState extends BookSitterCalendarState {
-  NavigateToBookSitterTimePageState();
+class NavigateToBookSitterInfoPageState extends BookSitterCalendarState {
+  final String service;
+  final int hours;
+  final double cost;
+  final DateTime selectedDate;
+
+  NavigateToBookSitterInfoPageState({
+    @required this.service,
+    @required this.hours,
+    @required this.cost,
+    @required this.selectedDate,
+  });
+  
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        service,
+        hours,
+        cost,
+        selectedDate,
+      ];
 }

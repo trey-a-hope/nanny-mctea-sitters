@@ -14,10 +14,12 @@ import 'Bloc.dart';
 class BookSitterCalendarBloc
     extends Bloc<BookSitterCalendarEvent, BookSitterCalendarState> {
   BookSitterCalendarBloc({
+    @required this.service,
     @required this.hours,
     @required this.cost,
   });
 
+  final String service;
   final int hours; //Number of hours this appointment will last.
   final double cost; //Total cost of the appointment.
 
@@ -28,7 +30,6 @@ class BookSitterCalendarBloc
       DateTime,
       List<
           dynamic>>(); //Available appointments that have been mapped to a date.
-  UserModel currentUser; //Current user of the app.
   List<ResourceModel> resources; //Available baby sitters.
   ResourceModel
       selectedResource; //Selected baby sitter to filter appointments on.
@@ -51,9 +52,6 @@ class BookSitterCalendarBloc
       yield LoadingState();
 
       try {
-        //Fetch current user.
-        currentUser = await locator<AuthService>().getCurrentUser();
-
         //Fetch resources, (baby sitters).
         resources = await locator<SuperSaaSResourceService>()
             .list(scheduleID: SAAS_BABY_SITTING_SCHEDULE_ID);
@@ -95,6 +93,7 @@ class BookSitterCalendarBloc
       }
     }
 
+    //TODO: Create appropriate time slots .
     if (event is OnDaySelectedEvent) {
       start = null;
       finish = null;
@@ -131,8 +130,24 @@ class BookSitterCalendarBloc
       //todo:
     }
 
-    if (event is NavigateToBookSitterTimePageEvent) {
-      yield NavigateToBookSitterTimePageState();
+    if (event is NavigateToBookSitterInfoPageEvent) {
+      yield NavigateToBookSitterInfoPageState(
+        selectedDate: event.selectedDate,
+        cost: cost,
+        hours: hours,
+        service: service,
+      );
+      //Keep this page in a default state after navigating away.
+      yield LoadedState(
+        calendarController: _calendarController,
+        events: _events,
+        start: start,
+        finish: finish,
+        resources: resources,
+        selectedResource: selectedResource,
+        selectedDay: selectedDay,
+        selectTime: selectedTime,
+      );
     }
 
     if (event is OnTimeSelectEvent) {

@@ -9,6 +9,16 @@ class BookSitterServiceBloc
   @override
   Stream<BookSitterServiceState> mapEventToState(
       BookSitterServiceEvent event) async* {
+    if (event is NavigateToBookSitterCalendarEvent) {
+      yield NavigateToBookSitterCalendarState(
+        hours: event.hours,
+        service: event.service,
+        cost: event.cost,
+      );
+      //Keep this page in a default state after navigating away.
+      yield ChildCareServiceState();
+    }
+
     if (event is ToggleEvent) {
       switch (event.tab) {
         case 0:
@@ -26,4 +36,3 @@ class BookSitterServiceBloc
     }
   }
 }
-

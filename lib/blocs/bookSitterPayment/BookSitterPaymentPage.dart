@@ -36,7 +36,7 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Book Sitter - Info',
+          'Book Sitter - Payment',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -53,8 +53,7 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: <Widget>[
-                  Text('Service',
-                      style: Theme.of(context).primaryTextTheme.title),
+                  Text('Service'),
                   SizedBox(
                     height: 20,
                   ),

@@ -65,12 +65,15 @@ class OnResourceSelectedEvent extends BookSitterCalendarEvent {
   List<Object> get props => [resource];
 }
 
-//todo: delete this.
-class NavigateToBookSitterTimePageEvent extends BookSitterCalendarEvent {
-  NavigateToBookSitterTimePageEvent();
+class NavigateToBookSitterInfoPageEvent extends BookSitterCalendarEvent {
+  final DateTime selectedDate;
+
+  NavigateToBookSitterInfoPageEvent({
+    @required this.selectedDate,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [selectedDate];
 }
 
 class OnTimeSelectEvent extends BookSitterCalendarEvent {

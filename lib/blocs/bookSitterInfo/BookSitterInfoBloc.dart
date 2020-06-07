@@ -6,9 +6,15 @@ class BookSitterInfoBloc
     extends Bloc<BookSitterInfoEvent, BookSitterInfoState> {
   BookSitterInfoBloc({
     @required this.selectedDate,
+    @required this.service,
+    @required this.hours,
+    @required this.cost,
   });
 
   final DateTime selectedDate;
+  final String service;
+  final int hours;
+  final double cost;
 
   @override
   BookSitterInfoState get initialState => LoadedState(
@@ -20,10 +26,21 @@ class BookSitterInfoBloc
   @override
   Stream<BookSitterInfoState> mapEventToState(
       BookSitterInfoEvent event) async* {
-    if (event is ValidateFormEvent) {
+    if (event is NavigateToPaymentPageEvent) {
       //If form is valid, navigate to the payment page.
       if (event.formKey.currentState.validate()) {
-        yield NavigateToPaymentPageState();
+        yield NavigateToPaymentPageState(
+          selectedDate: selectedDate,
+          service: service,
+          hours: hours,
+          cost: cost,
+          aptNo: event.aptNo,
+          street: event.street,
+          city: event.city,
+          name: event.name,
+          email: event.email,
+          phoneNumber: event.phoneNumber,
+        );
       }
       yield LoadedState(
         autoValidate: true,
@@ -31,6 +48,5 @@ class BookSitterInfoBloc
         formKey: event.formKey,
       );
     }
-
   }
 }

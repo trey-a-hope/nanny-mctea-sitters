@@ -9,14 +9,34 @@ abstract class BookSitterInfoEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ValidateFormEvent extends BookSitterInfoEvent {
+class NavigateToPaymentPageEvent extends BookSitterInfoEvent {
   final GlobalKey<FormState> formKey;
 
-  ValidateFormEvent({
+  final String name;
+  final String email;
+  final String street;
+  final String aptNo;
+  final String city;
+  final String phoneNumber;
+
+  NavigateToPaymentPageEvent({
     @required this.formKey,
+    @required this.name,
+    @required this.email,
+    @required this.street,
+    @required this.aptNo,
+    @required this.city,
+    @required this.phoneNumber,
   });
+
   @override
   List<Object> get props => [
         formKey,
+        name,
+        email,
+        street,
+        aptNo,
+        city,
+        phoneNumber,
       ];
 }

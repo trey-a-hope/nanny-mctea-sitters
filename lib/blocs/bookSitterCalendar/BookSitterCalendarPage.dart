@@ -46,7 +46,26 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       body: BlocConsumer<BookSitterCalendarBP.BookSitterCalendarBloc,
           BookSitterCalendarBP.BookSitterCalendarState>(
         listener: (BuildContext context,
-            BookSitterCalendarBP.BookSitterCalendarState state) {},
+            BookSitterCalendarBP.BookSitterCalendarState state) {
+          if (state is BookSitterCalendarBP.NavigateToBookSitterInfoPageState) {
+            //Create route to Book Sitter Calendar Page.
+            Route route = MaterialPageRoute(
+              builder: (BuildContext context) => BlocProvider(
+                create: (BuildContext context) =>
+                    BookSitterInfoBP.BookSitterInfoBloc(
+                  service: state.service,
+                  hours: state.hours,
+                  cost: state.cost,
+                  selectedDate: state.selectedDate,
+                ),
+                child: BookSitterInfoBP.BookSitterInfoPage(),
+              ),
+            );
+            //Push route.
+            Navigator.push(context, route);
+            //
+          }
+        },
         builder: (BuildContext context,
             BookSitterCalendarBP.BookSitterCalendarState state) {
           if (state is BookSitterCalendarBP.LoadingState) {
@@ -152,7 +171,7 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                   DateTime selectedDay = state.selectedDay;
                                   TimeOfDay selectedTime = state.selectTime;
 
-                                  DateTime finalDate = DateTime(
+                                  DateTime selectedDate = DateTime(
                                     selectedDay.year,
                                     selectedDay.month,
                                     selectedDay.day,
@@ -161,19 +180,25 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                                     0,
                                   );
 
-                                  Route route = MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        BlocProvider(
-                                      create: (BuildContext context) =>
-                                          BookSitterInfoBP.BookSitterInfoBloc(
-                                        selectedDate: finalDate,
-                                      ),
-                                      child:
-                                          BookSitterInfoBP.BookSitterInfoPage(),
-                                    ),
+                                  bookSitterCalendarBloc.add(
+                                    BookSitterCalendarBP
+                                        .NavigateToBookSitterInfoPageEvent(
+                                            selectedDate: selectedDate),
                                   );
 
-                                  Navigator.push(context, route);
+                                  // Route route = MaterialPageRoute(
+                                  //   builder: (BuildContext context) =>
+                                  //       BlocProvider(
+                                  //     create: (BuildContext context) =>
+                                  //         BookSitterInfoBP.BookSitterInfoBloc(
+                                  //       selectedDate: finalDate,
+                                  //     ),
+                                  //     child:
+                                  //         BookSitterInfoBP.BookSitterInfoPage(),
+                                  //   ),
+                                  // );
+
+                                  // Navigator.push(context, route);
                                 },
                               )
                             ],

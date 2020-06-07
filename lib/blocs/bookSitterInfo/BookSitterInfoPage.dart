@@ -21,12 +21,19 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
   final String _dateFormat = 'MMMM dd, yyyy';
   final String _timeFormat = '@ hh:mm a';
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _streetController = TextEditingController();
-  final TextEditingController _aptFloorController = TextEditingController();
-  final TextEditingController _cityController = TextEditingController();
+  //TODO: Delete pre-populated text.
+  final TextEditingController _nameController =
+      TextEditingController(text: 'Trey Hope');
+  final TextEditingController _emailController =
+      TextEditingController(text: 'trey.a.hope@gmail.com');
+  final TextEditingController _phoneController =
+      TextEditingController(text: '9372705527');
+  final TextEditingController _streetController =
+      TextEditingController(text: '5 Patrick Street');
+  final TextEditingController _aptFloorController =
+      TextEditingController(text: '1');
+  final TextEditingController _cityController =
+      TextEditingController(text: 'Trotwood');
 
   BookSitterInfoBP.BookSitterInfoBloc bookSitterInfoBloc;
 
@@ -48,7 +55,7 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Book Sitter - Payment',
+          'Book Sitter - Info',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ),
@@ -214,8 +221,15 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
                       textColor: Colors.white,
                       onPressed: () {
                         bookSitterInfoBloc.add(
-                          BookSitterInfoBP.ValidateFormEvent(
-                              formKey: state.formKey),
+                          BookSitterInfoBP.NavigateToPaymentPageEvent(
+                            formKey: state.formKey,
+                            name: _nameController.text,
+                            email: _emailController.text,
+                            street: _streetController.text,
+                            aptNo: _aptFloorController.text,
+                            city: _cityController.text,
+                            phoneNumber: _phoneController.text,
+                          ),
                         );
                       },
                     )
