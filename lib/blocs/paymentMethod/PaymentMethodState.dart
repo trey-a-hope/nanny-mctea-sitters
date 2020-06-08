@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/CustomerModel.dart';
 
 class PaymentMethodState extends Equatable {
   PaymentMethodState();
@@ -22,15 +24,28 @@ class NoCardState extends PaymentMethodState {
 }
 
 class NavigateToAddCardState extends PaymentMethodState {
-  NavigateToAddCardState();
+  final CustomerModel customer;
+  final UserModel currentUser;
+  NavigateToAddCardState({
+    @required this.customer,
+    @required this.currentUser,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        customer,
+        currentUser,
+      ];
 }
 
 class InitialState extends PaymentMethodState {
-  InitialState();
+  final CustomerModel customer;
+  InitialState({
+    @required this.customer,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        customer,
+      ];
 }

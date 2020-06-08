@@ -1,254 +1,118 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
-import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
-import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_credit_card/credit_card_form.dart';
+import 'package:flutter_credit_card/credit_card_model.dart';
+import 'package:flutter_credit_card/credit_card_widget.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/addCard/Bloc.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/models/stripe/CustomerModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCustomerService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeTokenService.dart';
+import '../../ServiceLocator.dart';
 
 class AddCardPage extends StatefulWidget {
-  AddCardPage({@required this.customer});
-  final CustomerModel customer;
   @override
-  State createState() => AddCardPageState(this.customer);
+  State createState() => AddCardPageState();
 }
 
 class AddCardPageState extends State<AddCardPage> {
-  AddCardPageState(this._customer);
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
-  bool _autoValidate = false;
-  final TextEditingController _cardNumberController = TextEditingController();
-  final TextEditingController _expirationController = TextEditingController();
-  final TextEditingController _cvcController = TextEditingController();
-  final CustomerModel _customer;
-  final GetIt getIt = GetIt.I;
-
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  AddCardBloc addCardBloc;
   @override
   void initState() {
     super.initState();
+
+    addCardBloc = BlocProvider.of<AddCardBloc>(context);
   }
 
-  void _addTestCardInfo() {
-    _cardNumberController.text = '4242424242424242';
-    _expirationController.text = '0621';
-    _cvcController.text = '323';
-    _autoValidate = true;
-  }
-
-  void _clearForm() {
-    _cardNumberController.clear();
-    _expirationController.clear();
-    _cvcController.clear();
-  }
-
-  void _submitCard() async {
-    // final FormState form = _formKey.currentState;
-    // if (!form.validate()) {
-    //   _autoValidate = true;
-    // } else {
-    //   bool confirm = await getIt<ModalService>().showConfirmation(
-    //       context: context,
-    //       title: 'Add Card',
-    //       text: 'This will become your default card on file. Proceed?');
-    //   if (confirm) {
-    //     setState(
-    //       () {
-    //         _isLoading = true;
-    //       },
-    //     );
-
-    //     String number = _cardNumberController.text;
-    //     String exp_month = _expirationController.text.substring(0, 2);
-    //     String exp_year = _expirationController.text.substring(2, 4);
-    //     String cvc = _cvcController.text;
-
-    //     try {
-    //       String token = await getIt<StripeTokenService>().create(
-    //         name: '',
-    //           number: number,
-    //           expMonth: exp_month,
-    //           expYear: exp_year,
-    //           cvc: cvc);
-
-    //       await getIt<StripeCustomerService>()
-    //           .update(customerID: _customer.id, token: token);
-
-    //       print(token);
-
-    //       setState(
-    //         () {
-    //           _isLoading = false;
-    //         },
-    //       );
-    //       getIt<Modal>().showInSnackBar(
-    //           scaffoldKey: _scaffoldKey, text: 'Card added successfully.');
-    //     } catch (e) {
-    //       setState(
-    //         () {
-    //           _isLoading = false;
-    //         },
-    //       );
-    //       getIt<Modal>().showAlert(
-    //           context: context,
-    //           title: 'Error',
-    //           message: 'Could not save card at this time.');
-    //     }
-    //   }
-    // }
+  void showTestInfo() {
+    locator<ModalService>().showAlert(
+        context: context,
+        title: 'Test Card Info',
+        message:
+            'Type \'4242424242424242\' for the Card Number, then choose a Expired Date after today, and choose any CVV of your choice.');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: _isLoading
-          ? Spinner()
-          : SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                autovalidate: _autoValidate,
-                child: Column(
-                  children: <Widget>[
-                    ScaffoldClipper(
-                      simpleNavbar: SimpleNavbar(
-                        leftWidget:
-                            Icon(MdiIcons.chevronLeft, color: Colors.white),
-                        leftTap: () {
-                          Navigator.of(context).pop();
+      key: scaffoldKey,
+      backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
+      // floatingActionButton: SpeedDial(
+      //   // both default to 16
+      //   marginRight: 18,
+      //   marginBottom: 20,
+      //   animatedIcon: AnimatedIcons.menu_close,
+      //   animatedIconTheme: IconThemeData(size: 22.0),
+      //   closeManually: false,
+      //   curve: Curves.bounceIn,
+      //   overlayColor: Colors.black,
+      //   overlayOpacity: 0.5,
+      //   onOpen: () => print('OPENING DIAL'),
+      //   onClose: () => print('DIAL CLOSED'),
+      //   tooltip: 'Speed Dial',
+      //   heroTag: 'speed-dial-hero-tag',
+      //   backgroundColor: Colors.red,
+      //   foregroundColor: Colors.white,
+      //   elevation: 8.0,
+      //   shape: CircleBorder(),
+      //   children: [
+      //     SpeedDialChild(
+      //         child: Icon(Icons.check),
+      //         backgroundColor: Colors.blue,
+      //         label: 'Save Card',
+      //         labelStyle: TextStyle(fontSize: 18.0),
+      //         onTap: save),
+      //     SpeedDialChild(
+      //       child: Icon(Icons.credit_card),
+      //       backgroundColor: Colors.green,
+      //       label: 'Show Test Card Info',
+      //       labelStyle: TextStyle(fontSize: 18.0),
+      //       onTap: showTestInfo,
+      //     ),
+      //   ],
+      // ),
+
+      body: BlocConsumer<AddCardBloc, AddCardState>(
+        listener: (BuildContext context, AddCardState state) {},
+        builder: (BuildContext context, AddCardState state) {
+          if (state is LoadingState) {
+            return Spinner();
+          } else if (state is InitialState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  CreditCardWidget(
+                    cardNumber: state.cardNumber,
+                    expiryDate: state.expiryDate,
+                    cardHolderName: state.cardHolderName,
+                    cvvCode: state.cvvCode,
+                    showBackView: state.isCvvFocused,
+                  ),
+                  CreditCardForm(
+                    onCreditCardModelChange:
+                        (CreditCardModel creditCardModel) {
+                          addCardBloc.add(OnCreditCardModelChangeEvent(creditCardModel: creditCardModel));
                         },
-                      ),
-                      title: 'Add Credit Card',
-                      subtitle: 'Just need some quick info.',
-                    ),
-                    Container(
-                      child: creditCard2,
-                      height: 250.0,
-                    ),
-                    //Card Number
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: TextFormField(
-                            controller: _cardNumberController,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            obscureText: false,
-                            onFieldSubmitted: (term) {},
-                            validator: getIt<ValidatorService>().cardNumber,
-                            onSaved: (value) {},
-                            decoration: InputDecoration(
-                              hintText: 'Card Number',
-                              icon: Icon(Icons.credit_card,
-                                  color:
-                                      Theme.of(context).primaryIconTheme.color),
-                              fillColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //Expiration
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: TextFormField(
-                            controller: _expirationController,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            obscureText: false,
-                            onFieldSubmitted: (term) {},
-                            validator: getIt<ValidatorService>().cardExpiration,
-                            onSaved: (value) {},
-                            decoration: InputDecoration(
-                              hintText: 'Expiration',
-                              icon: Icon(Icons.date_range,
-                                  color:
-                                      Theme.of(context).primaryIconTheme.color),
-                              fillColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    //CVC
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Card(
-                        elevation: 3,
-                        child: Padding(
-                          padding: EdgeInsets.all(20),
-                          child: TextFormField(
-                            controller: _cvcController,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            obscureText: false,
-                            onFieldSubmitted: (term) {},
-                            validator: getIt<ValidatorService>().cardCVC,
-                            onSaved: (value) {},
-                            decoration: InputDecoration(
-                              hintText: 'CVC',
-                              icon: Icon(Icons.security,
-                                  color:
-                                      Theme.of(context).primaryIconTheme.color),
-                              fillColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          RaisedButton(
-                            color: Theme.of(context).buttonColor,
-                            child: Text('Add Automatic',
-                                style:
-                                    Theme.of(context).accentTextTheme.button),
-                            onPressed: () {
-                              _addTestCardInfo();
-                            },
-                          ),
-                          RaisedButton(
-                            color: Theme.of(context).buttonColor,
-                            child: Text('Add Card',
-                                style:
-                                    Theme.of(context).accentTextTheme.button),
-                            onPressed: () {
-                              _submitCard();
-                            },
-                          ),
-                          RaisedButton(
-                            color: Theme.of(context).buttonColor,
-                            child: Text('Clear',
-                                style:
-                                    Theme.of(context).accentTextTheme.button),
-                            onPressed: () {
-                              _clearForm();
-                            },
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
+            );
+          } else {
+            return Center(
+              child: Text('You should NEVER see this.'),
+            );
+          }
+        },
+      ),
     );
   }
 }
+
+// void onCreditCardModelChange(CreditCardModel creditCardModel) {
+//   cardNumber = creditCardModel.cardNumber;
+//   expiryDate = creditCardModel.expiryDate;
+//   cardHolderName = creditCardModel.cardHolderName;
+//   cvvCode = creditCardModel.cvvCode;
+//   isCvvFocused = creditCardModel.isCvvFocused;
+// }

@@ -1,82 +1,12 @@
-// import 'package:flutter/material.dart';
-// import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-// import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
-// import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
-// import 'package:nanny_mctea_sitters_flutter/pages/payments/payment_method.dart';
-// import 'package:nanny_mctea_sitters_flutter/pages/payments/paymet_history_page.dart';
-// class SettingsPage extends StatefulWidget {
-//   @override
-//   State createState() => SettingsPageState();
-// }
-
-// class SettingsPageState extends State<SettingsPage> {
-//   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       key: _scaffoldKey,
-//       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-//       body: SingleChildScrollView(
-//         child: Column(
-//           children: [
-//             ScaffoldClipper(
-//               simpleNavbar: SimpleNavbar(
-//                 leftWidget: Icon(MdiIcons.chevronLeft, color: Colors.white),
-//                 leftTap: () {
-//                   Navigator.of(context).pop();
-//                 },
-//               ),
-//               title: 'Settings',
-//               subtitle: 'Just how you like it.',
-//             ),
-//             ListTile(
-//               leading: Icon(Icons.credit_card,
-//                   color: Theme.of(context).primaryIconTheme.color),
-//               title: Text('Payment Method'),
-//               subtitle: Text('Manage your payment method.'),
-//               trailing: Icon(Icons.chevron_right),
-//               onTap: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) => PaymentMethodPage(),
-//                   ),
-//                 );
-//               },
-//             ),
-//             ListTile(
-//               leading: Icon(Icons.history,
-//                   color: Theme.of(context).primaryIconTheme.color),
-//               title: Text('Payment History'),
-//               subtitle: Text('View your past transactions.'),
-//               trailing: Icon(Icons.chevron_right),
-//               onTap: () {
-//                 Navigator.push(
-//                   context,
-//                   MaterialPageRoute(
-//                     builder: (context) => PaymentHistoryPage(),
-//                   ),
-//                 );
-//               },
-//             )
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/home/HomeEvent.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/subscription/Bloc.dart'
+    as SubscriptionBP;
+import 'package:nanny_mctea_sitters_flutter/blocs/paymentMethod/Bloc.dart'
+    as PaymentMethodBP;
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-
 import '../ServiceLocator.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -93,7 +23,7 @@ class SettingsPage extends StatelessWidget {
       key: scaffoldKey,
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.blue,
         title: Text(
           'Settings',
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -121,16 +51,16 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Payment Method'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
-                      locator<ModalService>().showAlert(
-                          context: context,
-                          title: 'To Do',
-                          message: 'Navigate to payment methods.');
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => PaymentMethodPage(),
-                      //   ),
-                      // );
+                      Route route = MaterialPageRoute(
+                        builder: (BuildContext context) => BlocProvider(
+                          create: (BuildContext context) =>
+                              PaymentMethodBP.PaymentMethodBloc()
+                                ..add(PaymentMethodBP.LoadPageEvent()),
+                          child: PaymentMethodBP.PaymentMethodPage(),
+                        ),
+                      );
+
+                      Navigator.push(context, route);
                     },
                   ),
                   Divider(),
@@ -142,13 +72,37 @@ class SettingsPage extends StatelessWidget {
                     onTap: () {
                       locator<ModalService>().showAlert(
                           context: context,
-                          title: 'To Do',
-                          message: 'Navigate to subscription page.');
+                          title: 'Coming soon...',
+                          message: 'Subscription Page.');
                       // Route route = MaterialPageRoute(
                       //   builder: (BuildContext context) => BlocProvider(
                       //     create: (BuildContext context) =>
-                      //         SubscriptionBloc()..add(LoadPageEvent()),
-                      //     child: SubscriptionPage(),
+                      //         SubscriptionBP.SubscriptionBloc()
+                      //           ..add(SubscriptionBP.LoadPageEvent()),
+                      //     child: SubscriptionBP.SubscriptionPage(),
+                      //   ),
+                      // );
+
+                      // Navigator.push(context, route);
+                    },
+                  ),
+                  Divider(),
+                  //Subscriptions
+                  ListTile(
+                    leading: Icon(Icons.history, color: Colors.red.shade300),
+                    title: Text('Payment History'),
+                    trailing: Icon(Icons.chevron_right),
+                    onTap: () {
+                      locator<ModalService>().showAlert(
+                          context: context,
+                          title: 'Coming soon...',
+                          message: 'Payment History Page.');
+                      // Route route = MaterialPageRoute(
+                      //   builder: (BuildContext context) => BlocProvider(
+                      //     create: (BuildContext context) =>
+                      //         SubscriptionBP.SubscriptionBloc()
+                      //           ..add(SubscriptionBP.LoadPageEvent()),
+                      //     child: SubscriptionBP.SubscriptionPage(),
                       //   ),
                       // );
 
@@ -182,19 +136,6 @@ class SettingsPage extends StatelessWidget {
                               'This requires extra steps from the admin team.');
                     },
                   ),
-                  // ListTile(
-                  //   leading: Icon(Icons.security, color: Colors.red.shade300),
-                  //   title: Text('Admin'),
-                  //   trailing: Icon(Icons.chevron_right),
-                  //   onTap: () {
-                  //     // Navigator.push(
-                  //     //   context,
-                  //     //   MaterialPageRoute(
-                  //     //     builder: (context) => AdminPage(),
-                  //     //   ),
-                  //     // );
-                  //   },
-                  // )
                 ],
               ),
             ),

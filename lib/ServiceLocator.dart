@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/FCMNotificationService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/FormatterService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
@@ -26,6 +27,7 @@ void setUpLocater() {
   locator.registerLazySingleton(() => FCMNotificationService());
   locator.registerLazySingleton(() => DBService());
   locator.registerLazySingleton(() => UserService());
+  locator.registerLazySingleton(() => FormatterService());
   //Stripe Services
   locator.registerLazySingleton(() => StripeCardService());
   locator.registerLazySingleton(() => StripeChargeService());

@@ -15,8 +15,26 @@ class LoadingState extends AddCardState {
 }
 
 class InitialState extends AddCardState {
-  InitialState();
+  final String cardNumber;
+  final String expiryDate;
+  final String cardHolderName;
+  final String cvvCode;
+  final bool isCvvFocused;
+
+  InitialState({
+    @required this.cardNumber,
+    @required this.expiryDate,
+    @required this.cardHolderName,
+    @required this.cvvCode,
+    @required this.isCvvFocused,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        cardNumber,
+        expiryDate,
+        cardHolderName,
+        cvvCode,
+        isCvvFocused,
+      ];
 }
