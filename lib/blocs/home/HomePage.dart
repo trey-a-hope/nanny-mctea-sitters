@@ -323,14 +323,14 @@ class HomePageState extends State<HomePage> {
                             sitter: sitter,
                           ),
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SitterDetailsPage(
-                                  sitter,
-                                ),
-                              ),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //     builder: (context) => SitterDetailsPage(
+                            //       sitter,
+                            //     ),
+                            //   ),
+                            // );
                           },
                         );
                       },

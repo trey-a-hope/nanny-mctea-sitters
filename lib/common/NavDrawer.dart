@@ -118,12 +118,12 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfilePage(),
-                ),
-              );
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(
+              //     builder: (context) => ProfilePage(),
+              //   ),
+              // );
             },
           );
   }
