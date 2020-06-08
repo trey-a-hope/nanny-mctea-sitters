@@ -36,3 +36,10 @@ class OnCreditCardModelChangeEvent extends AddCardEvent {
         creditCardModel,
       ];
 }
+
+class OpenConfirmSaveCardModalEvent extends AddCardEvent {
+  OpenConfirmSaveCardModalEvent();
+
+  @override
+  List<Object> get props => [];
+}

@@ -14,7 +14,8 @@ class AddCardPage extends StatefulWidget {
   State createState() => AddCardPageState();
 }
 
-class AddCardPageState extends State<AddCardPage> {
+class AddCardPageState extends State<AddCardPage>
+    implements AddCardBlocDelegate {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   AddCardBloc addCardBloc;
   @override
@@ -22,6 +23,7 @@ class AddCardPageState extends State<AddCardPage> {
     super.initState();
 
     addCardBloc = BlocProvider.of<AddCardBloc>(context);
+    addCardBloc.setDelegate(delegate: this);
   }
 
   void showTestInfo() {
@@ -35,6 +37,14 @@ class AddCardPageState extends State<AddCardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Add Card',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+      ),
       key: scaffoldKey,
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
@@ -74,7 +84,15 @@ class AddCardPageState extends State<AddCardPage> {
       // ),
 
       body: BlocConsumer<AddCardBloc, AddCardState>(
-        listener: (BuildContext context, AddCardState state) {},
+        listener: (BuildContext context, AddCardState state) {
+          if (state is ErrorState) {
+            locator<ModalService>().showAlert(
+              context: context,
+              title: 'Error',
+              message: state.error.toString(),
+            );
+          }
+        },
         builder: (BuildContext context, AddCardState state) {
           if (state is LoadingState) {
             return Spinner();
@@ -90,13 +108,25 @@ class AddCardPageState extends State<AddCardPage> {
                     showBackView: state.isCvvFocused,
                   ),
                   CreditCardForm(
-                    onCreditCardModelChange:
-                        (CreditCardModel creditCardModel) {
-                          addCardBloc.add(OnCreditCardModelChangeEvent(creditCardModel: creditCardModel));
-                        },
+                    onCreditCardModelChange: (CreditCardModel creditCardModel) {
+                      addCardBloc.add(OnCreditCardModelChangeEvent(
+                          creditCardModel: creditCardModel));
+                    },
                   ),
+                  RaisedButton(
+                    child: Text('Save Card'),
+                    onPressed: () async {
+                      addCardBloc.add(OpenConfirmSaveCardModalEvent());
+                    },
+                    color: Colors.red,
+                    textColor: Colors.white,
+                  )
                 ],
               ),
+            );
+          } else if (state is ErrorState) {
+            return Center(
+              child: Text('Error: ${state.error.toString()}'),
             );
           } else {
             return Center(
@@ -105,6 +135,24 @@ class AddCardPageState extends State<AddCardPage> {
           }
         },
       ),
+    );
+  }
+
+  @override
+  void openConfirmSaveCardModal() async {
+    //Prompt user about saving this card.
+    bool confirm = await locator<ModalService>().showConfirmation(
+        context: context, title: 'Save Card', message: 'Are you sure?');
+
+    if (confirm) addCardBloc.add(SubmitCardEvent());
+  }
+
+  @override
+  void openErrorModal({@required String message}) {
+    locator<ModalService>().showAlert(
+      context: context,
+      title: 'Error',
+      message: message,
     );
   }
 }

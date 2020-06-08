@@ -7,13 +7,12 @@ import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/BookSitterSe
 import 'package:nanny_mctea_sitters_flutter/blocs/login/LoginPage.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/SettingsPage.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/admin/delete_availability.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/admin/submit_availability.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/authentication/sign_up_page.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as LoginBP;
+import 'package:nanny_mctea_sitters_flutter/blocs/signUp/Bloc.dart' as SignUpBP;
+
 import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/Bloc.dart'
     as BookSitterServiceBP;
 
@@ -129,51 +128,51 @@ class NavDrawerState extends State<NavDrawer> {
           );
   }
 
-  Widget _buildAddAvailability() {
-    return user != null && ADMIN_UIDS.contains(user.uid)
-        ? ListTile(
-            leading: Icon(MdiIcons.plus, color: Colors.red),
-            title: Text(
-              'Add Sitter Hours',
-            ),
-            subtitle: Text(
-              'Provide availability for sitters.',
-              style: TextStyle(color: Colors.grey),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SubmitAvailabilityPage(),
-                ),
-              );
-            },
-          )
-        : Container();
-  }
+  // Widget _buildAddAvailability() {
+  //   return user != null && ADMIN_UIDS.contains(user.uid)
+  //       ? ListTile(
+  //           leading: Icon(MdiIcons.plus, color: Colors.red),
+  //           title: Text(
+  //             'Add Sitter Hours',
+  //           ),
+  //           subtitle: Text(
+  //             'Provide availability for sitters.',
+  //             style: TextStyle(color: Colors.grey),
+  //           ),
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => SubmitAvailabilityPage(),
+  //               ),
+  //             );
+  //           },
+  //         )
+  //       : Container();
+  // }
 
-  Widget _buildDeleteAvailability() {
-    return user != null && ADMIN_UIDS.contains(user.uid)
-        ? ListTile(
-            leading: Icon(MdiIcons.delete, color: Colors.red),
-            title: Text(
-              'Delete Sitter Hours',
-            ),
-            subtitle: Text(
-              'Delete availability for sitters.',
-              style: TextStyle(color: Colors.grey),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DeleteAvailabilityPage(),
-                ),
-              );
-            },
-          )
-        : Container();
-  }
+  // Widget _buildDeleteAvailability() {
+  //   return user != null && ADMIN_UIDS.contains(user.uid)
+  //       ? ListTile(
+  //           leading: Icon(MdiIcons.delete, color: Colors.red),
+  //           title: Text(
+  //             'Delete Sitter Hours',
+  //           ),
+  //           subtitle: Text(
+  //             'Delete availability for sitters.',
+  //             style: TextStyle(color: Colors.grey),
+  //           ),
+  //           onTap: () {
+  //             Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                 builder: (context) => DeleteAvailabilityPage(),
+  //               ),
+  //             );
+  //           },
+  //         )
+  //       : Container();
+  // }
 
   Widget _buildBookSitter() {
     return user == null
@@ -304,12 +303,13 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SignUpPage(),
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) => SignUpBP.SignUpBloc(),
+                  child: SignUpBP.SignUpPage(),
                 ),
               );
+              Navigator.push(context, route);
             },
           )
         : Container();

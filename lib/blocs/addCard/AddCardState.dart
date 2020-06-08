@@ -38,3 +38,23 @@ class InitialState extends AddCardState {
         isCvvFocused,
       ];
 }
+
+class SuccessState extends AddCardState {
+  SuccessState();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ErrorState extends AddCardState {
+  final dynamic error;
+
+  ErrorState({
+    @required this.error,
+  });
+
+  @override
+  List<Object> get props => [
+        error,
+      ];
+}

@@ -41,7 +41,7 @@ class StripeTokenService extends IStripeTokenService {
         return map['id'];
       } else {
         throw PlatformException(
-            message: map['raw']['message'], code: map['raw']['code']);
+            message: map['raw']['message'], code: map['raw']['statusCode']);
       }
     } catch (e) {
       throw PlatformException(message: e.message, code: e.code);
