@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/BookSitterServicePage.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/login/LoginPage.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/SettingsPage.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as LoginBP;
-import 'package:nanny_mctea_sitters_flutter/blocs/signUp/Bloc.dart' as SignUpBP;
-
+import 'package:nanny_mctea_sitters_flutter/blocs/login/Bloc.dart' as LOGIN_BP;
+import 'package:nanny_mctea_sitters_flutter/blocs/signUp/Bloc.dart'
+    as SIGN_UP_BP;
 import 'package:nanny_mctea_sitters_flutter/blocs/bookSitterService/Bloc.dart'
-    as BookSitterServiceBP;
+    as BOOK_SITTER_SERVICE_BP;
+import 'package:nanny_mctea_sitters_flutter/blocs/profile/Bloc.dart'
+    as PROFILE_BP;
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({Key key}) : super(key: key);
@@ -107,7 +104,7 @@ class NavDrawerState extends State<NavDrawer> {
 
   Widget _buildProfile() {
     return user == null
-        ? Container()
+        ? SizedBox.shrink()
         : ListTile(
             leading: Icon(MdiIcons.faceProfile, color: Colors.red),
             title: Text(
@@ -118,12 +115,16 @@ class NavDrawerState extends State<NavDrawer> {
               style: TextStyle(color: Colors.grey),
             ),
             onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => ProfilePage(),
-              //   ),
-              // );
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) => PROFILE_BP.ProfileBloc()
+                    ..add(
+                      PROFILE_BP.LoadPageEvent(),
+                    ),
+                  child: PROFILE_BP.ProfilePage(),
+                ),
+              );
+              Navigator.push(context, route);
             },
           );
   }
@@ -148,7 +149,7 @@ class NavDrawerState extends State<NavDrawer> {
   //             );
   //           },
   //         )
-  //       : Container();
+  //       : SizedBox.shrink();
   // }
 
   // Widget _buildDeleteAvailability() {
@@ -171,12 +172,12 @@ class NavDrawerState extends State<NavDrawer> {
   //             );
   //           },
   //         )
-  //       : Container();
+  //       : SizedBox.shrink();
   // }
 
   Widget _buildBookSitter() {
     return user == null
-        ? Container()
+        ? SizedBox.shrink()
         : ListTile(
             leading: Icon(MdiIcons.faceAgent, color: Colors.red),
             title: Text(
@@ -190,8 +191,8 @@ class NavDrawerState extends State<NavDrawer> {
               Route route = MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
                   create: (BuildContext context) =>
-                      BookSitterServiceBP.BookSitterServiceBloc(),
-                  child: BookSitterServicePage(),
+                      BOOK_SITTER_SERVICE_BP.BookSitterServiceBloc(),
+                  child: BOOK_SITTER_SERVICE_BP.BookSitterServicePage(),
                 ),
               );
               Navigator.push(context, route);
@@ -201,7 +202,7 @@ class NavDrawerState extends State<NavDrawer> {
 
   Widget _buildPlansPricing() {
     return user == null
-        ? Container()
+        ? SizedBox.shrink()
         : ListTile(
             leading: Icon(Icons.attach_money, color: Colors.red),
             title: Text(
@@ -222,50 +223,50 @@ class NavDrawerState extends State<NavDrawer> {
           );
   }
 
-  Widget _buildJoinTeam() {
-    return ListTile(
-      leading: Icon(MdiIcons.group, color: Colors.red),
-      title: Text(
-        'Join The Team',
-      ),
-      subtitle: Text(
-        'Become a nanny today.',
-        style: TextStyle(color: Colors.grey),
-      ),
-      onTap: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => JoinTeamPage(),
-        //   ),
-        // );
-      },
-    );
-  }
+  // Widget _buildJoinTeam() {
+  //   return ListTile(
+  //     leading: Icon(MdiIcons.group, color: Colors.red),
+  //     title: Text(
+  //       'Join The Team',
+  //     ),
+  //     subtitle: Text(
+  //       'Become a nanny today.',
+  //       style: TextStyle(color: Colors.grey),
+  //     ),
+  //     onTap: () {
+  //       // Navigator.push(
+  //       //   context,
+  //       //   MaterialPageRoute(
+  //       //     builder: (context) => JoinTeamPage(),
+  //       //   ),
+  //       // );
+  //     },
+  //   );
+  // }
 
-  Widget _buildLogout() {
-    return user == null
-        ? Container()
-        : ListTile(
-            leading: Icon(MdiIcons.login, color: Colors.red),
-            title: Text(
-              'Logout',
-            ),
-            subtitle: Text(
-              'Leave the app.',
-              style: TextStyle(color: Colors.grey),
-            ),
-            onTap: () async {
-              bool confirm = await locator<ModalService>().showConfirmation(
-                  context: context,
-                  title: 'Sign Out',
-                  message: 'Are you sure?');
-              if (confirm) {
-                await _auth.signOut();
-              }
-            },
-          );
-  }
+  // Widget _buildLogout() {
+  //   return user == null
+  //       ? SizedBox.shrink()
+  //       : ListTile(
+  //           leading: Icon(MdiIcons.login, color: Colors.red),
+  //           title: Text(
+  //             'Logout',
+  //           ),
+  //           subtitle: Text(
+  //             'Leave the app.',
+  //             style: TextStyle(color: Colors.grey),
+  //           ),
+  //           onTap: () async {
+  //             bool confirm = await locator<ModalService>().showConfirmation(
+  //                 context: context,
+  //                 title: 'Sign Out',
+  //                 message: 'Are you sure?');
+  //             if (confirm) {
+  //               await _auth.signOut();
+  //             }
+  //           },
+  //         );
+  // }
 
   Widget _buildLogin() {
     return user == null
@@ -281,14 +282,14 @@ class NavDrawerState extends State<NavDrawer> {
             onTap: () {
               Route route = MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
-                  create: (BuildContext context) => LoginBP.LoginBloc(),
-                  child: LoginPage(),
+                  create: (BuildContext context) => LOGIN_BP.LoginBloc(),
+                  child: LOGIN_BP.LoginPage(),
                 ),
               );
               Navigator.push(context, route);
             },
           )
-        : Container();
+        : SizedBox.shrink();
   }
 
   Widget _buildSignUp() {
@@ -305,19 +306,19 @@ class NavDrawerState extends State<NavDrawer> {
             onTap: () {
               Route route = MaterialPageRoute(
                 builder: (BuildContext context) => BlocProvider(
-                  create: (BuildContext context) => SignUpBP.SignUpBloc(),
-                  child: SignUpBP.SignUpPage(),
+                  create: (BuildContext context) => SIGN_UP_BP.SignUpBloc(),
+                  child: SIGN_UP_BP.SignUpPage(),
                 ),
               );
               Navigator.push(context, route);
             },
           )
-        : Container();
+        : SizedBox.shrink();
   }
 
   Widget _buildSettings() {
     return user == null
-        ? Container()
+        ? SizedBox.shrink()
         : ListTile(
             leading: Icon(MdiIcons.settings, color: Colors.red),
             title: Text(

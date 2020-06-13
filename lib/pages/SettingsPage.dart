@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/home/HomeEvent.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/subscription/Bloc.dart'
-    as SubscriptionBP;
+    as SUBSCRIPTION_BLOC;
 import 'package:nanny_mctea_sitters_flutter/blocs/paymentMethod/Bloc.dart'
-    as PaymentMethodBP;
+    as PAYMENT_METHOD_BLOC;
 import 'package:nanny_mctea_sitters_flutter/blocs/paymentHistory/Bloc.dart'
     as PAYMENT_HISTORY_BLOC;
+import 'package:nanny_mctea_sitters_flutter/blocs/profile/Bloc.dart'
+    as PROFILE_BLOC;
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import '../ServiceLocator.dart';
@@ -56,9 +57,9 @@ class SettingsPage extends StatelessWidget {
                       Route route = MaterialPageRoute(
                         builder: (BuildContext context) => BlocProvider(
                           create: (BuildContext context) =>
-                              PaymentMethodBP.PaymentMethodBloc()
-                                ..add(PaymentMethodBP.LoadPageEvent()),
-                          child: PaymentMethodBP.PaymentMethodPage(),
+                              PAYMENT_METHOD_BLOC.PaymentMethodBloc()
+                                ..add(PAYMENT_METHOD_BLOC.LoadPageEvent()),
+                          child: PAYMENT_METHOD_BLOC.PaymentMethodPage(),
                         ),
                       );
 
@@ -79,7 +80,7 @@ class SettingsPage extends StatelessWidget {
                       // Route route = MaterialPageRoute(
                       //   builder: (BuildContext context) => BlocProvider(
                       //     create: (BuildContext context) =>
-                      //         SubscriptionBP.SubscriptionBloc()
+                      //         SubscriptionBPPAYMENT_METHOD_BLOC.SubscriptionBloc()
                       //           ..add(SubscriptionBP.LoadPageEvent()),
                       //     child: SubscriptionBP.SubscriptionPage(),
                       //   ),
