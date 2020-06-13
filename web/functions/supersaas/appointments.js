@@ -26,6 +26,20 @@ exports.getAvailable = functions.https.onRequest((request, response) => {
     });
 });
 
+exports.getAgenda = functions.https.onRequest((request, response) => {
+    var scheduleID = parseInt(request.body.scheduleID);
+    var userID = request.body.userID;
+    var fromTime = request.body.fromTime;
+
+    client.appointments.agenda(scheduleID, userID, fromTime, true, (err, data) => {
+        if (err) {
+            response.send(err)
+        } else {
+            response.send(data)
+        }
+    });
+});
+
 exports.create = functions.https.onRequest((request, response) => {
     var scheduleID = parseInt(request.body.scheduleID);
     var userID = request.body.userID;
