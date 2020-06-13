@@ -39,13 +39,6 @@ class InitialState extends AddCardState {
       ];
 }
 
-class SuccessState extends AddCardState {
-  SuccessState();
-
-  @override
-  List<Object> get props => [];
-}
-
 class ErrorState extends AddCardState {
   final dynamic error;
 

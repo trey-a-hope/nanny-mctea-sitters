@@ -112,6 +112,16 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
           ),
           backgroundColor: Colors.blue,
           centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                paymentMethodBloc.add(
+                  PaymentMethodBP.NavigateToAddCardEvent(),
+                );
+              },
+            )
+          ],
         ),
         body: SafeArea(
           child: Padding(
@@ -249,21 +259,9 @@ class PaymentMethodPageState extends State<PaymentMethodPage> {
                   );
                 } else if (state is PaymentMethodBP.NoCardState) {
                   return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text('You have 0 cards.'),
-                        RaisedButton(
-                          child: Text('Add Card'),
-                          onPressed: () {
-                            paymentMethodBloc.add(
-                              PaymentMethodBP.NavigateToAddCardEvent(),
-                            );
-                          },
-                          color: Colors.red,
-                          textColor: Colors.white,
-                        )
-                      ],
+                    child: Text(
+                      'You have 0 cards.',
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   );
                 }

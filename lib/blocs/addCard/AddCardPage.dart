@@ -48,41 +48,6 @@ class AddCardPageState extends State<AddCardPage>
       key: scaffoldKey,
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: true,
-      // floatingActionButton: SpeedDial(
-      //   // both default to 16
-      //   marginRight: 18,
-      //   marginBottom: 20,
-      //   animatedIcon: AnimatedIcons.menu_close,
-      //   animatedIconTheme: IconThemeData(size: 22.0),
-      //   closeManually: false,
-      //   curve: Curves.bounceIn,
-      //   overlayColor: Colors.black,
-      //   overlayOpacity: 0.5,
-      //   onOpen: () => print('OPENING DIAL'),
-      //   onClose: () => print('DIAL CLOSED'),
-      //   tooltip: 'Speed Dial',
-      //   heroTag: 'speed-dial-hero-tag',
-      //   backgroundColor: Colors.red,
-      //   foregroundColor: Colors.white,
-      //   elevation: 8.0,
-      //   shape: CircleBorder(),
-      //   children: [
-      //     SpeedDialChild(
-      //         child: Icon(Icons.check),
-      //         backgroundColor: Colors.blue,
-      //         label: 'Save Card',
-      //         labelStyle: TextStyle(fontSize: 18.0),
-      //         onTap: save),
-      //     SpeedDialChild(
-      //       child: Icon(Icons.credit_card),
-      //       backgroundColor: Colors.green,
-      //       label: 'Show Test Card Info',
-      //       labelStyle: TextStyle(fontSize: 18.0),
-      //       onTap: showTestInfo,
-      //     ),
-      //   ],
-      // ),
-
       body: BlocConsumer<AddCardBloc, AddCardState>(
         listener: (BuildContext context, AddCardState state) {
           if (state is ErrorState) {
@@ -116,7 +81,12 @@ class AddCardPageState extends State<AddCardPage>
                   RaisedButton(
                     child: Text('Save Card'),
                     onPressed: () async {
-                      addCardBloc.add(OpenConfirmSaveCardModalEvent());
+                      if (addCardBloc.formValid()) {
+                        addCardBloc.delegate.openConfirmSaveCardModal();
+                      } else {
+                        addCardBloc.delegate
+                            .openErrorModal(message: 'Form not valid.');
+                      }
                     },
                     color: Colors.red,
                     textColor: Colors.white,
@@ -155,12 +125,10 @@ class AddCardPageState extends State<AddCardPage>
       message: message,
     );
   }
-}
 
-// void onCreditCardModelChange(CreditCardModel creditCardModel) {
-//   cardNumber = creditCardModel.cardNumber;
-//   expiryDate = creditCardModel.expiryDate;
-//   cardHolderName = creditCardModel.cardHolderName;
-//   cvvCode = creditCardModel.cvvCode;
-//   isCvvFocused = creditCardModel.isCvvFocused;
-// }
+  @override
+  void successModal() {
+    locator<ModalService>().showInSnackBar(
+        scaffoldKey: scaffoldKey, message: 'Card added successfully.');
+  }
+}

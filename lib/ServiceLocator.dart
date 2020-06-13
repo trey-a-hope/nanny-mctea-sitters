@@ -1,9 +1,11 @@
 import 'package:get_it/get_it.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ConversationService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/DBService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/FCMNotificationService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/FormatterService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/StorageService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCardService.dart';
@@ -21,13 +23,19 @@ import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSResource
 GetIt locator = GetIt.I;
 
 void setUpLocater() {
-  locator.registerLazySingleton(() => AuthService());
+  //Other
   locator.registerLazySingleton(() => ValidatorService());
   locator.registerLazySingleton(() => ModalService());
+  locator.registerLazySingleton(() => FormatterService());
+
+  //Firebase
+  locator.registerLazySingleton(() => AuthService());
   locator.registerLazySingleton(() => FCMNotificationService());
   locator.registerLazySingleton(() => DBService());
   locator.registerLazySingleton(() => UserService());
-  locator.registerLazySingleton(() => FormatterService());
+  locator.registerLazySingleton(() => StorageService());
+  locator.registerLazySingleton(() => ConversationsService());
+
   //Stripe Services
   locator.registerLazySingleton(() => StripeCardService());
   locator.registerLazySingleton(() => StripeChargeService());
@@ -38,6 +46,7 @@ void setUpLocater() {
   locator.registerLazySingleton(() => StripeTokenService());
   locator.registerLazySingleton(() => StripePlanService());
   locator.registerLazySingleton(() => StripeSubscriptionService());
+  
   //Super SaaS
   locator.registerLazySingleton(() => SuperSaaSAppointmentService());
   locator.registerLazySingleton(() => SuperSaaSResourceService());

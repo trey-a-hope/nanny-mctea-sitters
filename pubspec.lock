@@ -85,13 +85,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.4"
-  date_utils:
-    dependency: transitive
+  dash_chat:
+    dependency: "direct main"
     description:
-      name: date_utils
+      name: dash_chat
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0+2"
+    version: "1.1.9"
   device_calendar:
     dependency: "direct main"
     description:
@@ -174,13 +174,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
-  flutter_money_formatter:
-    dependency: "direct main"
+  flutter_parsed_text:
+    dependency: transitive
     description:
-      name: flutter_money_formatter
+      name: flutter_parsed_text
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.8.3"
+    version: "1.2.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -219,6 +219,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.12"
+  image_cropper:
+    dependency: "direct main"
+    description:
+      name: image_cropper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.2.3"
   image_picker:
     dependency: "direct main"
     description:
@@ -232,7 +239,7 @@ packages:
       name: intl
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.15.8"
+    version: "0.16.1"
   intro_views_flutter:
     dependency: "direct main"
     description:
@@ -405,7 +412,7 @@ packages:
       name: table_calendar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.2.3"
   term_glyph:
     dependency: transitive
     description:
@@ -427,6 +434,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.18"
+  transparent_image:
+    dependency: transitive
+    description:
+      name: transparent_image
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   typed_data:
     dependency: transitive
     description:
