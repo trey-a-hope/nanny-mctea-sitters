@@ -5,6 +5,8 @@ import 'package:nanny_mctea_sitters_flutter/blocs/subscription/Bloc.dart'
     as SubscriptionBP;
 import 'package:nanny_mctea_sitters_flutter/blocs/paymentMethod/Bloc.dart'
     as PaymentMethodBP;
+import 'package:nanny_mctea_sitters_flutter/blocs/paymentHistory/Bloc.dart'
+    as PAYMENT_HISTORY_BLOC;
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import '../ServiceLocator.dart';
@@ -93,20 +95,16 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Payment History'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
-                      locator<ModalService>().showAlert(
-                          context: context,
-                          title: 'Coming soon...',
-                          message: 'Payment History Page.');
-                      // Route route = MaterialPageRoute(
-                      //   builder: (BuildContext context) => BlocProvider(
-                      //     create: (BuildContext context) =>
-                      //         SubscriptionBP.SubscriptionBloc()
-                      //           ..add(SubscriptionBP.LoadPageEvent()),
-                      //     child: SubscriptionBP.SubscriptionPage(),
-                      //   ),
-                      // );
+                      Route route = MaterialPageRoute(
+                        builder: (BuildContext context) => BlocProvider(
+                          create: (BuildContext context) =>
+                              PAYMENT_HISTORY_BLOC.PaymentHistoryBloc()
+                                ..add(PAYMENT_HISTORY_BLOC.LoadPageEvent()),
+                          child: PAYMENT_HISTORY_BLOC.PaymentHistoryPage(),
+                        ),
+                      );
 
-                      // Navigator.push(context, route);
+                      Navigator.push(context, route);
                     },
                   ),
                 ],
