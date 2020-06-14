@@ -22,6 +22,14 @@ abstract class ISuperSaaSAppointmentService {
     @required DateTime start,
     @required DateTime finish,
   });
+
+  Future<List<AppointmentModel>> getAgendaForAdministrator(
+      {@required int scheduleID});
+
+  Future<List<AppointmentModel>> getAgendaForUser({
+    @required int scheduleID,
+    String userID,
+  });
 }
 
 class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
@@ -125,5 +133,19 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
     } catch (e) {
       throw PlatformException(message: e.message, code: e.code);
     }
+  }
+
+  @override
+  Future<List<AppointmentModel>> getAgendaForAdministrator({int scheduleID}) {
+    //userID = 0;
+    // TODO: implement getAgendaForAdministrator
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<AppointmentModel>> getAgendaForUser(
+      {int scheduleID, String userID}) {
+    // TODO: implement getAgendaForUser
+    throw UnimplementedError();
   }
 }

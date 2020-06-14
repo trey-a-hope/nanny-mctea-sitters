@@ -31,7 +31,7 @@ exports.getAgenda = functions.https.onRequest((request, response) => {
     var userID = request.body.userID;
     var fromTime = request.body.fromTime;
 
-    client.appointments.agenda(scheduleID, userID, fromTime, true, (err, data) => {
+    return client.appointments.agenda(scheduleID, userID, fromTime, true, (err, data) => {
         if (err) {
             response.send(err)
         } else {
@@ -71,9 +71,11 @@ exports.create = functions.https.onRequest((request, response) => {
     //   slot_id: attributes['slot_id']
     // }
 
-    var attributes = { 'email': email, 'start': start, 'finish': finish, 'full_name': fullName, 'phone': phone, 'address': address, 'resource_id': resourceID, }
+    var attributes = { 'email': email, 'start': start, 'finish': finish, 'full_name': fullName, 'phone': phone, 'address': address, 'resource_id': resourceID, 'user_id': userID }
 
-    client.appointments.create(scheduleID, userID, attributes, true, true, (err, data) => {
+    
+
+    client.appointments.create(scheduleID, null, attributes, true, true, (err, data) => {
         if (err) {
             response.send(err)
         } else {
