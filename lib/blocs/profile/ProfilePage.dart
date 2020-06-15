@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/profile/Bloc.dart'
@@ -29,10 +30,13 @@ class ProfilePage extends StatefulWidget {
 class ProfilePageState extends State<ProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String timeFormat = 'MMM d, yyyy @ hh:mm a';
+  PROFILE_BP.ProfileBloc profileBloc;
 
   @override
   void initState() {
     super.initState();
+
+    profileBloc = BlocProvider.of<PROFILE_BP.ProfileBloc>(context);
   }
 
   @override
@@ -49,7 +53,10 @@ class ProfilePageState extends State<ProfilePage> {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              locator<ModalService>().showAlert(context: context, title: 'Todo', message: 'Go to profile edit page.');
+              locator<ModalService>().showAlert(
+                  context: context,
+                  title: 'Todo',
+                  message: 'Go to profile edit page.');
             },
           )
         ],
@@ -196,10 +203,16 @@ class ProfilePageState extends State<ProfilePage> {
             //Take user to camera or gallery.
             switch (choice) {
               case 0:
-                //handleImage(source: ImageSource.camera);
+                profileBloc.add(
+                  PROFILE_BP.HandleImageEvent(
+                      userID: currentUser.id, imageSource: ImageSource.camera),
+                );
                 break;
               case 1:
-                //handleImage(source: ImageSource.gallery);
+                profileBloc.add(
+                  PROFILE_BP.HandleImageEvent(
+                      userID: currentUser.id, imageSource: ImageSource.gallery),
+                );
                 break;
               default:
                 break;
