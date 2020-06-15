@@ -236,25 +236,28 @@ class ProfilePageState extends State<ProfilePage> {
         children: <Widget>[
           ListTile(
             title: Text("Appointments - ${agendas.length}"),
-            trailing: InkWell(
-              child: Text(
-                'View All',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              onTap: () {
-                Route route = MaterialPageRoute(
-                  builder: (BuildContext context) => BlocProvider(
-                    create: (BuildContext context) =>
-                        APPOINTMENTS_BP.AppointmentsBloc(agendas: agendas),
-                    child: APPOINTMENTS_BP.AppointmentsPage(),
-                  ),
-                );
+            trailing: agendas.isNotEmpty
+                ? InkWell(
+                    child: Text(
+                      'View All',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    onTap: () {
+                      Route route = MaterialPageRoute(
+                        builder: (BuildContext context) => BlocProvider(
+                          create: (BuildContext context) =>
+                              APPOINTMENTS_BP.AppointmentsBloc(
+                                  agendas: agendas),
+                          child: APPOINTMENTS_BP.AppointmentsPage(),
+                        ),
+                      );
 
-                Navigator.push(context, route);
-              },
-            ),
+                      Navigator.push(context, route);
+                    },
+                  )
+                : SizedBox.shrink(),
           ),
           // Divider(),
           // ListTile(
