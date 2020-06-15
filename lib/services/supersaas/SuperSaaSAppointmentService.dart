@@ -176,13 +176,6 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
             AgendaModel agenda = AgendaModel.fromJSON(rMap);
 
             agendas.add(agenda);
-
-            // ResourceModel resource = ResourceModel(
-            //   id: rMap['id'],
-            //   name: rMap['name'],
-            // );
-
-            // resources.add(resource);
           },
         );
 
