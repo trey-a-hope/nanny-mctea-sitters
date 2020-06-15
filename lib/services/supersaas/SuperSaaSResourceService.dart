@@ -8,17 +8,17 @@ import 'package:nanny_mctea_sitters_flutter/models/supersaas/ResourceModel.dart'
 
 abstract class ISuperSaaSResourceService {
   Future<List<ResourceModel>> list({
-    @required int scheduleID,
+    @required String scheduleID,
   });
 }
 
 class SuperSaaSResourceService extends ISuperSaaSResourceService {
   @override
   Future<List<ResourceModel>> list({
-    @required int scheduleID,
+    @required String scheduleID,
   }) async {
     Map data = {
-      'scheduleID': '$scheduleID',
+      'scheduleID': scheduleID,
     };
     http.Response response = await http.post(
       '${endpoint}ListAllResources',

@@ -4,18 +4,17 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert' show Encoding, json;
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
+import 'package:nanny_mctea_sitters_flutter/models/supersaas/AgendaModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
 
 abstract class ISuperSaaSAppointmentService {
   Future<List<AppointmentModel>> getAvailableAppointments({
-    @required int scheduleID,
     String resource,
     @required int limit,
     @required DateTime fromTime,
   });
 
   Future<void> create({
-    @required int scheduleID,
     @required String userID,
     @required String email,
     @required String fullName,
@@ -23,11 +22,9 @@ abstract class ISuperSaaSAppointmentService {
     @required DateTime finish,
   });
 
-  Future<List<AppointmentModel>> getAgendaForAdministrator(
-      {@required int scheduleID});
+  Future<List<AppointmentModel>> getAgendaForAdministrator();
 
-  Future<List<AppointmentModel>> getAgendaForUser({
-    @required int scheduleID,
+  Future<List<AgendaModel>> getAgendaForUser({
     String userID,
   });
 }
@@ -38,13 +35,12 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
 
   @override
   Future<List<AppointmentModel>> getAvailableAppointments({
-    @required int scheduleID,
     String resource,
     @required int limit,
     @required DateTime fromTime,
   }) async {
     Map data = {
-      'scheduleID': '$scheduleID',
+      'scheduleID': SAAS_BABY_SITTING_SCHEDULE_ID,
       'limit': '$limit',
       'fromTime': dateFormat.format(fromTime),
     };
@@ -95,7 +91,6 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
 
   @override
   Future<void> create({
-    @required int scheduleID,
     @required String userID,
     @required String email,
     @required String fullName,
@@ -106,7 +101,7 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
     @required String resourceID,
   }) async {
     Map data = {
-      'scheduleID': '$scheduleID',
+      'scheduleID': SAAS_BABY_SITTING_SCHEDULE_ID,
       'userID': userID,
       'email': email,
       'fullName': fullName,
@@ -136,16 +131,67 @@ class SuperSaaSAppointmentService extends ISuperSaaSAppointmentService {
   }
 
   @override
-  Future<List<AppointmentModel>> getAgendaForAdministrator({int scheduleID}) {
-    //userID = 0;
-    // TODO: implement getAgendaForAdministrator
-    throw UnimplementedError();
+  Future<List<AppointmentModel>> getAgendaForAdministrator() async {
+    Map data = {'scheduleID': SAAS_BABY_SITTING_SCHEDULE_ID, 'userID': '0'};
+
+    http.Response response = await http.post(
+      '${endpoint}GetAgenda',
+      body: data,
+      headers: {'content-type': 'application/x-www-form-urlencoded'},
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        List<AppointmentModel> appointments = List<AppointmentModel>();
+
+        var map = response.body;
+        //todo:
+        return appointments;
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      throw PlatformException(message: e.message, code: e.code);
+    }
   }
 
   @override
-  Future<List<AppointmentModel>> getAgendaForUser(
-      {int scheduleID, String userID}) {
-    // TODO: implement getAgendaForUser
-    throw UnimplementedError();
+  Future<List<AgendaModel>> getAgendaForUser({@required String userID}) async {
+    Map data = {'scheduleID': SAAS_BABY_SITTING_SCHEDULE_ID, 'userID': userID};
+
+    http.Response response = await http.post(
+      '${endpoint}GetAgenda',
+      body: data,
+      headers: {'content-type': 'application/x-www-form-urlencoded'},
+    );
+
+    try {
+      if (response.statusCode == 200) {
+        List<AgendaModel> agendas = List<AgendaModel>();
+
+        var map = json.decode(response.body);
+
+        map.forEach(
+          (rMap) {
+            AgendaModel agenda = AgendaModel.fromJSON(rMap);
+
+            agendas.add(agenda);
+
+            // ResourceModel resource = ResourceModel(
+            //   id: rMap['id'],
+            //   name: rMap['name'],
+            // );
+
+            // resources.add(resource);
+          },
+        );
+
+        return agendas;
+      } else {
+        throw Error();
+      }
+    } catch (e) {
+      throw PlatformException(message: e.message, code: e.code);
+    }
   }
 }

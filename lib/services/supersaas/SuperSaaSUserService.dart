@@ -43,43 +43,32 @@ class SuperSaaSUserService extends ISuperSaaSUserService {
 
         //Extract saas idea from location url.
         final String location = responseBody['location'];
+
+        //Create list for chacters.
         List<String> characters = List<String>();
 
+        //Iterate over each characters unicode code-point. This is used to extract the id from the location string.
         location.runes.forEach((int rune) {
           String character = String.fromCharCode(rune);
 
+          //Attempt to parse this character.
           int value = int.tryParse(character);
+
+          //If parse failed, the character is not a number.
           if (value != null) {
             characters.add(character);
             print(character);
           }
         });
 
+        //Convert array to string.
         final String saasIDString = characters.join();
+
+        //Parse an int from the id.
         final int saasID = int.parse(saasIDString);
+
+        //Return user id.
         return saasID;
-
-        //Create regex to extract number from string.
-        // final RegExp regex = RegExp(r'^\D+$');
-
-        // final String saasIDString = location.replaceAll("@[\d-]", "");
-        // final int saasID = int.parse(saasIDString);
-        // return saasID;
-
-        // List<ResourceModel> resources = List<ResourceModel>();
-
-        // responseBody.forEach(
-        //   (rMap) {
-        //     ResourceModel resource = ResourceModel(
-        //       id: rMap['id'],
-        //       name: rMap['name'],
-        //     );
-
-        //     resources.add(resource);
-        //   },
-        // );
-
-        // return 0;
       } else {
         throw Error();
       }

@@ -62,7 +62,6 @@ class BookSitterCalendarBloc
         //Fetch available appointments.
         _availableAppointments = await locator<SuperSaaSAppointmentService>()
             .getAvailableAppointments(
-                scheduleID: SAAS_BABY_SITTING_SCHEDULE_ID,
                 resource: selectedResource.name,
                 limit: limit,
                 fromTime: DateTime(
@@ -177,7 +176,6 @@ class BookSitterCalendarBloc
       //Fetch available appointments.
       _availableAppointments =
           await locator<SuperSaaSAppointmentService>().getAvailableAppointments(
-        scheduleID: SAAS_BABY_SITTING_SCHEDULE_ID,
         resource: selectedResource.name,
         limit: limit,
         fromTime: DateTime(

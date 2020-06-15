@@ -7,6 +7,7 @@ import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
+import 'package:nanny_mctea_sitters_flutter/models/supersaas/AgendaModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/messages/messages_page.dart';
 
@@ -113,11 +114,11 @@ class ProfilePageState extends State<ProfilePage> {
                   ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: state.appointments.length,
+                    itemCount: state.agendas.length,
                     itemBuilder: (BuildContext ctxt, int index) {
-                      return state.appointments.isEmpty
+                      return state.agendas.isEmpty
                           ? Text('No Appoinents Right Now')
-                          : _buildApointment(state.appointments[index]);
+                          : _buildApointment(state.agendas[index]);
                     },
                   )
                 ],
@@ -137,7 +138,7 @@ class ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildApointment(AppointmentModel appointment) {
+  Widget _buildApointment(AgendaModel agendaModel) {
     return ListTile(
       onTap: () {
         // Navigator.push(
@@ -156,7 +157,7 @@ class ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.blue,
       ),
       title: Text(
-        appointment.name,
+        agendaModel.full_name,
       ),
       trailing: Icon(Icons.chevron_right),
     );
