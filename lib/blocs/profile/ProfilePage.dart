@@ -8,6 +8,8 @@ import 'package:nanny_mctea_sitters_flutter/blocs/profile/Bloc.dart'
     as PROFILE_BP;
 import 'package:nanny_mctea_sitters_flutter/blocs/appointments/Bloc.dart'
     as APPOINTMENTS_BP;
+import 'package:nanny_mctea_sitters_flutter/blocs/editProfile/Bloc.dart'
+    as EDIT_PROFILE_BP;
 import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
 import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
@@ -53,10 +55,18 @@ class ProfilePageState extends State<ProfilePage> {
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
-              locator<ModalService>().showAlert(
-                  context: context,
-                  title: 'Todo',
-                  message: 'Go to profile edit page.');
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) =>
+                      EDIT_PROFILE_BP.EditProfileBloc()
+                        ..add(
+                          EDIT_PROFILE_BP.LoadPageEvent(),
+                        ),
+                  child: EDIT_PROFILE_BP.EditProfilePage(),
+                ),
+              );
+
+              Navigator.push(context, route);
             },
           )
         ],
