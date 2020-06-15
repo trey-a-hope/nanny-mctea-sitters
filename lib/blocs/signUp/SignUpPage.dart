@@ -11,6 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSUserService.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -60,7 +61,15 @@ class SignUpPageState extends State<SignUpPage> {
             email: _emailController.text,
             password: _passwordController.text,
           );
+
           final FirebaseUser user = authResult.user;
+
+          //Create new user in SaaS.
+          int saasID = await locator<SuperSaaSUserService>().create(
+            name: 'NAME',
+            fullName: 'FULLNAME',
+            userID: '${user.email}',
+          );
 
           UserModel newUser = UserModel(
             id: null,
@@ -76,6 +85,7 @@ class SignUpPageState extends State<SignUpPage> {
             isSitter: false,
             customerID: null,
             subscriptionID: null,
+            saasID: '$saasID',
           );
 
           locator<UserService>().createUser(user: newUser);

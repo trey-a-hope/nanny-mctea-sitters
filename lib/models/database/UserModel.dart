@@ -15,36 +15,23 @@ class UserModel {
   DateTime time;
   String uid;
   String subscriptionID;
+  String saasID;
 
-  UserModel({
-    @required String bio,
-    @required String customerID,
-    @required String details,
-    @required String email,
-    @required String fcmToken,
-    @required String id,
-    @required String imgUrl,
-    @required bool isSitter,
-    @required String name,
-    @required String phone,
-    @required DateTime time,
-    @required String uid,
-    @required String subscriptionID,
-  }) {
-    this.bio = bio;
-    this.customerID = customerID;
-    this.details = details;
-    this.email = email;
-    this.fcmToken = fcmToken;
-    this.id = id;
-    this.imgUrl = imgUrl;
-    this.isSitter = isSitter;
-    this.name = name;
-    this.phone = phone;
-    this.time = time;
-    this.uid = uid;
-    this.subscriptionID = subscriptionID;
-  }
+  UserModel(
+      {@required this.bio,
+      @required this.customerID,
+      @required this.details,
+      @required this.email,
+      @required this.fcmToken,
+      @required this.id,
+      @required this.imgUrl,
+      @required this.isSitter,
+      @required this.name,
+      @required this.phone,
+      @required this.time,
+      @required this.uid,
+      @required this.subscriptionID,
+      @required this.saasID});
 
   Map<String, dynamic> toMap() {
     return {
@@ -60,7 +47,8 @@ class UserModel {
       'phone': phone,
       'time': time,
       'uid': uid,
-      'subscriptionID': subscriptionID
+      'subscriptionID': subscriptionID,
+      'saasID': saasID,
     };
   }
 
@@ -79,6 +67,7 @@ class UserModel {
       time: ds.data['time'].toDate(),
       uid: ds.data['uid'],
       subscriptionID: ds.data['subscriptionID'],
+      saasID: ds.data['saasID'],
     );
   }
 }
