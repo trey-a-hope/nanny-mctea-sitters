@@ -20,6 +20,8 @@ class EditProfilePage extends StatefulWidget {
 class EditProfilePageState extends State<EditProfilePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   EDIT_PROFILE_BP.EditProfileBloc editProfileBloc;
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -41,58 +43,118 @@ class EditProfilePageState extends State<EditProfilePage> {
         actions: <Widget>[],
       ),
       key: _scaffoldKey,
-      body: BlocConsumer<EDIT_PROFILE_BP.EditProfileBloc,
-          EDIT_PROFILE_BP.EditProfileState>(
-        listener:
-            (BuildContext context, EDIT_PROFILE_BP.EditProfileState state) {
-          // if (state is LoginSuccessfulState) {
-          //   Navigator.of(context).pop();
-          // }
-        },
-        builder:
-            (BuildContext context, EDIT_PROFILE_BP.EditProfileState state) {
-          if (state is EDIT_PROFILE_BP.LoadingState) {
-            return Spinner();
-          } else if (state is EDIT_PROFILE_BP.LoadedState) {
-            return Center(
-              child: Text(state.currentUser.name),
-            );
-          } else {
-            return Center(
-              child: Text('You should NEVER see this.'),
-            );
-          }
-          // if (state is InitialState) {
-          //   return ListView.builder(
-          //     itemCount: state.agendas.length,
-          //     itemBuilder: (BuildContext context, int index) {
-          //       AgendaModel agenda = state.agendas[index];
-          //       return ListTile(
-          //         title: Text(agenda.full_name),
-          //         onTap: (){
-          //                           Route route = MaterialPageRoute(
-          //         builder: (BuildContext context) => BlocProvider(
-          //           create: (BuildContext context) =>
-          //               APPOINTMENTS_BP.AppointmentsBloc(agendas: agendas),
-          //           child: APPOINTMENTS_BP.AppointmentsPage(),
-          //         ),
-          //       );
+      body: SafeArea(
+        child: BlocConsumer<EDIT_PROFILE_BP.EditProfileBloc,
+            EDIT_PROFILE_BP.EditProfileState>(
+          listener:
+              (BuildContext context, EDIT_PROFILE_BP.EditProfileState state) {
+            // if (state is LoginSuccessfulState) {
+            //   Navigator.of(context).pop();
+            // }
+          },
+          builder:
+              (BuildContext context, EDIT_PROFILE_BP.EditProfileState state) {
+            if (state is EDIT_PROFILE_BP.LoadingState) {
+              return Spinner();
+            }
 
-          //       Navigator.push(context, route);
-          //         },
-          //       );
-          //     },
-          //   );
-          // } else if (state is ErrorState) {
-          //   return Center(
-          //     child: Text('Error: ${state.error.toString()}'),
-          //   );
-          // } else {
-          //   return Center(
-          //     child: Text('You should never see this.'),
-          //   );
-          // }
-        },
+            if (state is EDIT_PROFILE_BP.LoadedState) {
+              _nameController.text = state.currentUser.name;
+              _phoneController.text = state.currentUser.phone;
+
+              return Padding(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _nameController,
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
+                      maxLengthEnforced: true,
+                      // maxLength: MyFormData.nameCharLimit,
+                      onFieldSubmitted: (term) {},
+                      validator: locator<ValidatorService>().isEmpty,
+                      onSaved: (value) {},
+                      decoration: InputDecoration(
+                        hintText: 'Name',
+                        icon: Icon(Icons.face, color: Colors.grey),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      controller: _phoneController,
+                      keyboardType: TextInputType.phone,
+                      textInputAction: TextInputAction.next,
+                      maxLengthEnforced: true,
+                      // maxLength: MyFormData.nameCharLimit,
+                      onFieldSubmitted: (term) {},
+                      validator: locator<ValidatorService>().mobile,
+                      onSaved: (value) {},
+                      decoration: InputDecoration(
+                        hintText: 'Phone',
+                        icon: Icon(Icons.phone, color: Colors.grey),
+                      ),
+                    ),
+                    Spacer(),
+                    RaisedButton(
+                      onPressed: () async {
+                        bool confirm = await locator<ModalService>()
+                            .showConfirmation(
+                                context: context,
+                                title: 'Update',
+                                message: 'Are you sure?');
+                        if (confirm) {
+                          editProfileBloc.add(
+                            EDIT_PROFILE_BP.SubmitEvent(
+                                name: _nameController.text,
+                                phone: _phoneController.text),
+                          );
+                        }
+                      },
+                      textColor: Colors.white,
+                      color: Colors.red,
+                      child: Text('Save'),
+                    )
+                  ],
+                ),
+              );
+            }
+            return Container();
+
+            // if (state is InitialState) {
+            //   return ListView.builder(
+            //     itemCount: state.agendas.length,
+            //     itemBuilder: (BuildContext context, int index) {
+            //       AgendaModel agenda = state.agendas[index];
+            //       return ListTile(
+            //         title: Text(agenda.full_name),
+            //         onTap: (){
+            //                           Route route = MaterialPageRoute(
+            //         builder: (BuildContext context) => BlocProvider(
+            //           create: (BuildContext context) =>
+            //               APPOINTMENTS_BP.AppointmentsBloc(agendas: agendas),
+            //           child: APPOINTMENTS_BP.AppointmentsPage(),
+            //         ),
+            //       );
+
+            //       Navigator.push(context, route);
+            //         },
+            //       );
+            //     },
+            //   );
+            // } else if (state is ErrorState) {
+            //   return Center(
+            //     child: Text('Error: ${state.error.toString()}'),
+            //   );
+            // } else {
+            //   return Center(
+            //     child: Text('You should never see this.'),
+            //   );
+            // }
+          },
+        ),
       ),
     );
   }

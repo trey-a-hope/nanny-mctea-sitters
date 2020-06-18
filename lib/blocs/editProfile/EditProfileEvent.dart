@@ -19,7 +19,16 @@ class LoadPageEvent extends EditProfileEvent {
 }
 
 class SubmitEvent extends EditProfileEvent {
-  SubmitEvent();
+  final String name;
+  final String phone;
+
+  SubmitEvent({
+    @required this.name,
+    @required this.phone,
+  });
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        name,
+        phone,
+      ];
 }

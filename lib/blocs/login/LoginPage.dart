@@ -29,40 +29,6 @@ class LoginPageState extends State<LoginPage> {
 
   }
 
-  // _sendForgotEmail() async {
-  //   try {
-  //     String email =
-  //         await getIt<Modal>().showPasswordResetEmail(context: context);
-  //     if (email != null) {
-  //       setState(
-  //         () {
-  //           _isLoading = true;
-  //         },
-  //       );
-
-  //       await _auth.sendPasswordResetEmail(email: email);
-
-  //       setState(
-  //         () {
-  //           _isLoading = false;
-  //           getIt<Modal>().showInSnackBar(
-  //               scaffoldKey: _scaffoldKey,
-  //               text:
-  //                   'Sent - A link to reset your password has been sent via the email provided.');
-  //         },
-  //       );
-  //     }
-  //   } catch (e) {
-  //     setState(
-  //       () {
-  //         _isLoading = false;
-  //         getIt<Modal>()
-  //             .showInSnackBar(scaffoldKey: _scaffoldKey, text: e.message);
-  //       },
-  //     );
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
