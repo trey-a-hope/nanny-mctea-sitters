@@ -16,6 +16,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'Bloc.dart' as HomeBP;
 import 'package:nanny_mctea_sitters_flutter/blocs/contact/Bloc.dart'
     as ContactBP;
+import 'package:nanny_mctea_sitters_flutter/blocs/sitterDetails/Bloc.dart'
+    as SITTER_DETAILS_BP;
 
 class HomePage extends StatefulWidget {
   @override
@@ -228,7 +230,7 @@ class HomePageState extends State<HomePage> {
                         style: _bodyStyle,
                       ),
                       RaisedButton(
-                       color: Colors.red,
+                        color: Colors.red,
                         child: Text(
                           'Learn More',
                           style: TextStyle(
@@ -272,7 +274,7 @@ class HomePageState extends State<HomePage> {
                         style: _bodyStyle,
                       ),
                       RaisedButton(
-                       color: Colors.red,
+                        color: Colors.red,
                         child: Text(
                           'Learn More',
                           style: TextStyle(
@@ -323,14 +325,19 @@ class HomePageState extends State<HomePage> {
                             sitter: sitter,
                           ),
                           onTap: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(
-                            //     builder: (context) => SitterDetailsPage(
-                            //       sitter,
-                            //     ),
-                            //   ),
-                            // );
+                            //Navigate to sitter details bloc.
+                            Route route = MaterialPageRoute(
+                              builder: (BuildContext context) => BlocProvider(
+                                create: (BuildContext context) =>
+                                    SITTER_DETAILS_BP.SitterDetailsBloc(
+                                        sitter: sitter)
+                                      ..add(
+                                        SITTER_DETAILS_BP.LoadPageEvent(),
+                                      ),
+                                child: SITTER_DETAILS_BP.SitterDetailsPage(),
+                              ),
+                            );
+                            Navigator.push(context, route);
                           },
                         );
                       },

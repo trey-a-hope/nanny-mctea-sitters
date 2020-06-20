@@ -14,7 +14,6 @@ abstract class SignUpBlocDelegate {
   void navigateHome();
 }
 
-//todo: VALIDATE THAT SIGN UP WORKS BY DELETEING ALL USER DATE AND STARTING WITH CLEAN TRY
 class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   SignUpBlocDelegate _delegate;
 
