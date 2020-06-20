@@ -9,6 +9,14 @@ import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointm
 import '../../ServiceLocator.dart';
 import 'Bloc.dart';
 
+abstract class BookSitterPaymentBlocDelegate {
+  void showMessage({@required String message});
+  void navigateToAddCardPage({
+    @required UserModel currentUser,
+    @required CustomerModel customer,
+  });
+}
+
 class BookSitterPaymentBloc
     extends Bloc<BookSitterPaymentEvent, BookSitterPaymentState> {
   BookSitterPaymentBloc({
@@ -35,8 +43,13 @@ class BookSitterPaymentBloc
   final String aptNo;
   final String city;
 
-  UserModel currentUser;
-  CustomerModel customer;
+  BookSitterPaymentBlocDelegate _delegate;
+  UserModel _currentUser;
+  CustomerModel _customer;
+
+  void setDelegate({@required BookSitterPaymentBlocDelegate delegate}) {
+    this._delegate = delegate;
+  }
 
   @override
   BookSitterPaymentState get initialState => BookSitterPaymentState();
@@ -44,16 +57,19 @@ class BookSitterPaymentBloc
   @override
   Stream<BookSitterPaymentState> mapEventToState(
       BookSitterPaymentEvent event) async* {
+
+
+        
     if (event is LoadPageEvent) {
       yield LoadingState();
 
       //Fetch current user;
-      currentUser = await locator<AuthService>().getCurrentUser();
+      _currentUser = await locator<AuthService>().getCurrentUser();
 
-      if (currentUser.customerID != null) {
+      if (_currentUser.customerID != null) {
         //Fetch customer info.
-        customer = await locator<StripeCustomerService>()
-            .retrieve(customerID: currentUser.customerID);
+        _customer = await locator<StripeCustomerService>()
+            .retrieve(customerID: _currentUser.customerID);
 
         yield InitialState(
           selectedDate: selectedDate,
@@ -73,8 +89,10 @@ class BookSitterPaymentBloc
     }
 
     if (event is NavigateToAddCardEvent) {
-      yield NavigateToAddCardState();
-      yield NoCardState();
+      _delegate.navigateToAddCardPage(
+        currentUser: _currentUser,
+        customer: _customer,
+      );
     }
 
     if (event is SubmitPaymentEvent) {

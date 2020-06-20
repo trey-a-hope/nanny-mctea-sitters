@@ -5,24 +5,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
+import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/models/stripe/CustomerModel.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import '../../ServiceLocator.dart';
 import '../../blocs/bookSitterPayment/Bloc.dart' as BookSitterPaymentBP;
+import '../../blocs/addCard/Bloc.dart' as ADD_CARD_BP;
 
 class BookSitterPaymentPage extends StatefulWidget {
   @override
   State createState() => BookSitterPaymentPageState();
 }
 
-class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
+class BookSitterPaymentPageState extends State<BookSitterPaymentPage>
+    implements BookSitterPaymentBP.BookSitterPaymentBlocDelegate {
   BookSitterPaymentBP.BookSitterPaymentBloc bookSitterPaymentBloc;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
+    //Assign instance of bloc and set delegate.
     bookSitterPaymentBloc =
         BlocProvider.of<BookSitterPaymentBP.BookSitterPaymentBloc>(context);
+    bookSitterPaymentBloc.setDelegate(delegate: this);
     super.initState();
   }
 
@@ -40,41 +46,28 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
           'Book Sitter - Payment',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              bookSitterPaymentBloc.add(
+                BookSitterPaymentBP.LoadPageEvent(),
+              );
+            },
+          )
+        ],
       ),
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: BlocConsumer<BookSitterPaymentBP.BookSitterPaymentBloc,
+      body: BlocBuilder<BookSitterPaymentBP.BookSitterPaymentBloc,
           BookSitterPaymentBP.BookSitterPaymentState>(
-        listener: (BuildContext context,
-            BookSitterPaymentBP.BookSitterPaymentState state) {
-          if (state is BookSitterPaymentBP.NavigateToAddCardState) {
-            //todo: Create route to add card page.
-            //             Route route = MaterialPageRoute(
-            //   builder: (BuildContext context) => BlocProvider(
-            //     create: (BuildContext context) =>
-            //         BookSitterPaymentBP.BookSitterPaymentBloc(
-            //       aptNo: state.aptNo,
-            //       cost: state.cost,
-            //       hours: state.hours,
-            //       service: state.service,
-            //       city: state.city,
-            //       selectedDate: state.selectedDate,
-            //       street: state.street,
-            //       phoneNumber: state.phoneNumber,
-            //       email: state.email,
-            //       name: state.name,
-            //     )..add(BookSitterPaymentBP.LoadPageEvent()),
-            //     child: BookSitterPaymentBP.BookSitterPaymentPage(),
-            //   ),
-            // );
-            // Navigator.push(context, route);
-          }
-        },
         builder: (BuildContext context,
             BookSitterPaymentBP.BookSitterPaymentState state) {
           if (state is BookSitterPaymentBP.LoadingState) {
             return Spinner();
-          } else if (state is BookSitterPaymentBP.InitialState) {
+          }
+
+          if (state is BookSitterPaymentBP.InitialState) {
             return Padding(
               padding: EdgeInsets.all(20),
               child: Column(
@@ -215,7 +208,9 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
                 ],
               ),
             );
-          } else if (state is BookSitterPaymentBP.NoCardState) {
+          }
+
+          if (state is BookSitterPaymentBP.NoCardState) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -233,13 +228,29 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage> {
                 ],
               ),
             );
-          } else {
-            return Center(
-              child: Text('You should NEVER see this.'),
-            );
           }
+          return Container();
         },
       ),
     );
+  }
+
+  @override
+  void showMessage({String message}) {
+    // TODO: implement showMessage
+  }
+
+  @override
+  void navigateToAddCardPage({UserModel currentUser, CustomerModel customer}) {
+    Route route = MaterialPageRoute(
+      builder: (BuildContext context) => BlocProvider(
+        create: (BuildContext context) => ADD_CARD_BP.AddCardBloc(
+          currentUser: currentUser,
+          customer: customer,
+        ),
+        child: ADD_CARD_BP.AddCardPage(),
+      ),
+    );
+    Navigator.push(context, route);
   }
 }
