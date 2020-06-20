@@ -1,3 +1,5 @@
+import 'package:nanny_mctea_sitters_flutter/constants.dart';
+
 abstract class IValidatorService {
   String isEmpty(String value);
   String mobile(String value);
@@ -8,6 +10,7 @@ abstract class IValidatorService {
   String cardNumber(String value);
   String cardExpiration(String value);
   String cardCVC(String value);
+  String sitterCode(String value);
 }
 
 class ValidatorService extends IValidatorService {
@@ -91,5 +94,14 @@ class ValidatorService extends IValidatorService {
     final RegExp regExp = RegExp(r'^[0-9]{3}$');
     if (!regExp.hasMatch(value)) return 'Must be 3 numbers.';
     return null;
+  }
+
+    @override
+  String sitterCode(String value) {
+    if (value != SITTER_SIGN_UP_CODE) {
+      return ('Incorrect sitter code.');
+    } else {
+      return null;
+    }
   }
 }

@@ -7,6 +7,8 @@ const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';
 
 const String SAAS_BABY_SITTING_SCHEDULE_ID = '489593';
 
+const SITTER_SIGN_UP_CODE = 'XXXXX';
+
 //Formats
 const String DATE_FORMAT_FULL = 'MMM dd, yyyy @ h:mm a';
 const String DATE_FORMAT_HALF = 'MMMM dd, yyyy';

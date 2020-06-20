@@ -48,6 +48,7 @@ class EditProfilePageState extends State<EditProfilePage> {
             EDIT_PROFILE_BP.EditProfileState>(
           listener:
               (BuildContext context, EDIT_PROFILE_BP.EditProfileState state) {
+                
             // if (state is LoginSuccessfulState) {
             //   Navigator.of(context).pop();
             // }

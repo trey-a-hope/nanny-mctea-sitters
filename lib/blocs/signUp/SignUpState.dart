@@ -7,12 +7,36 @@ class SignUpState extends Equatable {
   List<Object> get props => [];
 }
 
-//State: Initial view, nothing ƒhas been changed.
-class InitialState extends SignUpState {
-  InitialState();
+class UserState extends SignUpState {
+  final bool autoValidate;
+  final GlobalKey<FormState> formKey;
+
+  UserState({
+    @required this.autoValidate,
+    @required this.formKey,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [
+        autoValidate,
+        formKey,
+      ];
+}
+
+class SitterState extends SignUpState {
+  final bool autoValidate;
+  final GlobalKey<FormState> formKey;
+
+  SitterState({
+    @required this.autoValidate,
+    @required this.formKey,
+  });
+
+  @override
+  List<Object> get props => [
+        autoValidate,
+        formKey,
+      ];
 }
 
 //State: View of the user when loogging in.
