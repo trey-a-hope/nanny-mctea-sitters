@@ -4,6 +4,8 @@ import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/CustomerModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCardService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeChargeService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/stripe/StripeCustomerService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSAppointmentService.dart';
 import '../../ServiceLocator.dart';
@@ -30,6 +32,7 @@ class BookSitterPaymentBloc
     @required this.street,
     @required this.aptNo,
     @required this.city,
+    @required this.resourceID,
   });
 
   final DateTime selectedDate;
@@ -42,6 +45,7 @@ class BookSitterPaymentBloc
   final String street;
   final String aptNo;
   final String city;
+  final String resourceID;
 
   BookSitterPaymentBlocDelegate _delegate;
   UserModel _currentUser;
@@ -57,9 +61,6 @@ class BookSitterPaymentBloc
   @override
   Stream<BookSitterPaymentState> mapEventToState(
       BookSitterPaymentEvent event) async* {
-
-
-        
     if (event is LoadPageEvent) {
       yield LoadingState();
 
@@ -96,16 +97,36 @@ class BookSitterPaymentBloc
     }
 
     if (event is SubmitPaymentEvent) {
-      // locator<SuperSaaSAppointmentService>().create(
-      //   scheduleID: 489593,
-      //   userID: currentUser.id,
-      //   email: currentUser.email,
-      //   fullName: '${currentUser.name}',
-      //   start: DateTime.now(),
-      //   finish: DateTime.now().add(
-      //     Duration(hours: 2),
-      //   ),
-      // );
+      yield LoadingState();
+
+      try {
+        //Charge users card.
+        locator<StripeChargeService>().create(
+          amount: cost.toInt(),
+          description: service,
+          customerID: _customer.id,
+        );
+
+        //Create appointment.
+        locator<SuperSaaSAppointmentService>().create(
+          resourceID: resourceID,
+          userID: _currentUser.id,
+          email: _currentUser.email,
+          fullName: '${_currentUser.name}',
+          start: selectedDate,
+          finish: selectedDate.add(
+            Duration(hours: hours),
+          ),
+          address: '$street $city',
+          phone: '$phoneNumber',
+        );
+
+        //Display success state if both methods succeed.
+        yield SuccessState();
+      } catch (error) {
+        //Display error state.
+        yield ErrorState(error: error);
+      }
     }
   }
 }

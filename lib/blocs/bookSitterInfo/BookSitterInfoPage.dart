@@ -3,45 +3,47 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import '../../ServiceLocator.dart';
 import '../../blocs/bookSitterInfo/Bloc.dart' as BookSitterInfoBP;
-import '../../blocs/bookSitterPayment/Bloc.dart' as BookSitterPaymentBP;
+import '../../blocs/bookSitterPayment/Bloc.dart' as BOOK_SITTER_PAYMENT_BP;
 
 class BookSitterInfoPage extends StatefulWidget {
   @override
   State createState() => BookSitterInfoPageState();
 }
 
-class BookSitterInfoPageState extends State<BookSitterInfoPage> {
+class BookSitterInfoPageState extends State<BookSitterInfoPage>
+    implements BookSitterInfoBP.BookSitterInfoBlocDelegate {
   BookSitterInfoPageState();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String _dateFormat = 'MMMM dd, yyyy';
   final String _timeFormat = '@ hh:mm a';
 
-  //TODO: Delete pre-populated text.
-  final TextEditingController _nameController =
-      TextEditingController(text: 'Trey Hope');
-  final TextEditingController _emailController =
-      TextEditingController(text: 'trey.a.hope@gmail.com');
-  final TextEditingController _phoneController =
-      TextEditingController(text: '9372705527');
-  final TextEditingController _streetController =
-      TextEditingController(text: '5 Patrick Street');
-  final TextEditingController _aptFloorController =
-      TextEditingController(text: '1');
-  final TextEditingController _cityController =
-      TextEditingController(text: 'Trotwood');
+  TextEditingController _nameController;
+  TextEditingController _emailController;
+  TextEditingController _phoneController;
+  TextEditingController _streetController;
+  TextEditingController _aptFloorController;
+  TextEditingController _cityController;
 
   BookSitterInfoBP.BookSitterInfoBloc bookSitterInfoBloc;
 
   @override
   void initState() {
+    //Assign bloc instance and set delegate.
     bookSitterInfoBloc =
         BlocProvider.of<BookSitterInfoBP.BookSitterInfoBloc>(context);
+    bookSitterInfoBloc.setDelegate(delegate: this);
     super.initState();
+
+    // _nameController = TextEditingController(text: 'Trey Hope');
+    // _emailController = TextEditingController(text: 'trey.a.hope@gmail.com');
+    // _phoneController = TextEditingController(text: '9372705527');
+    // _streetController = TextEditingController(text: '5 Patrick Street');
+    // _aptFloorController = TextEditingController(text: '1');
+    // _cityController = TextEditingController(text: 'Trotwood');
   }
 
   @override
@@ -61,32 +63,8 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
       ),
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: BlocConsumer<BookSitterInfoBP.BookSitterInfoBloc,
+      body: BlocBuilder<BookSitterInfoBP.BookSitterInfoBloc,
           BookSitterInfoBP.BookSitterInfoState>(
-        listener:
-            (BuildContext context, BookSitterInfoBP.BookSitterInfoState state) {
-          if (state is BookSitterInfoBP.NavigateToPaymentPageState) {
-            Route route = MaterialPageRoute(
-              builder: (BuildContext context) => BlocProvider(
-                create: (BuildContext context) =>
-                    BookSitterPaymentBP.BookSitterPaymentBloc(
-                  aptNo: state.aptNo,
-                  cost: state.cost,
-                  hours: state.hours,
-                  service: state.service,
-                  city: state.city,
-                  selectedDate: state.selectedDate,
-                  street: state.street,
-                  phoneNumber: state.phoneNumber,
-                  email: state.email,
-                  name: state.name,
-                )..add(BookSitterPaymentBP.LoadPageEvent()),
-                child: BookSitterPaymentBP.BookSitterPaymentPage(),
-              ),
-            );
-            Navigator.push(context, route);
-          }
-        },
         builder:
             (BuildContext context, BookSitterInfoBP.BookSitterInfoState state) {
           if (state is BookSitterInfoBP.LoadedState) {
@@ -248,13 +226,47 @@ class BookSitterInfoPageState extends State<BookSitterInfoPage> {
                 ),
               ),
             );
-          } else {
-            return Center(
-              child: Text('You should NEVER see this.'),
-            );
           }
+
+          return Container();
         },
       ),
     );
+  }
+
+  @override
+  void navigateToPaymentPage({
+    DateTime selectedDate,
+    String service,
+    int hours,
+    double cost,
+    String aptNo,
+    String street,
+    String city,
+    String name,
+    String email,
+    String phoneNumber,
+    String resourceID,
+  }) {
+    Route route = MaterialPageRoute(
+      builder: (BuildContext context) => BlocProvider(
+        create: (BuildContext context) =>
+            BOOK_SITTER_PAYMENT_BP.BookSitterPaymentBloc(
+          selectedDate: selectedDate,
+          service: service,
+          hours: hours,
+          cost: cost,
+          aptNo: aptNo,
+          street: street,
+          city: city,
+          name: name,
+          email: email,
+          phoneNumber: phoneNumber,
+          resourceID: resourceID,
+        ),
+        child: BOOK_SITTER_PAYMENT_BP.BookSitterPaymentPage(),
+      ),
+    );
+    Navigator.push(context, route);
   }
 }

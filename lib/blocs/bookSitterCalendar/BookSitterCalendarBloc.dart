@@ -11,6 +11,16 @@ import '../../ServiceLocator.dart';
 import '../../constants.dart';
 import 'Bloc.dart';
 
+abstract class BookSitterCalendarBlocDelegate {
+  void navigateToBookSitterInfoPageEvent({
+    @required DateTime selectedDate,
+    @required double cost,
+    @required int hours,
+    @required String service,
+    @required String resourceID,
+  });
+}
+
 class BookSitterCalendarBloc
     extends Bloc<BookSitterCalendarEvent, BookSitterCalendarState> {
   BookSitterCalendarBloc({
@@ -24,6 +34,8 @@ class BookSitterCalendarBloc
   final double cost; //Total cost of the appointment.
 
   final CalendarController _calendarController = CalendarController();
+  final int limit = 120; //Number of appointments to return on each call.
+
   List<AppointmentModel>
       _availableAppointments; //Available appointments for this resource.
   Map<DateTime, List<dynamic>> _events = Map<
@@ -37,10 +49,14 @@ class BookSitterCalendarBloc
   DateTime selectedDay = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now(); //Default time for picker.
 
-  final int limit = 120; //Number of appointments to return on each call.
+  DateTime start;//Start of appointment time.
+  DateTime finish;//End of appointment time.
 
-  DateTime start;
-  DateTime finish;
+  BookSitterCalendarBlocDelegate _delegate;
+
+  void setDelegate({@required BookSitterCalendarBlocDelegate delegate}) {
+    this._delegate = delegate;
+  }
 
   @override
   BookSitterCalendarState get initialState => BookSitterCalendarState();
@@ -130,23 +146,25 @@ class BookSitterCalendarBloc
     }
 
     if (event is NavigateToBookSitterInfoPageEvent) {
-      yield NavigateToBookSitterInfoPageState(
-        selectedDate: event.selectedDate,
-        cost: cost,
-        hours: hours,
-        service: service,
-      );
-      //Keep this page in a default state after navigating away.
-      yield LoadedState(
-        calendarController: _calendarController,
-        events: _events,
-        start: start,
-        finish: finish,
-        resources: resources,
-        selectedResource: selectedResource,
-        selectedDay: selectedDay,
-        selectTime: selectedTime,
-      );
+
+      
+      // yield NavigateToBookSitterInfoPageState(
+      //   selectedDate: event.selectedDate,
+      //   cost: cost,
+      //   hours: hours,
+      //   service: service,
+      // );
+      // //Keep this page in a default state after navigating away.
+      // yield LoadedState(
+      //   calendarController: _calendarController,
+      //   events: _events,
+      //   start: start,
+      //   finish: finish,
+      //   resources: resources,
+      //   selectedResource: selectedResource,
+      //   selectedDay: selectedDay,
+      //   selectTime: selectedTime,
+      // );
     }
 
     if (event is OnTimeSelectEvent) {

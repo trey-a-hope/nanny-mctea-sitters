@@ -8,6 +8,7 @@ import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/stripe/CustomerModel.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/profile/profile.dart';
+import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ValidatorService.dart';
 import '../../ServiceLocator.dart';
 import '../../blocs/bookSitterPayment/Bloc.dart' as BookSitterPaymentBP;
@@ -229,6 +230,27 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage>
               ),
             );
           }
+
+          if (state is BookSitterPaymentBP.SuccessState) {
+            return Center(
+              child: Text(
+                'Success',
+                style:
+                    TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            );
+          }
+
+          if (state is BookSitterPaymentBP.ErrorState) {
+            return Center(
+              child: Text(
+                'Error: ${state.error.toString()}',
+                style:
+                    TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+              ),
+            );
+          }
+
           return Container();
         },
       ),
@@ -237,7 +259,8 @@ class BookSitterPaymentPageState extends State<BookSitterPaymentPage>
 
   @override
   void showMessage({String message}) {
-    // TODO: implement showMessage
+    locator<ModalService>()
+        .showInSnackBar(scaffoldKey: _scaffoldKey, message: message);
   }
 
   @override

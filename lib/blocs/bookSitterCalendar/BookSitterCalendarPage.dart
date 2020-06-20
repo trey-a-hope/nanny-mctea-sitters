@@ -14,7 +14,8 @@ class BookSitterCalendarPage extends StatefulWidget {
   State createState() => BookSitterCalendarPageState();
 }
 
-class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
+class BookSitterCalendarPageState extends State<BookSitterCalendarPage>
+    implements BookSitterCalendarBP.BookSitterCalendarBlocDelegate {
   BookSitterCalendarBP.BookSitterCalendarBloc bookSitterCalendarBloc;
   final DateFormat dateFormat = DateFormat('hh:mm aaa');
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -43,34 +44,15 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
       ),
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: BlocConsumer<BookSitterCalendarBP.BookSitterCalendarBloc,
+      body: BlocBuilder<BookSitterCalendarBP.BookSitterCalendarBloc,
           BookSitterCalendarBP.BookSitterCalendarState>(
-        listener: (BuildContext context,
-            BookSitterCalendarBP.BookSitterCalendarState state) {
-          if (state is BookSitterCalendarBP.NavigateToBookSitterInfoPageState) {
-            //Create route to Book Sitter Calendar Page.
-            Route route = MaterialPageRoute(
-              builder: (BuildContext context) => BlocProvider(
-                create: (BuildContext context) =>
-                    BookSitterInfoBP.BookSitterInfoBloc(
-                  service: state.service,
-                  hours: state.hours,
-                  cost: state.cost,
-                  selectedDate: state.selectedDate,
-                ),
-                child: BookSitterInfoBP.BookSitterInfoPage(),
-              ),
-            );
-            //Push route.
-            Navigator.push(context, route);
-            //
-          }
-        },
         builder: (BuildContext context,
             BookSitterCalendarBP.BookSitterCalendarState state) {
           if (state is BookSitterCalendarBP.LoadingState) {
             return Spinner();
-          } else if (state is BookSitterCalendarBP.LoadedState) {
+          }
+
+          if (state is BookSitterCalendarBP.LoadedState) {
             return Column(
               children: <Widget>[
                 Padding(
@@ -213,17 +195,40 @@ class BookSitterCalendarPageState extends State<BookSitterCalendarPage> {
                 ),
               ],
             );
-          } else if (state is BookSitterCalendarBP.ErrorState) {
+          }
+
+          if (state is BookSitterCalendarBP.ErrorState) {
             return Center(
               child: Text('Error: ${state.error.toString()}'),
             );
-          } else {
-            return Center(
-              child: Text('You should NEVER see this.'),
-            );
           }
+          return Center(
+            child: Text('You should NEVER see this.'),
+          );
         },
       ),
     );
+  }
+
+  @override
+  void navigateToBookSitterInfoPageEvent(
+      {DateTime selectedDate,
+      double cost,
+      int hours,
+      String service,
+      String resourceID}) {
+    Route route = MaterialPageRoute(
+      builder: (BuildContext context) => BlocProvider(
+        create: (BuildContext context) => BookSitterInfoBP.BookSitterInfoBloc(
+          selectedDate: selectedDate,
+          hours: hours,
+          cost: cost,
+          service: service,
+          resourceID: resourceID,
+        ),
+        child: BookSitterInfoBP.BookSitterInfoPage(),
+      ),
+    );
+    Navigator.of(context).push(route);
   }
 }
