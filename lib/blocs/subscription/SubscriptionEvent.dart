@@ -10,7 +10,7 @@ class LoadPageEvent extends SubscriptionEvent {}
 
 class OpenModalSubscribeEvent extends SubscriptionEvent {
   final String planID;
-  
+
   OpenModalSubscribeEvent({
     @required this.planID,
   });
@@ -30,4 +30,16 @@ class SubscribeEvent extends SubscriptionEvent {
   List<Object> get props => [];
 }
 
-class UnsubscribeEvent extends SubscriptionEvent {}
+class OpenModalUnsubscribeEvent extends SubscriptionEvent {
+  OpenModalUnsubscribeEvent();
+
+  @override
+  List<Object> get props => [];
+}
+
+class UnsubscribeEvent extends SubscriptionEvent {
+  UnsubscribeEvent();
+
+  @override
+  List<Object> get props => [];
+}

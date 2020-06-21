@@ -21,25 +21,12 @@ abstract class SubscriptionBlocDelegate {
 }
 
 class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
-  CustomerModel customer; //Customer associated with this subscription.
-  UserModel currentUser; //The user account.
-  SubscriptionModel subscription; //Current subscripton.
-  PlanModel goldPlan;
-  PlanModel silverPlan;
-
+  CustomerModel _customer;
+  UserModel _currentUser;
+  SubscriptionModel _subscription;
+  PlanModel _goldPlan;
+  PlanModel _silverPlan;
   SubscriptionBlocDelegate _delegate;
-
-  // void openSubscribeModal({@required String planID}) {
-  //   if (customer == null || customer.defaultSource == null) {
-  //     delegate.onError('Error: No active payment methods found.');
-  //   } else {
-  //     delegate.openSubscribeModal(planID: planID);
-  //   }
-  // }
-
-  // void openUnsubscribeModal() {
-  //   delegate.openUnsubscribeModal();
-  // }
 
   void setDelegate({@required SubscriptionBlocDelegate delegate}) {
     this._delegate = delegate;
@@ -48,24 +35,24 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   Future<void> loadData() async {
     try {
       //Fetch user.
-      currentUser = await locator<AuthService>().getCurrentUser();
+      _currentUser = await locator<AuthService>().getCurrentUser();
 
       //Fetch plans.
-      goldPlan = await locator<StripePlanService>()
+      _goldPlan = await locator<StripePlanService>()
           .retrieve(planID: GOLD_HEART_30_PLAN_ID);
-      silverPlan = await locator<StripePlanService>()
+      _silverPlan = await locator<StripePlanService>()
           .retrieve(planID: SILVER_HEART_15_PLAN_ID);
 
       //Fetch customer if the user has a customer account.
-      if (currentUser.customerID != null) {
-        customer = await locator<StripeCustomerService>()
-            .retrieve(customerID: currentUser.customerID);
+      if (_currentUser.customerID != null) {
+        _customer = await locator<StripeCustomerService>()
+            .retrieve(customerID: _currentUser.customerID);
       }
 
       //Fetch subscription if the user has a subscription.
-      if (currentUser.subscriptionID != null) {
-        subscription = await locator<StripeSubscriptionService>()
-            .retrieve(subscriptionID: currentUser.subscriptionID);
+      if (_currentUser.subscriptionID != null) {
+        _subscription = await locator<StripeSubscriptionService>()
+            .retrieve(subscriptionID: _currentUser.subscriptionID);
       }
       return;
     } catch (error) {
@@ -88,14 +75,15 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         await loadData();
 
         //If the user does not have a customer account or a subscription, yield UnsubscribedState state.
-        if (customer == null || subscription == null) {
-          yield UnsubscribedState(goldPlan: goldPlan, silverPlan: silverPlan);
+        if (_customer == null || _subscription == null) {
+          yield UnsubscribedState(goldPlan: _goldPlan, silverPlan: _silverPlan);
         } else {
-          if (subscription.plan == GOLD_HEART_30_PLAN_ID) {
-            yield SubscribedState(plan: goldPlan, subscription: subscription);
+          if (_subscription.plan == GOLD_HEART_30_PLAN_ID) {
+            yield SubscribedState(plan: _goldPlan, subscription: _subscription);
           }
-          if (subscription.plan == SILVER_HEART_15_PLAN_ID) {
-            yield SubscribedState(plan: silverPlan, subscription: subscription);
+          if (_subscription.plan == SILVER_HEART_15_PLAN_ID) {
+            yield SubscribedState(
+                plan: _silverPlan, subscription: _subscription);
           }
         }
       } catch (error) {
@@ -105,6 +93,10 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
 
     if (event is OpenModalSubscribeEvent) {
       _delegate.openSubscribeModal(planID: event.planID);
+    }
+
+    if (event is OpenModalUnsubscribeEvent) {
+      _delegate.openUnsubscribeModal();
     }
 
     //Subscribe user.
@@ -119,17 +111,17 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         //Subcribe user to Gold Plan.
         if (event.planID == GOLD_HEART_30_PLAN_ID) {
           subscriptionID = await locator<StripeSubscriptionService>()
-              .create(customerID: customer.id, planID: GOLD_HEART_30_PLAN_ID);
+              .create(customerID: _customer.id, planID: GOLD_HEART_30_PLAN_ID);
         }
 
         //Subcribe user to Silver Plan.
         if (event.planID == SILVER_HEART_15_PLAN_ID) {
-          subscriptionID = await locator<StripeSubscriptionService>()
-              .create(customerID: customer.id, planID: SILVER_HEART_15_PLAN_ID);
+          subscriptionID = await locator<StripeSubscriptionService>().create(
+              customerID: _customer.id, planID: SILVER_HEART_15_PLAN_ID);
         }
 
         //Update subscription ID and free message count in firebase.
-        await locator<UserService>().updateUser(userID: currentUser.id, data: {
+        await locator<UserService>().updateUser(userID: _currentUser.id, data: {
           'subscriptionID': subscriptionID,
           // 'freeMessageCount': event.planID == GOLD_HEART_30_PLAN_ID ? 30 : 15
         });
@@ -138,11 +130,11 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         await loadData();
 
         //Display Subscribed State with respective plan.
-        if (subscription.plan == GOLD_HEART_30_PLAN_ID) {
-          yield SubscribedState(plan: goldPlan, subscription: subscription);
+        if (_subscription.plan == GOLD_HEART_30_PLAN_ID) {
+          yield SubscribedState(plan: _goldPlan, subscription: _subscription);
         }
-        if (subscription.plan == SILVER_HEART_15_PLAN_ID) {
-          yield SubscribedState(plan: silverPlan, subscription: subscription);
+        if (_subscription.plan == SILVER_HEART_15_PLAN_ID) {
+          yield SubscribedState(plan: _silverPlan, subscription: _subscription);
         }
       } catch (error) {
         yield ErrorState(error: error);
@@ -156,20 +148,20 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
       try {
         //Cancel subscription for this user.
         await locator<StripeSubscriptionService>().cancel(
-            subscriptionID: currentUser.subscriptionID,
+            subscriptionID: _currentUser.subscriptionID,
             invoiceNow: true,
             prorate: true);
 
         //Update subscription ID and free message count in firebase.
         await locator<UserService>().updateUser(
-          userID: currentUser.id,
+          userID: _currentUser.id,
           data: {'subscriptionID': null, 'freeMessageCount': 3},
         );
 
         //Fetch updated data.
         await loadData();
 
-        yield UnsubscribedState(goldPlan: goldPlan, silverPlan: silverPlan);
+        yield UnsubscribedState(goldPlan: _goldPlan, silverPlan: _silverPlan);
       } catch (error) {
         yield ErrorState(error: error);
       }

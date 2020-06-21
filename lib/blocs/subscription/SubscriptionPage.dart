@@ -8,6 +8,7 @@ import 'package:nanny_mctea_sitters_flutter/models/stripe/SubscriptionModel.dart
 import 'package:nanny_mctea_sitters_flutter/services/FormatterService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
 import '../../ServiceLocator.dart';
+import '../../constants.dart';
 import 'Bloc.dart';
 
 class SubscriptionPage extends StatefulWidget {
@@ -17,29 +18,25 @@ class SubscriptionPage extends StatefulWidget {
 
 class SubscriptionPageState extends State<SubscriptionPage>
     implements SubscriptionBlocDelegate {
-  final String planID = 'plan_HAD9AiYNgAqQIM';
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  SubscriptionBloc subscriptionBloc;
+  SubscriptionBloc _bloc;
   double screenHeight, screenWidth;
 
   final Color colorGold = HexColor('#D4AF37');
   final Color colorSilver = HexColor('#C0C0C0');
 
-  final String GOLD_HEART_30_PLAN_ID = 'price_1GwHYOFsx9vLcoaoyhW233Lg';
-  final String SILVER_HEART_15_PLAN_ID = 'price_1GwHYOFsx9vLcoaoyhW233Lg';
-
   @override
   void initState() {
     //Create BLoC instance and set delegate.
-    subscriptionBloc = BlocProvider.of<SubscriptionBloc>(context);
-    subscriptionBloc.setDelegate(delegate: this);
+    _bloc = BlocProvider.of<SubscriptionBloc>(context);
+    _bloc.setDelegate(delegate: this);
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    subscriptionBloc.close();
+    _bloc.close();
   }
 
   // @override
@@ -63,7 +60,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
           message: 'You wil now have 30 free messages weekly. Are you sure?');
 
       if (confirm) {
-        subscriptionBloc.add(
+        _bloc.add(
           SubscribeEvent(planID: GOLD_HEART_30_PLAN_ID),
         );
       }
@@ -76,7 +73,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
           message: 'You wil now have 15 free messages weekly. Are you sure?');
 
       if (confirm) {
-        subscriptionBloc.add(
+        _bloc.add(
           SubscribeEvent(planID: SILVER_HEART_15_PLAN_ID),
         );
       }
@@ -92,7 +89,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
             'You will no longer receieve benefits of this plan. Are you sure?');
 
     if (confirm) {
-      subscriptionBloc.add(
+      _bloc.add(
         UnsubscribeEvent(),
       );
     }
@@ -103,7 +100,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
     screenHeight = MediaQuery.of(context).size.height;
     screenWidth = MediaQuery.of(context).size.width;
 
-    subscriptionBloc = BlocProvider.of<SubscriptionBloc>(context);
+    _bloc = BlocProvider.of<SubscriptionBloc>(context);
 
     return Scaffold(
       key: scaffoldKey,
@@ -208,7 +205,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
                       height: 20,
                     ),
                     Text(
-                      'Silver Plan - receive 15 free messages weekly.',
+                      'Silver Plan - Get silver discounts.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.grey),
@@ -221,8 +218,9 @@ class SubscriptionPageState extends State<SubscriptionPage>
                       color: Colors.red,
                       textColor: Colors.white,
                       onPressed: () {
-                        subscriptionBloc.add(
-                          OpenModalSubscribeEvent(planID: SILVER_HEART_15_PLAN_ID),
+                        _bloc.add(
+                          OpenModalSubscribeEvent(
+                              planID: SILVER_HEART_15_PLAN_ID),
                         );
                       },
                     )
@@ -258,7 +256,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
                       height: 20,
                     ),
                     Text(
-                      'Gold Plan - receive 30 free messages weekly.',
+                      'Gold Plan - Get Gold discounts.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, color: Colors.grey),
@@ -271,8 +269,9 @@ class SubscriptionPageState extends State<SubscriptionPage>
                       color: Colors.red,
                       textColor: Colors.white,
                       onPressed: () {
-                        subscriptionBloc.add(
-                          OpenModalSubscribeEvent(planID: GOLD_HEART_30_PLAN_ID),
+                        _bloc.add(
+                          OpenModalSubscribeEvent(
+                              planID: GOLD_HEART_30_PLAN_ID),
                         );
                       },
                     )
@@ -331,14 +330,16 @@ class SubscriptionPageState extends State<SubscriptionPage>
         ),
         buildSubscriptionStatus(status: subscription.status),
         Spacer(),
-        // GoodButton(
-        //   buttonColor: Colors.red,
-        //   text: 'Cancel Subscription',
-        //   onPressed: () {
-        //     subscriptionBloc.openUnsubscribeModal();
-        //   },
-        //   textColor: Colors.white,
-        // )
+        RaisedButton(
+          color: Colors.red,
+          textColor: Colors.white,
+          child: Text('Unsubscribe'),
+          onPressed: () {
+            _bloc.add(
+              OpenModalUnsubscribeEvent(),
+            );
+          },
+        )
       ],
     );
   }
