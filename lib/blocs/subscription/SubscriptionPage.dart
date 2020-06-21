@@ -15,7 +15,8 @@ class SubscriptionPage extends StatefulWidget {
   State createState() => SubscriptionPageState();
 }
 
-class SubscriptionPageState extends State<SubscriptionPage> {
+class SubscriptionPageState extends State<SubscriptionPage>
+    implements SubscriptionBlocDelegate {
   final String planID = 'plan_HAD9AiYNgAqQIM';
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   SubscriptionBloc subscriptionBloc;
@@ -24,11 +25,14 @@ class SubscriptionPageState extends State<SubscriptionPage> {
   final Color colorGold = HexColor('#D4AF37');
   final Color colorSilver = HexColor('#C0C0C0');
 
-  final String GOLD_HEART_30_PLAN_ID = '';
-  final String SILVER_HEART_15_PLAN_ID = '';
+  final String GOLD_HEART_30_PLAN_ID = 'price_1GwHYOFsx9vLcoaoyhW233Lg';
+  final String SILVER_HEART_15_PLAN_ID = 'price_1GwHYOFsx9vLcoaoyhW233Lg';
 
   @override
   void initState() {
+    //Create BLoC instance and set delegate.
+    subscriptionBloc = BlocProvider.of<SubscriptionBloc>(context);
+    subscriptionBloc.setDelegate(delegate: this);
     super.initState();
   }
 
@@ -212,15 +216,16 @@ class SubscriptionPageState extends State<SubscriptionPage> {
                     SizedBox(
                       height: 20,
                     ),
-                    // GoodButton(
-                    //   buttonColor: colorSilver,
-                    //   text: 'Subscribe Now',
-                    //   onPressed: () {
-                    //     subscriptionBloc.openSubscribeModal(
-                    //         planID: SILVER_HEART_15_PLAN_ID);
-                    //   },
-                    //   textColor: Colors.white,
-                    // )
+                    RaisedButton(
+                      child: Text('Subscribe Now'),
+                      color: Colors.red,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        subscriptionBloc.add(
+                          OpenModalSubscribeEvent(planID: SILVER_HEART_15_PLAN_ID),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
@@ -261,15 +266,16 @@ class SubscriptionPageState extends State<SubscriptionPage> {
                     SizedBox(
                       height: 20,
                     ),
-                    // GoodButton(
-                    //   buttonColor: colorGold,
-                    //   text: 'Subscribe Now',
-                    //   onPressed: () {
-                    //     subscriptionBloc.openSubscribeModal(
-                    //         planID: GOLD_HEART_30_PLAN_ID);
-                    //   },
-                    //   textColor: Colors.white,
-                    // )
+                    RaisedButton(
+                      child: Text('Unsubscribe Now'),
+                      color: Colors.red,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        subscriptionBloc.add(
+                          OpenModalSubscribeEvent(planID: GOLD_HEART_30_PLAN_ID),
+                        );
+                      },
+                    )
                   ],
                 ),
               ),

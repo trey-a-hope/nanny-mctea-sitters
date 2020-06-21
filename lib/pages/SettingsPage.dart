@@ -73,20 +73,16 @@ class SettingsPage extends StatelessWidget {
                     title: Text('Subscription'),
                     trailing: Icon(Icons.chevron_right),
                     onTap: () {
-                      locator<ModalService>().showAlert(
-                          context: context,
-                          title: 'Coming soon...',
-                          message: 'Subscription Page.');
-                      // Route route = MaterialPageRoute(
-                      //   builder: (BuildContext context) => BlocProvider(
-                      //     create: (BuildContext context) =>
-                      //         SubscriptionBPPAYMENT_METHOD_BLOC.SubscriptionBloc()
-                      //           ..add(SubscriptionBP.LoadPageEvent()),
-                      //     child: SubscriptionBP.SubscriptionPage(),
-                      //   ),
-                      // );
+                      Route route = MaterialPageRoute(
+                        builder: (BuildContext context) => BlocProvider(
+                          create: (BuildContext context) =>
+                              SUBSCRIPTION_BLOC.SubscriptionBloc()
+                                ..add(SUBSCRIPTION_BLOC.LoadPageEvent()),
+                          child: SUBSCRIPTION_BLOC.SubscriptionPage(),
+                        ),
+                      );
 
-                      // Navigator.push(context, route);
+                      Navigator.push(context, route);
                     },
                   ),
                   Divider(),

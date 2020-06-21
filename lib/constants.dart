@@ -3,7 +3,10 @@ const String DUMMY_PROFILE_PHOTO_URL =
 
 const List<String> ADMIN_UIDS = ['KFO2MAjsJNP1racr4Uivs8Zz3h32'];
 
-const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';
+// const String STRIPE_GOLD_PLAN_ID = 'plan_FvwSxZO4qQOoZR';
+
+  const String GOLD_HEART_30_PLAN_ID = 'price_1GwHYOFsx9vLcoaoyhW233Lg';
+  const String SILVER_HEART_15_PLAN_ID = 'price_1GwHYNFsx9vLcoaoor2vchmJ';
 
 const String SAAS_BABY_SITTING_SCHEDULE_ID = '489593';
 

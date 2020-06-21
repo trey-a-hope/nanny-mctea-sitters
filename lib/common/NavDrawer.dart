@@ -78,7 +78,7 @@ class NavDrawerState extends State<NavDrawer> {
             child: ListView(
               children: <Widget>[
                 _buildBookSitter(),
-                _buildPlansPricing(),
+                // _buildPlansPricing(),
                 // _buildJoinTeam(),
                 _buildProfile(),
                 // _buildAddAvailability(),
@@ -200,28 +200,28 @@ class NavDrawerState extends State<NavDrawer> {
           );
   }
 
-  Widget _buildPlansPricing() {
-    return user == null
-        ? SizedBox.shrink()
-        : ListTile(
-            leading: Icon(Icons.attach_money, color: Colors.red),
-            title: Text(
-              'Plans & Pricing',
-            ),
-            subtitle: Text(
-              'Get an idea of costs.',
-              style: TextStyle(color: Colors.grey),
-            ),
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (context) => PlansPricingPage(),
-              //   ),
-              // );
-            },
-          );
-  }
+  // Widget _buildPlansPricing() {
+  //   return user == null
+  //       ? SizedBox.shrink()
+  //       : ListTile(
+  //           leading: Icon(Icons.attach_money, color: Colors.red),
+  //           title: Text(
+  //             'Plans & Pricing',
+  //           ),
+  //           subtitle: Text(
+  //             'Get an idea of costs.',
+  //             style: TextStyle(color: Colors.grey),
+  //           ),
+  //           onTap: () {
+  //             // Navigator.push(
+  //             //   context,
+  //             //   MaterialPageRoute(
+  //             //     builder: (context) => PlansPricingPage(),
+  //             //   ),
+  //             // );
+  //           },
+  //         );
+  // }
 
   // Widget _buildJoinTeam() {
   //   return ListTile(

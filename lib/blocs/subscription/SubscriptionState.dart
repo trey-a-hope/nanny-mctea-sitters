@@ -12,10 +12,16 @@ class SubscribedState extends SubscriptionState {
   final PlanModel plan;
   final SubscriptionModel subscription;
 
-  SubscribedState({@required this.plan, @required this.subscription});
+  SubscribedState({
+    @required this.plan,
+    @required this.subscription,
+  });
 
   @override
-  List<Object> get props => [plan, subscription];
+  List<Object> get props => [
+        plan,
+        subscription,
+      ];
 }
 
 class UnsubscribedState extends SubscriptionState {

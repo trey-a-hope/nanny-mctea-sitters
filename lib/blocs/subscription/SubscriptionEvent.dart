@@ -8,6 +8,19 @@ abstract class SubscriptionEvent extends Equatable {
 
 class LoadPageEvent extends SubscriptionEvent {}
 
+class OpenModalSubscribeEvent extends SubscriptionEvent {
+  final String planID;
+  
+  OpenModalSubscribeEvent({
+    @required this.planID,
+  });
+
+  @override
+  List<Object> get props => [
+        planID,
+      ];
+}
+
 class SubscribeEvent extends SubscriptionEvent {
   final String planID;
 
