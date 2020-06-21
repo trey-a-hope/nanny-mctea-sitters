@@ -267,7 +267,7 @@ class SubscriptionPageState extends State<SubscriptionPage>
                       height: 20,
                     ),
                     RaisedButton(
-                      child: Text('Unsubscribe Now'),
+                      child: Text('Subscribe Now'),
                       color: Colors.red,
                       textColor: Colors.white,
                       onPressed: () {
