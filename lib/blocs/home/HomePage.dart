@@ -9,7 +9,6 @@ import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
 import 'package:nanny_mctea_sitters_flutter/common/clipper_wavy.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/pages/ServicePage.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/sitter_details.dart';
 import 'package:nanny_mctea_sitters_flutter/asset_images.dart';
 import 'package:nanny_mctea_sitters_flutter/common/sitter_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
