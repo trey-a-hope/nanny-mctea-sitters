@@ -139,11 +139,8 @@ class ConversationPageState extends State<ConversationPage> {
                         color: Colors.white,
                         fontWeight: FontWeight.bold),
                   ),
-                  InkWell(
-                    onTap: showSelectImageDialog,
-                    child: CircleAvatar(
-                      backgroundImage: NetworkImage(currentUser.imgUrl),
-                    ),
+                  CircleAvatar(
+                    backgroundImage: NetworkImage(currentUser.imgUrl),
                   )
                 ],
               ),
@@ -204,84 +201,6 @@ class ConversationPageState extends State<ConversationPage> {
           ),
         )
       ],
-    );
-  }
-
-  showSelectImageDialog() {
-    return Platform.isIOS ? iOSBottomSheet() : androidDialog();
-  }
-
-  iOSBottomSheet() {
-    showCupertinoModalPopup(
-        context: context,
-        builder: (BuildContext context) {
-          return CupertinoActionSheet(
-            title: Text('Add Photo'),
-            actions: <Widget>[
-              CupertinoActionSheetAction(
-                child: Text('Take Photo'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-
-                  conversationBloc
-                      .add(UpdatePhotoEvent(imageSource: ImageSource.camera));
-                },
-              ),
-              CupertinoActionSheetAction(
-                child: Text('Choose From Gallery'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  conversationBloc
-                      .add(UpdatePhotoEvent(imageSource: ImageSource.gallery));
-                },
-              )
-            ],
-            cancelButton: CupertinoActionSheetAction(
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          );
-        });
-  }
-
-  androidDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return SimpleDialog(
-          title: Text('Add Photo'),
-          children: <Widget>[
-            SimpleDialogOption(
-              child: Text('Take Photo'),
-              onPressed: () {
-                Navigator.of(context).pop();
-
-                conversationBloc
-                    .add(UpdatePhotoEvent(imageSource: ImageSource.camera));
-              },
-            ),
-            SimpleDialogOption(
-              child: Text('Choose From Gallery'),
-              onPressed: () {
-                Navigator.of(context).pop();
-
-                conversationBloc
-                    .add(UpdatePhotoEvent(imageSource: ImageSource.gallery));
-              },
-            ),
-            SimpleDialogOption(
-              child: Text(
-                'Cancel',
-                style: TextStyle(color: Colors.redAccent),
-              ),
-              onPressed: () => Navigator.pop(context),
-            )
-          ],
-        );
-      },
     );
   }
 }

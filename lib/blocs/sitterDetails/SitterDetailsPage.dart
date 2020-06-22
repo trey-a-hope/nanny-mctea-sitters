@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
-import 'package:nanny_mctea_sitters_flutter/blocs/sitterDetails/Bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/sitterDetails/Bloc.dart'
+    as SITTER_DETAILS_BP;
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
@@ -16,17 +17,17 @@ class SitterDetailsPage extends StatefulWidget {
 }
 
 class SitterDetailsPageState extends State<SitterDetailsPage>
-    implements SitterDetailsBlocDelegate {
+    implements SITTER_DETAILS_BP.SitterDetailsBlocDelegate {
   SitterDetailsPageState();
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String dateFormat = 'MMM d, yyyy';
   final String timeFormat = 'hh:mm a';
-  SitterDetailsBloc _bloc;
+  SITTER_DETAILS_BP.SitterDetailsBloc _bloc;
 
   @override
   void initState() {
-    _bloc = BlocProvider.of<SitterDetailsBloc>(context);
+    _bloc = BlocProvider.of<SITTER_DETAILS_BP.SitterDetailsBloc>(context);
     _bloc.setDelegate(delegate: this);
     super.initState();
   }
@@ -49,20 +50,22 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
             ),
             onPressed: () {
               _bloc.add(
-                SendMessageEvent(),
+                SITTER_DETAILS_BP.SendMessageEvent(),
               );
             },
           )
         ],
       ),
       key: _scaffoldKey,
-      body: BlocBuilder<SitterDetailsBloc, SitterDetailsState>(
-        builder: (BuildContext context, SitterDetailsState state) {
-          if (state is LoadingState) {
+      body: BlocBuilder<SITTER_DETAILS_BP.SitterDetailsBloc,
+          SITTER_DETAILS_BP.SitterDetailsState>(
+        builder:
+            (BuildContext context, SITTER_DETAILS_BP.SitterDetailsState state) {
+          if (state is SITTER_DETAILS_BP.LoadingState) {
             return Spinner();
           }
 
-          if (state is LoadedState) {
+          if (state is SITTER_DETAILS_BP.LoadedState) {
             return Column(
               children: <Widget>[
                 SizedBox(
@@ -76,29 +79,6 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
                 ),
                 _buildInfoBox(sitter: state.sitter),
                 _buildBio()
-                // Stack(
-                //   children: <Widget>[
-                //     SizedBox(
-                //       height: 400,
-                //       width: double.infinity,
-                //       child: CachedNetworkImage(
-                //           fit: BoxFit.contain,
-                //           fadeInCurve: Curves.easeIn,
-                //           imageUrl: 'sitter img url'),
-                //     ),
-                //     Container(
-                //       margin: EdgeInsets.fromLTRB(16.0, 320.0, 16.0, 16.0),
-                //       child: Column(
-                //         children: <Widget>[
-                //           // _buildInfoBox(),
-                //           SizedBox(height: 20.0),
-                //           _buildBio(),
-                //           SizedBox(height: 20.0),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // ),
               ],
             );
           }
@@ -192,19 +172,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
 
   @override
   void navigateToMessageThread() {
-    //todo:
-    //     //Navigate to sitter details bloc.
-    // Route route = MaterialPageRoute(
-    //   builder: (BuildContext context) => BlocProvider(
-    //     create: (BuildContext context) =>
-    //         SITTER_DETAILS_BP.SitterDetailsBloc(
-    //             sitter: sitter)
-    //           ..add(
-    //             SITTER_DETAILS_BP.LoadPageEvent(),
-    //           ),
-    //     child: SITTER_DETAILS_BP.SitterDetailsPage(),
-    //   ),
-    // );
-    // Navigator.push(context, route);
+    //Navigate to message thread with this sitter.
+
   }
 }

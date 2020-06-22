@@ -2,25 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/profile/Bloc.dart'
     as PROFILE_BP;
 import 'package:nanny_mctea_sitters_flutter/blocs/appointments/Bloc.dart'
     as APPOINTMENTS_BP;
 import 'package:nanny_mctea_sitters_flutter/blocs/editProfile/Bloc.dart'
     as EDIT_PROFILE_BP;
-import 'package:nanny_mctea_sitters_flutter/common/scaffold_clipper.dart';
-import 'package:nanny_mctea_sitters_flutter/common/simple_navbar.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/conversation/Bloc.dart'
+    as CONVERSATION_BP;
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
-import 'package:nanny_mctea_sitters_flutter/constants.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
-import 'package:nanny_mctea_sitters_flutter/models/database/appointment.dart';
 import 'package:nanny_mctea_sitters_flutter/models/supersaas/AgendaModel.dart';
-import 'package:nanny_mctea_sitters_flutter/models/supersaas/AppointmentModel.dart';
-import 'package:nanny_mctea_sitters_flutter/pages/messages/messages_page.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
-
 import '../../ServiceLocator.dart';
 import '../../asset_images.dart';
 
@@ -52,6 +45,7 @@ class ProfilePageState extends State<ProfilePage> {
         backgroundColor: Colors.blue,
         centerTitle: true,
         actions: <Widget>[
+          //Navigate to edit profile page.
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: () {
@@ -66,6 +60,23 @@ class ProfilePageState extends State<ProfilePage> {
                 ),
               );
 
+              Navigator.push(context, route);
+            },
+          ),
+          //Navigate to messages page.
+          IconButton(
+            icon: Icon(Icons.message),
+            onPressed: () {
+              Route route = MaterialPageRoute(
+                builder: (BuildContext context) => BlocProvider(
+                  create: (BuildContext context) =>
+                      CONVERSATION_BP.ConversationBloc()
+                        ..add(
+                          CONVERSATION_BP.LoadPageEvent(),
+                        ),
+                  child: CONVERSATION_BP.ConversationPage(),
+                ),
+              );
               Navigator.push(context, route);
             },
           )

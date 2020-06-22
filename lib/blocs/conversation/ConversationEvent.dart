@@ -23,12 +23,3 @@ class ConversationAddedEvent extends ConversationEvent {
   @override
   List<Object> get props => [querySnapshot];
 }
-
-class UpdatePhotoEvent extends ConversationEvent {
-  final ImageSource imageSource;
-
-  UpdatePhotoEvent({@required this.imageSource});
-
-  @override
-  List<Object> get props => [];
-}
