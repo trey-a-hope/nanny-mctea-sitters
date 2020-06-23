@@ -1,13 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/blocs/sitterDetails/Bloc.dart'
     as SITTER_DETAILS_BP;
+import 'package:nanny_mctea_sitters_flutter/blocs/messages/Bloc.dart'
+    as MESSAGES_BP;
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
+import 'package:nanny_mctea_sitters_flutter/models/firebase/Conversation.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/messages/MessagePage.dart';
 import 'package:nanny_mctea_sitters_flutter/services/ModalService.dart';
+import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 
 class SitterDetailsPage extends StatefulWidget {
   SitterDetailsPage();
@@ -27,6 +34,7 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
 
   @override
   void initState() {
+    //Assign new instance of bloc and set delegate.
     _bloc = BlocProvider.of<SITTER_DETAILS_BP.SitterDetailsBloc>(context);
     _bloc.setDelegate(delegate: this);
     super.initState();
@@ -171,8 +179,62 @@ class SitterDetailsPageState extends State<SitterDetailsPage>
   }
 
   @override
-  void navigateToMessageThread() {
-    //Navigate to message thread with this sitter.
+  void navigateToMessageThread({
+    UserModel currentUser,
+    UserModel sitter,
+  }) async {
+    try {
+      final ChatUser sendee = ChatUser(
+          name: sitter.name,
+          uid: sitter.id,
+          avatar: sitter.imgUrl,
+          fcmToken: sitter.fcmToken);
 
+      final ChatUser sender = ChatUser(
+          name: currentUser.name,
+          uid: currentUser.id,
+          avatar: currentUser.imgUrl,
+          fcmToken: currentUser.fcmToken);
+
+      Query query = Firestore.instance.collection('Conversations');
+
+      query = query.where(currentUser.id, isEqualTo: true);
+      query = query.where(sitter.id, isEqualTo: true);
+
+      List<DocumentSnapshot> docs = (await query.getDocuments()).documents;
+
+      DocumentReference convoDocRef;
+      //Creat a new conversation document if one does not already exist.
+      if (docs.isEmpty) {
+        convoDocRef = Firestore.instance.collection('Conversations').document();
+        convoDocRef.setData({
+          'id': convoDocRef.documentID,
+          sender.uid: true,
+          sendee.uid: true,
+          'users': [sender.uid, sendee.uid],
+          'time': DateTime.now(),
+          'lastMessage': ''
+        });
+      } else {
+        convoDocRef = docs.first.reference;
+      }
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessagePage(
+            sendee: sendee,
+            sender: sender,
+            convoDocRef: convoDocRef,
+          ),
+        ),
+      );
+    } catch (e) {
+      locator<ModalService>().showAlert(
+        context: context,
+        title: 'Error',
+        message: e.toString(),
+      );
+    }
   }
 }

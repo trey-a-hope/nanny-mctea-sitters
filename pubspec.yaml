@@ -2,10 +2,10 @@ name: nanny_mctea_sitters_flutter
 
 description: Client mobile app for baby sitting business.
 
-version: 1.0.4+4
+version: 1.0.5+5
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -27,6 +27,7 @@ dependencies:
   get_it: ^3.1.0
   http: ^0.12.0+1 
   image_cropper: ^1.2.1
+  image_downloader: ^0.19.2
   image_picker: ^0.6.1+3
   intl: ^0.16.1
   intro_views_flutter: '^2.4.0'

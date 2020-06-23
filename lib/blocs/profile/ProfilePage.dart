@@ -178,24 +178,6 @@ class ProfilePageState extends State<ProfilePage> {
                   ],
                 ),
               ),
-              // SizedBox(height: 10.0),
-              // Row(
-              //   children: <Widget>[
-              //     Expanded(
-              //       child: Column(
-              //         children: <Widget>[
-              //           Text('${agendas.length}'),
-              //           Text("Appointments")
-              //         ],
-              //       ),
-              //     ),
-              //     Expanded(
-              //       child: Column(
-              //         children: <Widget>[Text('${4}'), Text("Camps")],
-              //       ),
-              //     ),
-              //   ],
-              // ),
             ],
           ),
         ),
@@ -220,7 +202,6 @@ class ProfilePageState extends State<ProfilePage> {
                 'Choose From Gallery',
               ],
             );
-
             //Take user to camera or gallery.
             switch (choice) {
               case 0:
@@ -280,54 +261,8 @@ class ProfilePageState extends State<ProfilePage> {
                   )
                 : SizedBox.shrink(),
           ),
-          // Divider(),
-          // ListTile(
-          //   title: Text("Email"),
-          //   subtitle: Text(currentUser.email),
-          //   leading: Icon(Icons.email),
-          // ),
-          // ListTile(
-          //   title: Text("Phone"),
-          //   subtitle: Text(currentUser.phone ?? 'N/A'),
-          //   leading: Icon(Icons.phone),
-          // ),
-          // ListTile(
-          //   title: Text("Joined Date"),
-          //   subtitle: Text(
-          //     DateFormat(DATE_FORMAT_FULL).format(currentUser.time),
-          //   ),
-          //   leading: Icon(Icons.calendar_view_day),
-          // ),
         ],
       ),
     );
   }
-
-  // Widget _buildApointment(AgendaModel agendaModel) {
-  //   return ListTile(
-  //     onTap: () {
-  //                      Route route = MaterialPageRoute(
-  //                       builder: (BuildContext context) => BlocProvider(
-  //                         create: (BuildContext context) =>
-  //                             PAYMENT_METHOD_BLOC.PaymentMethodBloc()
-  //                               ..add(PAYMENT_METHOD_BLOC.LoadPageEvent()),
-  //                         child: PAYMENT_METHOD_BLOC.PaymentMethodPage(),
-  //                       ),
-  //                     );
-
-  //                     Navigator.push(context, route);
-  //     },
-  //     leading: CircleAvatar(
-  //       child: Text(
-  //         'A',
-  //         style: TextStyle(color: Colors.white),
-  //       ),
-  //       backgroundColor: Colors.blue,
-  //     ),
-  //     title: Text(
-  //       agendaModel.full_name,
-  //     ),
-  //     trailing: Icon(Icons.chevron_right),
-  //   );
-  // }
 }

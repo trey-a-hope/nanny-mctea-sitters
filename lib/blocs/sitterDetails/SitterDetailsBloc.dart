@@ -4,18 +4,24 @@ import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import '../../ServiceLocator.dart';
 import 'Bloc.dart';
+import 'package:nanny_mctea_sitters_flutter/blocs/messages/Bloc.dart'
+    as MESSAGES_BP;
 
 abstract class SitterDetailsBlocDelegate {
-  void showMessage({@required String message});
-  void navigateToMessageThread();
+  void showMessage({
+    @required String message,
+  });
+  void navigateToMessageThread({
+    @required UserModel currentUser,
+    @required UserModel sitter,
+  });
 }
 
-//todo: VALIDATE THAT SIGN UP WORKS BY DELETEING ALL USER DATE AND STARTING WITH CLEAN TRY
 class SitterDetailsBloc extends Bloc<SitterDetailsEvent, SitterDetailsState> {
   final UserModel sitter;
 
   SitterDetailsBlocDelegate _delegate;
-  UserModel currentUser;
+  UserModel _currentUser;
 
   SitterDetailsBloc({
     @required this.sitter,
@@ -34,18 +40,21 @@ class SitterDetailsBloc extends Bloc<SitterDetailsEvent, SitterDetailsState> {
       yield LoadingState();
 
       //Fetch current user.
-      currentUser = await locator<AuthService>().getCurrentUser();
+      _currentUser = await locator<AuthService>().getCurrentUser();
 
       yield LoadedState(sitter: sitter);
     }
 
     if (event is SendMessageEvent) {
       //Validate the user is logged in.
-      if (currentUser == null) {
+      if (_currentUser == null) {
         _delegate.showMessage(
             message: 'Sorry, you must be logged in to use this feature.');
       } else {
-        _delegate.navigateToMessageThread();
+        _delegate.navigateToMessageThread(
+          currentUser: _currentUser,
+          sitter: sitter,
+        );
       }
     }
   }

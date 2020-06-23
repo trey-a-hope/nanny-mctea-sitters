@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:nanny_mctea_sitters_flutter/common/spinner.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/models/firebase/Conversation.dart';
+import 'package:nanny_mctea_sitters_flutter/pages/messages/MessagePage.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -72,8 +72,7 @@ class ConversationListTileState extends State<ConversationListTile> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.waiting:
-            return Spinner(
-            );
+            return Spinner();
             break;
           default:
             ConversationModel conversation = snapshot.data;
@@ -82,6 +81,17 @@ class ConversationListTileState extends State<ConversationListTile> {
               children: [
                 ListTile(
                   onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MessagePage(
+                          sendee: conversation.sendee,
+                          sender: conversation.sender,
+                          convoDocRef: conversation.reference,
+                        ),
+                      ),
+                    );
+
                     // Route route = MaterialPageRoute(
                     //   builder: (BuildContext context) => BlocProvider(
                     //     create: (BuildContext context) => MessageBloc(

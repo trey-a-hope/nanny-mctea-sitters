@@ -180,7 +180,7 @@ class ConversationPageState extends State<ConversationPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Icon(
-                          Icons.message,
+                          Icons.person,
                           size: 15,
                           color: Colors.grey,
                         ),
@@ -188,7 +188,7 @@ class ConversationPageState extends State<ConversationPage> {
                           width: 5,
                         ),
                         Text(
-                          'Thanks for using this app!',
+                          'Nanny McTea Sitters',
                           style: TextStyle(
                               color: Colors.grey, fontWeight: FontWeight.bold),
                         )
