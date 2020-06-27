@@ -9,47 +9,61 @@ class BookSitterServiceState extends Equatable {
 class ChildCareServiceState extends BookSitterServiceState {
   final List<Map<String, dynamic>> services = [
     {
-      'service': '4 Hour Sitter Service | 4 hr \$77',
+      'service': 'Last Minute or Sick Care | 4 hr \$15',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Is your child sick or you\'re in need of a last minute care? NMS will be happy to assist you. *\$15 Booking Fee + nanny paid in person a \$17Hr Rate. *It is YOUR families responsibilities to pay your sitter \$17 per hour the day of your sitter service*',
       'hours': 4,
-      'cost': 77.0
+      'cost': 15.0
     },
     {
-      'service': '5 Hour Sitter Service | 5 hr \$90',
+      'service': '4 Hour Sitter Service | 4 hr \$5',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
+      'hours': 4,
+      'cost': 5.0
+    },
+    {
+      'service': '5 Hour Sitter Service | 5 hr \$5',
+      'description':
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
       'hours': 5,
-      'cost': 90.0
+      'cost': 5.0
     },
     {
-      'service': '6 Hour Sitter Service | 6 hr \$103',
+      'service': '6 Hour Sitter Service | 6 hr \$5',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
       'hours': 6,
-      'cost': 103.0
+      'cost': 5.0
     },
     {
-      'service': '7 Hour Sitter Service | 7 hr \$116',
+      'service': '7 Hour Sitter Service | 7 hr \$5',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
       'hours': 7,
-      'cost': 116.0
+      'cost': 5.0
     },
     {
-      'service': '8 Hour Sitter Service | 8 hr \$129',
+      'service': '8 Hour Sitter Service | 8 hr \$5',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
       'hours': 8,
-      'cost': 129.0
+      'cost': 5.0
     },
     {
-      'service': '9 Hour Sitter Service | 9 hr \$142',
+      'service': '9 Hour Sitter Service | 9 hr \$5',
       'description':
-          'Thank you for interest in booking a Nanny McTea Sitter! A few things to remember while booking:- The rate for this service is \$13 / hr + \$25 booking fee-HERE is where you pay the \$25 booking fee, that secures your sitter for the date requested. -YOU are then required to pay your sitter the REMAINING balance owed at the end of your scheduled sit - This service must be booked at least 48 hours in advance- We have a 4 hour minimum requirement.-The booking fee is non refundable.',
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
       'hours': 9,
-      'cost': 142.0
-    }
+      'cost': 5.0
+    },
+    {
+      'service': '10 Hour Sitter Service | 10 hr \$5',
+      'description':
+          'Do you need a night on the town, or just free time to make a grocery run, appointment etc, NMS is here to help! Book a pre- interviewed and background checked sitter today! *\$5 Booking Fee paid ONLINE. *It is YOUR families responsibility to pay your sitter \$13/hr the day of your service*. 4Hr \$52, 5Hr \$65, 6Hr \$78, 7Hr \$91, 8Hr \$104, 9Hr \$117, 10Hr \$130. Contact Us if needs exceed 10Hrs.',
+      'hours': 10,
+      'cost': 5.0
+    },
   ];
 
   ChildCareServiceState();

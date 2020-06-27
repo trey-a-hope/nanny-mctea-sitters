@@ -5,7 +5,6 @@ import 'package:nanny_mctea_sitters_flutter/ServiceLocator.dart';
 import 'package:nanny_mctea_sitters_flutter/models/database/UserModel.dart';
 import 'package:nanny_mctea_sitters_flutter/services/AuthService.dart';
 import 'package:nanny_mctea_sitters_flutter/services/UserService.dart';
-import 'package:nanny_mctea_sitters_flutter/services/supersaas/SuperSaaSUserService.dart';
 import 'Bloc.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
